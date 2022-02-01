@@ -3,4 +3,6 @@
     <dimen name="small_text">12sp</dimen>
     <dimen name="medium_text">18sp</dimen>
     <dimen name="side_menu_vertical">10dp</dimen>
+    <dimen name="login_card_spacing">20dp</dimen>
+    <dimen name="huge_text_size">40sp</dimen>
 </resources>

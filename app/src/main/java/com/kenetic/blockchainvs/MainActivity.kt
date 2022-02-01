@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = com.kenetic.blockchainvs.databinding.ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 //
 //        navController =(supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController

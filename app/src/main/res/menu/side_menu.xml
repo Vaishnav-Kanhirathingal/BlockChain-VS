@@ -2,24 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group>
         <item
-            android:id="@+id/menu_button_1"
-            android:checked="true"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="Button - 1" />
-        <item
-            android:id="@+id/menu_button_2"
-            android:checked="true"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="Button - 1" />
-        <item
-            android:id="@+id/menu_button_3"
-            android:checked="true"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="Button - 1" />
-        <item
-            android:id="@+id/menu_button_4"
-            android:checked="true"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="Button - 1" />
+            android:id="@+id/item_1"
+            android:title="Personal details">
+            <menu>
+                <item
+                    android:id="@+id/adhaar_card_number"
+                    android:icon="@drawable/ic_launcher_foreground"
+                    android:title="Adhaar" />
+                <item
+                    android:id="@+id/pan_card_number"
+                    android:icon="@drawable/ic_launcher_foreground"
+                    android:title="Pan Card" />
+                <item
+                    android:id="@+id/voter_id"
+                    android:icon="@drawable/ic_launcher_foreground"
+                    android:title="Voter ID" />
+            </menu>
+        </item>
     </group>
 </menu>
