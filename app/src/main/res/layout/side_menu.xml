@@ -19,35 +19,16 @@
         tools:background="#888888"
         tools:src="@drawable/ic_launcher_foreground" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/user_name_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/side_menu_vertical"
-        android:text="User Name -"
-        android:textSize="@dimen/medium_text"
-        app:layout_constraintLeft_toLeftOf="@id/user_image"
-        app:layout_constraintTop_toBottomOf="@id/user_image" />
-
     <TextView
         android:id="@+id/user_full_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/small_text"
+        android:textSize="@dimen/medium_text"
+        android:layout_marginTop="@dimen/side_menu_vertical"
         app:layout_constraintLeft_toLeftOf="@id/user_image"
         app:layout_constraintRight_toRightOf="@id/user_image"
-        app:layout_constraintTop_toBottomOf="@id/user_name_label"
+        app:layout_constraintTop_toBottomOf="@id/user_image"
         tools:text="FirstName MiddleName LastName" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/user_email_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/side_menu_vertical"
-        android:text="User Email -"
-        android:textSize="@dimen/medium_text"
-        app:layout_constraintLeft_toLeftOf="@id/user_image"
-        app:layout_constraintTop_toBottomOf="@id/user_full_name" />
 
     <TextView
         android:id="@+id/user_email"
@@ -56,18 +37,9 @@
         android:textSize="@dimen/small_text"
         app:layout_constraintLeft_toLeftOf="@id/user_image"
         app:layout_constraintRight_toRightOf="@id/user_image"
-        app:layout_constraintTop_toBottomOf="@id/user_email_label"
+        app:layout_constraintTop_toBottomOf="@id/user_full_name"
         tools:text="UserEmail@EMailClient.com" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/user_mobile_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/side_menu_vertical"
-        android:text="Mobile no. -"
-        android:textSize="@dimen/medium_text"
-        app:layout_constraintLeft_toLeftOf="@id/user_image"
-        app:layout_constraintTop_toBottomOf="@id/user_email" />
 
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="0dp"
@@ -75,7 +47,7 @@
         android:textSize="@dimen/small_text"
         app:layout_constraintLeft_toLeftOf="@id/user_image"
         app:layout_constraintRight_toRightOf="@id/user_image"
-        app:layout_constraintTop_toBottomOf="@id/user_mobile_label"
+        app:layout_constraintTop_toBottomOf="@id/user_email"
         tools:text="+12 1234567890" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

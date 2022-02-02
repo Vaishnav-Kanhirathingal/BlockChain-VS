@@ -5,125 +5,227 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/login_card_spacing"
     app:cardBackgroundColor="#eeeeee"
-    app:cardCornerRadius="@dimen/login_card_spacing">
+    app:cardCornerRadius="@dimen/card_corner_radius">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/sign_up_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/login_card_spacing"
-            android:text="@string/sign_up"
-            android:textSize="@dimen/huge_text_size"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/user_name_edit_text"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/login_card_spacing"
-            android:hint="@string/user_name"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/sign_up_label">
+            <TextView
+                android:id="@+id/sign_up_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/login_card_spacing"
+                android:text="@string/sign_up"
+                android:textSize="@dimen/huge_text_size"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/user_name_edit_text"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/login_card_spacing"
+                android:hint="@string/full_name"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sign_up_label">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/user_password_edit_text"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/login_card_spacing"
-            android:hint="@string/set_new_user_password"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/user_name_edit_text">
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/user_password_edit_text"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/login_card_spacing"
+                android:hint="@string/set_new_user_password"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/user_name_edit_text">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/user_phone_number_edit_text"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/login_card_spacing"
-            android:hint="@string/phone_number"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/user_password_edit_text">
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/phone_divider"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/margin_horizontal_spacing"
+                android:layout_marginTop="@dimen/login_card_spacing"
+                app:dividerThickness="1dp"
+                app:layout_constraintLeft_toLeftOf="@id/user_name_edit_text"
+                app:layout_constraintRight_toRightOf="@id/user_name_edit_text"
+                app:layout_constraintTop_toBottomOf="@id/user_password_edit_text" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/user_phone_number_edit_text"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/login_card_spacing"
+                android:hint="@string/phone_number"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/phone_divider">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/user_otp_edit_text"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/login_card_spacing"
-            android:layout_marginEnd="@dimen/login_card_spacing"
-            android:hint="@string/otp_generated"
-            app:helperText="Check Message Box For The Entered Phone Number"
-            app:layout_constraintLeft_toLeftOf="@id/user_name_edit_text"
-            app:layout_constraintRight_toLeftOf="@id/otp_generator"
-            app:layout_constraintTop_toBottomOf="@id/user_phone_number_edit_text">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/user_phone_otp_edit_text"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/login_card_spacing"
+                android:layout_marginEnd="@dimen/login_card_spacing"
+                android:hint="phone OTP"
+                app:endIconDrawable="@drawable/refresh_24"
+                app:endIconMode="custom"
+                app:helperText="Check Message Box For The \nEntered Phone Number"
+                app:layout_constraintLeft_toLeftOf="@id/user_name_edit_text"
+                app:layout_constraintRight_toLeftOf="@id/verify_phone_otp"
+                app:layout_constraintTop_toBottomOf="@id/user_phone_number_edit_text">
 
-        <Button
-            android:id="@+id/otp_generator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="otp"
-            app:layout_constraintBottom_toBottomOf="@id/user_otp_edit_text"
-            app:layout_constraintRight_toRightOf="@id/user_name_edit_text"
-            app:layout_constraintTop_toTopOf="@id/user_otp_edit_text" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/cancel_login"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/login_card_spacing"
-            android:layout_marginEnd="@dimen/login_card_spacing"
-            android:text="@string/cancel"
-            style="?attr/materialButtonOutlinedStyle"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="@id/user_name_edit_text"
-            app:layout_constraintRight_toLeftOf="@id/register_login"
-            app:layout_constraintTop_toBottomOf="@id/user_otp_edit_text" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/register_login"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/login_card_spacing"
-            android:text="@string/register"
-            app:layout_constraintBottom_toBottomOf="@id/cancel_login"
-            app:layout_constraintLeft_toRightOf="@id/cancel_login"
-            app:layout_constraintRight_toRightOf="@id/user_name_edit_text"
-            app:layout_constraintTop_toTopOf="@id/cancel_login" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <Button
+                android:id="@+id/verify_phone_otp"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:text="Verify"
+                app:layout_constraintBottom_toTopOf="@id/clear_phone_otp"
+                app:layout_constraintRight_toRightOf="@id/user_name_edit_text"
+                app:layout_constraintTop_toTopOf="@id/user_phone_otp_edit_text" />
+            <Button
+                android:id="@+id/clear_phone_otp"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:text="clear"
+                app:layout_constraintTop_toBottomOf="@id/verify_phone_otp"
+                app:layout_constraintBottom_toBottomOf="@id/user_phone_otp_edit_text"
+                app:layout_constraintRight_toRightOf="@id/user_name_edit_text" />
 
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/email_divider"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/margin_horizontal_spacing"
+                android:layout_marginTop="@dimen/login_card_spacing"
+                app:dividerThickness="1dp"
+                app:layout_constraintLeft_toLeftOf="@id/user_name_edit_text"
+                app:layout_constraintRight_toRightOf="@id/user_name_edit_text"
+                app:layout_constraintTop_toBottomOf="@id/user_phone_otp_edit_text" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/user_email_edit_text"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/login_card_spacing"
+                android:hint="Email Address"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/email_divider">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/user_email_otp_edit_text"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/login_card_spacing"
+                android:layout_marginEnd="@dimen/login_card_spacing"
+                android:hint="Email OTP"
+                app:endIconDrawable="@drawable/refresh_24"
+                app:endIconMode="custom"
+                app:helperText="Check Inbox For The Entered\nEmail"
+                app:layout_constraintLeft_toLeftOf="@id/user_name_edit_text"
+                app:layout_constraintRight_toLeftOf="@id/verify_phone_otp"
+                app:layout_constraintTop_toBottomOf="@id/user_email_edit_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/verify_email_otp"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:text="Verify"
+                app:layout_constraintRight_toRightOf="@id/user_name_edit_text"
+                app:layout_constraintTop_toTopOf="@id/user_email_otp_edit_text" />
+
+            <Button
+                android:id="@+id/clear_email_otp"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:text="Clear"
+                app:layout_constraintBottom_toBottomOf="@id/user_email_otp_edit_text"
+                app:layout_constraintRight_toRightOf="@id/user_name_edit_text" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/final_divider"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/margin_horizontal_spacing"
+                android:layout_marginTop="@dimen/login_card_spacing"
+                app:dividerThickness="1dp"
+                app:layout_constraintLeft_toLeftOf="@id/user_name_edit_text"
+                app:layout_constraintRight_toRightOf="@id/user_name_edit_text"
+                app:layout_constraintTop_toBottomOf="@id/user_email_otp_edit_text" />
+
+            <Button
+                android:id="@+id/cancel_login"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/login_card_spacing"
+                android:layout_marginEnd="@dimen/login_card_spacing"
+                android:text="@string/cancel"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="@id/user_name_edit_text"
+                app:layout_constraintRight_toLeftOf="@id/register_login"
+                app:layout_constraintTop_toBottomOf="@id/final_divider" />
+
+            <Button
+                android:id="@+id/register_login"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/login_card_spacing"
+                android:text="@string/register"
+                app:layout_constraintBottom_toBottomOf="@id/cancel_login"
+                app:layout_constraintLeft_toRightOf="@id/cancel_login"
+                app:layout_constraintRight_toRightOf="@id/user_name_edit_text"
+                app:layout_constraintTop_toTopOf="@id/cancel_login" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </com.google.android.material.card.MaterialCardView>

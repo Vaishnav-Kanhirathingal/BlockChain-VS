@@ -5,4 +5,6 @@
     <dimen name="side_menu_vertical">10dp</dimen>
     <dimen name="login_card_spacing">20dp</dimen>
     <dimen name="huge_text_size">40sp</dimen>
+    <dimen name="margin_horizontal_spacing">30dp</dimen>
+    <dimen name="card_corner_radius">8dp</dimen>
 </resources>

@@ -3,10 +3,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="sign_up">SIGN UP</string>
-    <string name="user_name">User Name</string>
+    <string name="full_name">Full Name</string>
     <string name="set_new_user_password">Set New User Password</string>
     <string name="phone_number">Phone Number</string>
-    <string name="otp_generated">OTP Generated</string>
     <string name="cancel">cancel</string>
     <string name="register">register</string>
     <string name="enter_password">Enter Password</string>
