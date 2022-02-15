@@ -8,4 +8,5 @@
     <dimen name="margin_horizontal_spacing">30dp</dimen>
     <dimen name="card_corner_radius">8dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="sub_layout_layout_margin">10dp</dimen>
 </resources>
