@@ -1,4 +1,4 @@
-package com.kenetic.blockchainvs.datapack
+package com.kenetic.blockchainvs.datapack.database
 
 import android.content.Context
 import androidx.room.Database

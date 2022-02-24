@@ -30,9 +30,9 @@
             android:id="@+id/scrollable_card_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:cardCornerRadius="@dimen/card_corner_radius"
             android:layout_marginHorizontal="@dimen/sub_layout_layout_margin"
             android:layout_marginVertical="@dimen/sub_layout_layout_margin"
+            app:cardCornerRadius="@dimen/card_corner_radius"
             app:layout_constraintBottom_toTopOf="@id/cancel_login"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -65,13 +65,43 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
+                    <com.google.android.material.divider.MaterialDivider
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/margin_horizontal_spacing"
+                        android:layout_marginTop="@dimen/login_card_spacing"
+                        app:dividerThickness="1dp" />
+
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/user_password_edit_text"
+                        android:id="@+id/user_set_password_edit_text"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:helperText="This Will Be Used For Future Logins"
+                        android:layout_marginTop="@dimen/login_card_spacing"
+                        android:hint="@string/set_new_user_password"
+                        app:counterEnabled="true"
+                        app:counterMaxLength="32"
+                        app:endIconMode="password_toggle"
+                        app:startIconDrawable="@drawable/pin_24">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/user_confirm_password_edit_text"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/login_card_spacing"
-                        android:hint="@string/set_new_user_password">
+                        android:hint="@string/confirm_new_password"
+                        app:counterEnabled="true"
+                        app:counterMaxLength="32"
+                        app:endIconMode="password_toggle"
+                        app:startIconDrawable="@drawable/pin_24">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
@@ -80,7 +110,6 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.divider.MaterialDivider
-                        android:id="@+id/phone_divider"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="@dimen/margin_horizontal_spacing"
@@ -97,7 +126,9 @@
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:digits="0123456789+"
+                            android:inputType="phone" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -122,6 +153,8 @@
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:layout_width="match_parent"
+                                android:inputType="number"
+                                android:digits="0123456789"
                                 android:layout_height="wrap_content" />
 
                         </com.google.android.material.textfield.TextInputLayout>
@@ -146,7 +179,6 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <com.google.android.material.divider.MaterialDivider
-                        android:id="@+id/email_divider"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="@dimen/margin_horizontal_spacing"
@@ -162,6 +194,8 @@
                         android:hint="@string/email_address">
 
                         <com.google.android.material.textfield.TextInputEditText
+                            android:inputType="number"
+                            android:digits="0123456789"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
@@ -214,11 +248,10 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <com.google.android.material.divider.MaterialDivider
-                        android:id="@+id/final_divider"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="@dimen/margin_horizontal_spacing"
-                        android:layout_marginTop="@dimen/login_card_spacing"
+                        android:layout_marginVertical="@dimen/login_card_spacing"
                         app:dividerThickness="1dp" />
                 </LinearLayout>
             </ScrollView>
@@ -231,22 +264,20 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/sub_layout_layout_margin"
-            app:layout_constraintRight_toLeftOf="@id/register_login"
-            android:layout_weight="1"
             android:text="@string/cancel"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent" />
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/register_login" />
 
         <Button
             android:id="@+id/register_login"
-            android:layout_marginHorizontal="@dimen/sub_layout_layout_margin"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:layout_constraintLeft_toRightOf="@id/cancel_login"
+            android:layout_marginHorizontal="@dimen/sub_layout_layout_margin"
             android:text="@string/register"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"/>
+            app:layout_constraintLeft_toRightOf="@id/cancel_login"
+            app:layout_constraintRight_toRightOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

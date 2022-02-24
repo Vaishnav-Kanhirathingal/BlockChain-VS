@@ -1,4 +1,4 @@
-package com.kenetic.blockchainvs.datapack
+package com.kenetic.blockchainvs.datapack.database
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
@@ -14,6 +14,9 @@ interface PartyDAO {
     @Delete
     suspend fun deleteParty(partyData: PartyData)
 
-    @Query("")// TODO: add query
-    fun getById(): Flow<List<Int>>
+    @Query("SELECT ID FROM PARTY_DATA")
+    fun getAllById(): Flow<List<Int>>
+
+    @Query("SELECT * FROM PARTY_DATA WHERE ID = :id")
+    fun getById(id: Int): Flow<PartyData>
 }
