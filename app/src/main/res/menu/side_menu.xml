@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
     <group>
         <item
             android:id="@+id/item_1"
             android:title="Personal details">
             <menu>
                 <item
-                    android:id="@+id/adhaar_card_number"
+                    android:id="@+id/adhar_card_number"
                     android:icon="@drawable/ic_launcher_foreground"
-                    android:title="Adhaar" />
+                    android:title="Adhar" />
                 <item
                     android:id="@+id/pan_card_number"
                     android:icon="@drawable/ic_launcher_foreground"

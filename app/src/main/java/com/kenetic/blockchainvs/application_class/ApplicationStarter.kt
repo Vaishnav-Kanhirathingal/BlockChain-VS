@@ -1,4 +1,4 @@
-package com.kenetic.blockchainvs.applicationclass
+package com.kenetic.blockchainvs.application_class
 
 import android.app.Application
 import com.kenetic.blockchainvs.datapack.database.PartyDatabase

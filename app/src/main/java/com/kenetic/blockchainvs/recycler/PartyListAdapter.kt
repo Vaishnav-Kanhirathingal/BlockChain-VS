@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.kenetic.blockchainvs.appviewmodel.MainViewModel
+import com.kenetic.blockchainvs.app_viewmodel.MainViewModel
 import com.kenetic.blockchainvs.databinding.PartyListItemBinding
 
 class PartyListAdapter(private val viewModel: MainViewModel) :

@@ -1,4 +1,4 @@
-package com.kenetic.blockchainvs.appviewmodel
+package com.kenetic.blockchainvs.app_viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -24,13 +24,13 @@ class MainViewModel(private val partyDAO: PartyDAO) : ViewModel() {
         CoroutineScope(Dispatchers.IO).launch { partyDAO.deleteParty(partyData) }
     }
 
-    fun getAllById(partyData: PartyData): Flow<List<Int>> = partyDAO.getAllById()
+    fun getAllById(): Flow<List<Int>> = partyDAO.getAllById()
 
     fun getById(id: Int): Flow<PartyData> = partyDAO.getById(id)
 }
 
 class MainViewModelFactory(private val partyDAO: PartyDAO) : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
             return MainViewModelFactory(partyDAO) as T
