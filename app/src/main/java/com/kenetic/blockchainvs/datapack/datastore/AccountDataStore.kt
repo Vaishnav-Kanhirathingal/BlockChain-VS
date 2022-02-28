@@ -25,29 +25,31 @@ class AccountDataStore(context: Context) {
     private val userVotersIDKey = stringPreferencesKey("user_voter_id")//---documents-required
     private val userAdharNoKey = stringPreferencesKey("adhar_number")
     private val userUsesFingerprintKey = booleanPreferencesKey("user_uses_fingerprint")
+    private val userLoggedInKey = booleanPreferencesKey("user_logged_in")
+    private val userRegisteredKey = booleanPreferencesKey("user_registered")
 
-    //-------------------------------------------------------------------------------------accessors
-
+    //------------------------------------------------------------------------------detail-accessors
+    //---------------------------------------------------------------------------------------strings
     val userPasswordFlow: Flow<String> =
         context.datastore.data.catch { catcherFun(it) }.map { it[userPasswordKey] ?: "" }
-
     val userFullNameFlow: Flow<String> =
         context.datastore.data.catch { catcherFun(it) }.map { it[userFullNameKey] ?: "" }
-
     val userEmailFlow: Flow<String> =
         context.datastore.data.catch { catcherFun(it) }.map { it[userEmailKey] ?: "" }
-
     val userContactNumberFlow: Flow<String> =
         context.datastore.data.catch { catcherFun(it) }.map { it[userContactNumberKey] ?: "" }
-
     val userVoterIDFlow: Flow<String> =
         context.datastore.data.catch { catcherFun(it) }.map { it[userVotersIDKey] ?: "" }
-
     val userAdharNoFlow: Flow<String> =
         context.datastore.data.catch { catcherFun(it) }.map { it[userAdharNoKey] ?: "" }
 
+    //--------------------------------------------------------------------------------------booleans
     val userUsesFingerprintFlow: Flow<Boolean> =
         context.datastore.data.catch { catcherFun(it) }.map { it[userUsesFingerprintKey] ?: false }
+    val userLoggedInFlow: Flow<Boolean> =
+        context.datastore.data.catch { catcherFun(it) }.map { it[userLoggedInKey] ?: false }
+    val userRegisteredFlow=
+        context.datastore.data.catch { catcherFun(it) }.map { it[userRegisteredKey] ?: false }
 
     private fun catcherFun(throwable: Throwable) {
         if (throwable is IOException) {
@@ -59,7 +61,11 @@ class AccountDataStore(context: Context) {
 
     //-------------------------------------------------------------------------------general-setters
     /**else section should be gray*/
-    suspend fun dataStoreStringSetter(setFor: StringSetterEnum, stringValue: String, context: Context) {
+    suspend fun dataStoreStringSetter(
+        setFor: StringSetterEnum,
+        stringValue: String,
+        context: Context
+    ) {
         context.datastore.edit {
             it[
                     when (setFor) {
@@ -74,15 +80,36 @@ class AccountDataStore(context: Context) {
             ] = stringValue
         }
     }
-    suspend fun dataStoreBooleanSetter(setFor: BooleanSetterEnum, booleanValue: Boolean, context: Context){
+
+    suspend fun dataStoreBooleanSetter(
+        setFor: BooleanSetterEnum,
+        booleanValue: Boolean,
+        context: Context
+    ) {
         context.datastore.edit {
             it[
                     when (setFor) {
-                        BooleanSetterEnum.USER_USES_FINGERPRINT_KEY->userUsesFingerprintKey
+                        BooleanSetterEnum.USER_USES_FINGERPRINT_KEY -> userUsesFingerprintKey
+                        BooleanSetterEnum.USER_LOGGED_IN -> userLoggedInKey
+                        BooleanSetterEnum.USER_REGISTERED->userRegisteredKey
                         else -> throw IllegalArgumentException("StringSetterEnum not registered for condition in data store setter")
                     }
             ] = booleanValue
-        }}
+        }
+    }
+
+    suspend fun resetAccounts(context: Context) {
+        context.datastore.edit {
+            it[userPasswordKey] = ""
+            it[userFullNameKey] = ""
+            it[userEmailKey] = ""
+            it[userContactNumberKey] = ""
+            it[userVotersIDKey] = ""
+            it[userAdharNoKey] = ""
+            it[userUsesFingerprintKey] = false
+            it[userLoggedInKey] = false
+        }
+    }
 }
 
 enum class StringSetterEnum {
@@ -95,5 +122,7 @@ enum class StringSetterEnum {
 }
 
 enum class BooleanSetterEnum {
-    USER_USES_FINGERPRINT_KEY
+    USER_USES_FINGERPRINT_KEY,
+    USER_LOGGED_IN,
+    USER_REGISTERED
 }

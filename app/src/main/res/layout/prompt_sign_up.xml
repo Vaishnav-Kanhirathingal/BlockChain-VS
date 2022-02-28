@@ -8,7 +8,7 @@
     app:cardCornerRadius="@dimen/card_corner_radius"
     tools:backgroundTint="#eeeeee"
     tools:layout_marginHorizontal="20dp"
-    tools:layout_marginVertical="100dp">
+    tools:layout_marginVertical="20dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -33,7 +33,7 @@
             android:layout_marginHorizontal="@dimen/sub_layout_layout_margin"
             android:layout_marginVertical="@dimen/sub_layout_layout_margin"
             app:cardCornerRadius="@dimen/card_corner_radius"
-            app:layout_constraintBottom_toTopOf="@id/cancel_login"
+            app:layout_constraintBottom_toTopOf="@id/new_user_button"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/sign_up_label">
@@ -77,17 +77,19 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:helperText="This Will Be Used For Future Logins"
                         android:layout_marginTop="@dimen/login_card_spacing"
                         android:hint="@string/set_new_user_password"
                         app:counterEnabled="true"
                         app:counterMaxLength="32"
                         app:endIconMode="password_toggle"
+                        app:helperText="This Will Be Used For Future Logins"
                         app:startIconDrawable="@drawable/pin_24">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:digits="0123456789+"
+                            android:inputType="phone" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -105,7 +107,9 @@
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:digits="0123456789+"
+                            android:inputType="phone" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -153,9 +157,9 @@
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:layout_width="match_parent"
-                                android:inputType="number"
+                                android:layout_height="wrap_content"
                                 android:digits="0123456789"
-                                android:layout_height="wrap_content" />
+                                android:inputType="number" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -194,10 +198,9 @@
                         android:hint="@string/email_address">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:inputType="number"
-                            android:digits="0123456789"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:inputType="textEmailAddress" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -255,8 +258,16 @@
                         app:dividerThickness="1dp" />
                 </LinearLayout>
             </ScrollView>
-
         </androidx.cardview.widget.CardView>
+
+        <Button
+            android:id="@+id/new_user_button"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/is_a_new_user"
+            app:layout_constraintBottom_toTopOf="@id/cancel_login"
+            app:layout_constraintLeft_toLeftOf="@id/cancel_login" />
 
         <Button
             android:id="@+id/cancel_login"
@@ -264,6 +275,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/sub_layout_layout_margin"
+            android:layout_marginBottom="6dp"
             android:text="@string/cancel"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -274,6 +286,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/sub_layout_layout_margin"
+            android:layout_marginBottom="6dp"
             android:text="@string/register"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/cancel_login"

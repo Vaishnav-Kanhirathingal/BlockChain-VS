@@ -4,21 +4,24 @@
     tools:showIn="navigation_view">
     <group>
         <item
+            android:icon="@drawable/settings_24"
             android:id="@+id/item_1"
-            android:title="Personal details">
+            android:title="Settings">
             <menu>
                 <item
-                    android:id="@+id/adhar_card_number"
+                    android:id="@+id/log_out"
                     android:icon="@drawable/ic_launcher_foreground"
-                    android:title="Adhar" />
+                    android:title="Log Out" />
+
                 <item
-                    android:id="@+id/pan_card_number"
+                    android:id="@+id/switch_account"
                     android:icon="@drawable/ic_launcher_foreground"
-                    android:title="Pan Card" />
+                    android:title="Switch Account" />
+
                 <item
-                    android:id="@+id/voter_id"
+                    android:id="@+id/exit"
                     android:icon="@drawable/ic_launcher_foreground"
-                    android:title="Voter ID" />
+                    android:title="Exit" />
             </menu>
         </item>
     </group>

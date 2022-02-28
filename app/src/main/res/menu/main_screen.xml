@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        app:showAsAction="always"
-        android:icon="@drawable/account_box_24"
         android:id="@+id/account_settings"
-        android:title="Account Settings" />
+        android:icon="@drawable/account_box_24"
+        android:title="Account Settings"
+        app:showAsAction="always" />
 </menu>

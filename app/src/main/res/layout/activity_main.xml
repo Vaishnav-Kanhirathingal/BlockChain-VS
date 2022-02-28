@@ -8,15 +8,6 @@
     tools:context=".MainActivity"
     tools:openDrawer="start">
 
-    <!--    <com.google.android.material.navigation.NavigationView-->
-    <!--        android:id="@+id/navigation_view_main_screen"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        android:layout_gravity="start"-->
-    <!--        app:headerLayout="@layout/side_menu"-->
-    <!--        app:layout_constraintLeft_toLeftOf="parent"-->
-    <!--        app:menu="@menu/side_menu" />-->
-
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_view"
         android:name="androidx.navigation.fragment.NavHostFragment"
@@ -25,5 +16,4 @@
         android:fitsSystemWindows="true"
         app:defaultNavHost="true"
         app:navGraph="@navigation/app_navigation" />
-
 </layout>
