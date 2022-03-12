@@ -21,47 +21,95 @@
 
     <LinearLayout
         android:layout_width="0dp"
-        android:orientation="vertical"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/side_menu_vertical"
+        android:orientation="vertical"
         app:layout_constraintLeft_toLeftOf="@id/user_image"
         app:layout_constraintRight_toRightOf="@id/user_image"
         app:layout_constraintTop_toBottomOf="@id/user_image">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/user_full_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/medium_text"
             tools:text="FirstName MiddleName LastName" />
 
-        <TextView
-            android:id="@+id/user_email"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/small_text"
-            tools:text="Email - UserEmail@EMailClient.com" />
+            android:orientation="horizontal">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/user_phone_number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/small_text"
-            tools:text="Phone no. - +12 1234567890" />
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/small_text"
+                tools:text="Email - " />
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/user_adhar_card_number"
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/user_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/small_text"
+                tools:text="UserEmail@EMailClient.com" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/small_text"
-            tools:text="Adhar - 1234 1234 1234 1234" />
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/user_voter_id"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/small_text"
+                tools:text="Phone no. - " />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/user_phone_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/small_text"
+                tools:text="+12 1234567890" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/small_text"
-            tools:text="Voter ID - 1234 1234 1234 1234" />
+            android:orientation="horizontal">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/small_text"
+                tools:text="Adhar - " />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/user_adhar_card_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/small_text"
+                tools:text="1234 1234 1234 1234" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/small_text"
+                tools:text="Voter ID - " />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/user_voter_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/small_text"
+                tools:text="1234 1234 1234 1234" />
+        </LinearLayout>
+
     </LinearLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,6 +17,8 @@ private val Context.datastore: DataStore<Preferences> by preferencesDataStore(
 )
 
 class AccountDataStore(context: Context) {
+    val default = "UNSPECIFIED"
+
     //------------------------------------------------------------------------------------------keys
     private val userPasswordKey = stringPreferencesKey("user_password")//------general-details
     private val userFullNameKey = stringPreferencesKey("user_preference")
@@ -31,24 +33,24 @@ class AccountDataStore(context: Context) {
     //------------------------------------------------------------------------------detail-accessors
     //---------------------------------------------------------------------------------------strings
     val userPasswordFlow: Flow<String> =
-        context.datastore.data.catch { catcherFun(it) }.map { it[userPasswordKey] ?: "" }
+        context.datastore.data.catch { catcherFun(it) }.map { it[userPasswordKey] ?: default }
     val userFullNameFlow: Flow<String> =
-        context.datastore.data.catch { catcherFun(it) }.map { it[userFullNameKey] ?: "" }
+        context.datastore.data.catch { catcherFun(it) }.map { it[userFullNameKey] ?: default }
     val userEmailFlow: Flow<String> =
-        context.datastore.data.catch { catcherFun(it) }.map { it[userEmailKey] ?: "" }
+        context.datastore.data.catch { catcherFun(it) }.map { it[userEmailKey] ?: default }
     val userContactNumberFlow: Flow<String> =
-        context.datastore.data.catch { catcherFun(it) }.map { it[userContactNumberKey] ?: "" }
+        context.datastore.data.catch { catcherFun(it) }.map { it[userContactNumberKey] ?: default }
     val userVoterIDFlow: Flow<String> =
-        context.datastore.data.catch { catcherFun(it) }.map { it[userVotersIDKey] ?: "" }
+        context.datastore.data.catch { catcherFun(it) }.map { it[userVotersIDKey] ?: default }
     val userAdharNoFlow: Flow<String> =
-        context.datastore.data.catch { catcherFun(it) }.map { it[userAdharNoKey] ?: "" }
+        context.datastore.data.catch { catcherFun(it) }.map { it[userAdharNoKey] ?: default }
 
     //--------------------------------------------------------------------------------------booleans
     val userUsesFingerprintFlow: Flow<Boolean> =
         context.datastore.data.catch { catcherFun(it) }.map { it[userUsesFingerprintKey] ?: false }
     val userLoggedInFlow: Flow<Boolean> =
         context.datastore.data.catch { catcherFun(it) }.map { it[userLoggedInKey] ?: false }
-    val userRegisteredFlow=
+    val userRegisteredFlow =
         context.datastore.data.catch { catcherFun(it) }.map { it[userRegisteredKey] ?: false }
 
     private fun catcherFun(throwable: Throwable) {
@@ -60,7 +62,7 @@ class AccountDataStore(context: Context) {
     }
 
     //-------------------------------------------------------------------------------general-setters
-    /**else section should be gray*/
+    // TODO: check if the else section is gray
     suspend fun dataStoreStringSetter(
         setFor: StringSetterEnum,
         stringValue: String,
@@ -91,7 +93,7 @@ class AccountDataStore(context: Context) {
                     when (setFor) {
                         BooleanSetterEnum.USER_USES_FINGERPRINT_KEY -> userUsesFingerprintKey
                         BooleanSetterEnum.USER_LOGGED_IN -> userLoggedInKey
-                        BooleanSetterEnum.USER_REGISTERED->userRegisteredKey
+                        BooleanSetterEnum.USER_REGISTERED -> userRegisteredKey
                         else -> throw IllegalArgumentException("StringSetterEnum not registered for condition in data store setter")
                     }
             ] = booleanValue
@@ -100,14 +102,17 @@ class AccountDataStore(context: Context) {
 
     suspend fun resetAccounts(context: Context) {
         context.datastore.edit {
-            it[userPasswordKey] = ""
-            it[userFullNameKey] = ""
-            it[userEmailKey] = ""
-            it[userContactNumberKey] = ""
-            it[userVotersIDKey] = ""
-            it[userAdharNoKey] = ""
+            //--------------------------------------------------------------------------------string
+            it[userPasswordKey] = default
+            it[userFullNameKey] = default
+            it[userEmailKey] = default
+            it[userContactNumberKey] = default
+            it[userVotersIDKey] = default
+            it[userAdharNoKey] = default
+            //-------------------------------------------------------------------------------boolean
             it[userUsesFingerprintKey] = false
             it[userLoggedInKey] = false
+            it[userRegisteredKey] = false
         }
     }
 }

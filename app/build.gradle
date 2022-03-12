@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'androidx.navigation.safeargs.kotlin'
+    //kapt
+    id 'org.jetbrains.kotlin.kapt'
 }
 
 android {
@@ -51,10 +53,13 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
     //room
-    def room_version = "2.4.1"
+    def room_version = "2.4.2"
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
+    //
+    //kapt 'android.arch.persistence.room:compiler:1.1.1'
+    kapt "androidx.room:room-compiler:2.4.2"
 
     //data-store
     def data_store_version = "1.0.0"

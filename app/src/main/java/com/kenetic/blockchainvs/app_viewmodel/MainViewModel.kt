@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class MainViewModel(private val partyDAO: PartyDAO) : ViewModel() {
-
     //---------------------------------------------------------------------------------dao-functions
     private fun insertParty(partyData: PartyData) {
         CoroutineScope(Dispatchers.IO).launch { partyDAO.insertParty(partyData) }
@@ -33,7 +32,7 @@ class MainViewModelFactory(private val partyDAO: PartyDAO) : ViewModelProvider.F
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return MainViewModelFactory(partyDAO) as T
+            return MainViewModel(partyDAO) as T
         }
         throw IllegalArgumentException("Unknown Model Class")
     }

@@ -19,11 +19,12 @@ abstract class PartyDatabase : RoomDatabase() {
         private var INSTANCE: PartyDatabase? = null
         fun getDatabase(context: Context): PartyDatabase {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE = Room
+                val instance = Room
                     .databaseBuilder(context, PartyDatabase::class.java, "party_database")
                     .fallbackToDestructiveMigration()
                     .build()
-                return INSTANCE!!
+                INSTANCE = instance
+                return instance
             }
         }
     }

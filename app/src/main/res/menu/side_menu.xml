@@ -4,23 +4,29 @@
     tools:showIn="navigation_view">
     <group>
         <item
-            android:icon="@drawable/settings_24"
             android:id="@+id/item_1"
+            android:icon="@drawable/settings_24"
             android:title="Settings">
             <menu>
                 <item
+                    android:id="@+id/log_in"
+                    android:icon="@drawable/account_box_24"
+                    android:title="Log In" />
+                <item
                     android:id="@+id/log_out"
-                    android:icon="@drawable/ic_launcher_foreground"
+                    android:icon="@drawable/manage_accounts_24"
                     android:title="Log Out" />
-
                 <item
                     android:id="@+id/switch_account"
-                    android:icon="@drawable/ic_launcher_foreground"
+                    android:icon="@drawable/switch_account_24"
                     android:title="Switch Account" />
-
+                <item
+                    android:id="@+id/about"
+                    android:icon="@drawable/info_24"
+                    android:title="About" />
                 <item
                     android:id="@+id/exit"
-                    android:icon="@drawable/ic_launcher_foreground"
+                    android:icon="@drawable/exit_app_24"
                     android:title="Exit" />
             </menu>
         </item>

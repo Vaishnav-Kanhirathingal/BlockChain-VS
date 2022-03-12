@@ -79,8 +79,6 @@ class MainScreenFragment : Fragment() {
         val headerBinding = SideMenuBinding.inflate(layoutInflater)
         headerBinding.apply {
             // TODO: set image
-            userImage
-
             accountDataStore.userFullNameFlow.asLiveData().observe(viewLifecycleOwner) {
                 userFullName.text = it
             }
@@ -101,16 +99,30 @@ class MainScreenFragment : Fragment() {
         binding.apply {
             navigationViewMainScreen.setNavigationItemSelectedListener {
                 when (it.itemId) {
-                    R.id.log_out -> {
-                        // TODO: remove account details from store
+                    R.id.log_in -> {
+                        // TODO: login prompt
                         true
                     }
-                    R.id.exit -> {
-                        // TODO: log out and close app
+                    R.id.log_out -> {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            accountDataStore.resetAccounts(requireContext())
+                        }
                         true
                     }
                     R.id.switch_account -> {
                         // TODO: remove present account and add new account
+                        CoroutineScope(Dispatchers.IO).launch {
+                            accountDataStore.resetAccounts(requireContext())
+                            loginPrompt()
+                        }
+                        true
+                    }
+                    R.id.about -> {
+                        // TODO: navigate to about screen
+                        true
+                    }
+                    R.id.exit -> {
+                        // TODO: log out and close app
                         true
                     }
                     else -> {
@@ -122,13 +134,15 @@ class MainScreenFragment : Fragment() {
     }
 
     private fun logOutPrompt() {
+        // TODO: add sign-out exit prompt
     }
 
     private fun loginPrompt() {
         val promptLoginBinding = PromptLoginBinding.inflate(layoutInflater)
+        val dialogBox = Dialog(requireContext())
         promptLoginBinding.apply {
             newUserButton.setOnClickListener {
-                // TODO: dismiss current prompt
+                dialogBox.dismiss()
                 signupPrompt()
             }
             cancelLogin.setOnClickListener {
@@ -153,15 +167,15 @@ class MainScreenFragment : Fragment() {
                     }
                 }
             }
-        }
-        Dialog(requireContext()).apply {
-            setContentView(promptLoginBinding.root)
-            window!!.setLayout(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            setCancelable(false)
-            show()
+            dialogBox.apply {
+                setContentView(promptLoginBinding.root)
+                window!!.setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+                setCancelable(false)
+                show()
+            }
         }
     }
 
