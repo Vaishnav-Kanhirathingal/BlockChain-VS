@@ -47,27 +47,27 @@ class MainScreenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        applyBinding()
+        applyMainLayoutBinding()
+        applyTopMenuBindings()
+        applySideMenuBinding()
     }
 
-    private fun applyBinding() {
+    private fun applyMainLayoutBinding() {
         accountDataStore = AccountDataStore(requireContext())
         partyAdapter = PartyListAdapter(viewModel)
         viewModel.getAllById().asLiveData().observe(viewLifecycleOwner) {
             partyAdapter.submitList(it)
         }
         binding.includedSubLayout.partyRecyclerView.adapter = partyAdapter
-        applyTopMenuBindings()
-        applySideMenuBinding()
     }
 
     private fun applyTopMenuBindings() {
         binding.apply {
             includedSubLayout.topAppBar.setOnMenuItemClickListener {
+                Log.d(TAG, "top menu button working")
                 when (it.itemId) {
                     R.id.account_settings -> {
                         // TODO: new prompt to show log out and remove prompt
-                        Log.d(TAG,"account settings now working from top menu")
                         loginPrompt()
                         true
                     }
@@ -76,12 +76,19 @@ class MainScreenFragment : Fragment() {
                     }
                 }
             }
+            includedSubLayout.topAppBar.setNavigationOnClickListener {
+                //working
+                Log.d(TAG, "setNavigationOnClickListener working")
+            }
         }
     }
 
     private fun applySideMenuBinding() {
-        // TODO: fix functioning
+        // TODO: fix functioning for both header and menu
+        //-------------------------------------------------------------------------------------tests
+        val headerMenu = binding.navigationViewMainScreen.getHeaderView(0)
         //------------------------------------------------------------------------------------header
+
         val headerBinding = SideMenuBinding.inflate(layoutInflater)
         headerBinding.apply {
             // TODO: set image
@@ -102,44 +109,42 @@ class MainScreenFragment : Fragment() {
             }
         }
         //-------------------------------------------------------------------------------bottom-menu
-        binding.apply {
-            navigationViewMainScreen.setNavigationItemSelectedListener {
-                when (it.itemId) {
-                    R.id.log_in -> {
-                        // TODO: login prompt
-                        Log.d(TAG,"log in working")
+        binding.navigationViewMainScreen.setNavigationItemSelectedListener {
+            Log.d(TAG, "navigationViewMainScreen working")
+            when (it.itemId) {
+                R.id.log_in -> {
+                    Log.d(TAG, "log in working")
+                    loginPrompt()
+                    true
+                }
+                R.id.log_out -> {
+                    Log.d(TAG, "log out working")
+                    CoroutineScope(Dispatchers.IO).launch {
+                        accountDataStore.resetAccounts(requireContext())
+                    }
+                    true
+                }
+                R.id.switch_account -> {
+                    // TODO: remove present account and add new account
+                    Log.d(TAG, "switch account working")
+                    CoroutineScope(Dispatchers.IO).launch {
+                        accountDataStore.resetAccounts(requireContext())
                         loginPrompt()
-                        true
                     }
-                    R.id.log_out -> {
-                        Log.d(TAG,"log out working")
-                        CoroutineScope(Dispatchers.IO).launch {
-                            accountDataStore.resetAccounts(requireContext())
-                        }
-                        true
-                    }
-                    R.id.switch_account -> {
-                        // TODO: remove present account and add new account
-                        Log.d(TAG,"switch account working")
-                        CoroutineScope(Dispatchers.IO).launch {
-                            accountDataStore.resetAccounts(requireContext())
-                            loginPrompt()
-                        }
-                        true
-                    }
-                    R.id.about -> {
-                        // TODO: navigate to about screen
-                        Log.d(TAG,"about working")
-                        true
-                    }
-                    R.id.exit -> {
-                        // TODO: log out and close app
-                        Log.d(TAG,"exit working")
-                        true
-                    }
-                    else -> {
-                        throw IllegalArgumentException("side menu item not registered.")
-                    }
+                    true
+                }
+                R.id.about -> {
+                    // TODO: navigate to about screen
+                    Log.d(TAG, "about working")
+                    true
+                }
+                R.id.exit -> {
+                    // TODO: log out and close app
+                    Log.d(TAG, "exit working")
+                    true
+                }
+                else -> {
+                    throw IllegalArgumentException("side menu item not registered.")
                 }
             }
         }
@@ -163,6 +168,7 @@ class MainScreenFragment : Fragment() {
                     "An Account Is Necessary To Access Voting Services",
                     Toast.LENGTH_SHORT
                 ).show()
+                dialogBox.dismiss()
                 // TODO: quit app
             }
             confirmLogin.setOnClickListener {
@@ -297,21 +303,21 @@ class MainScreenFragment : Fragment() {
                 userNameEditText.isErrorEnabled = !userNameOk
                 //--------------------------------------------------------------------password-match
                 val passwordsMatch =
-                    userConfirmPasswordEditText.editText!!.text == userSetPasswordEditText.editText!!.text
+                    userConfirmPasswordEditText.editText!!.text.toString() == userSetPasswordEditText.editText!!.text.toString()
                 userConfirmPasswordEditText.apply {
                     isErrorEnabled = passwordsMatch
                     error = "Passwords Do not Match"
                 }
                 //-----------------------------------------------------------password-length-correct
                 val passwordLengthCorrect =
-                    userSetPasswordEditText.editText!!.text.length in (9..25)
+                    userSetPasswordEditText.editText!!.text.toString().length in (9..25)
                 userSetPasswordEditText.apply {
                     isErrorEnabled = passwordLengthCorrect
                     error = "Password Length Should Be Between 8 to 24"
                 }
                 passwordOk = passwordsMatch && passwordLengthCorrect
                 //------------------------------------------------------------------------adhar-card
-                (adharCardNumber.editText!!.text.length == 12).let {
+                (adharCardNumber.editText!!.text.toString().length == 12).let {
                     adharCardNumber.apply {
                         error = "Enter Correct Adhar Number"
                         isErrorEnabled = !it
@@ -334,8 +340,20 @@ class MainScreenFragment : Fragment() {
                     val userEmailID = userEmailEditText.editText!!.text.toString()
                     val adharNumber = adharCardNumber.editText!!.text.toString()
                     val voterID = voterId.editText!!.text.toString()
+                    Log.d(
+                        TAG,
+                        "userName = $userName" +
+                                "userPassword = $userPassword" +
+                                "userPhoneNumber = $userPhoneNumber" +
+                                "userEmailID = $userEmailID" +
+                                "adharNumber = $adharNumber" +
+                                "voterID = $voterID"
+                    )
                     // TODO: create a json string, send it and wait for registration if it fails, send a toast to try again. else, proceed
                 }
+            }
+            cancelLogin.setOnClickListener {
+                dialogBox.dismiss()
             }
         }
         dialogBox.apply {
