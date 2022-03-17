@@ -71,8 +71,8 @@ class AccountDataStore(context: Context) {
         context.datastore.edit {
             it[
                     when (setFor) {
-                        StringSetterEnum.USER_PASSWORD_KEY -> userPasswordKey
                         StringSetterEnum.USER_FULL_NAME_KEY -> userFullNameKey
+                        StringSetterEnum.USER_PASSWORD_KEY -> userPasswordKey
                         StringSetterEnum.USER_EMAIL_KEY -> userEmailKey
                         StringSetterEnum.USER_CONTACT_NUMBER_KEY -> userContactNumberKey
                         StringSetterEnum.USER_VOTERS_ID_KEY -> userVotersIDKey

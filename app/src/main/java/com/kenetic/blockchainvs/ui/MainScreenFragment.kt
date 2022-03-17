@@ -6,20 +6,25 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import com.kenetic.blockchainvs.R
 import com.kenetic.blockchainvs.app_viewmodel.MainViewModel
 import com.kenetic.blockchainvs.app_viewmodel.MainViewModelFactory
 import com.kenetic.blockchainvs.application_class.ApplicationStarter
 import com.kenetic.blockchainvs.databinding.FragmentMainScreenBinding
+import com.kenetic.blockchainvs.databinding.PromptLogOutBinding
 import com.kenetic.blockchainvs.databinding.PromptLoginBinding
 import com.kenetic.blockchainvs.databinding.PromptSignUpBinding
-import com.kenetic.blockchainvs.databinding.SideMenuBinding
 import com.kenetic.blockchainvs.datapack.datastore.AccountDataStore
 import com.kenetic.blockchainvs.datapack.datastore.BooleanSetterEnum
+import com.kenetic.blockchainvs.datapack.datastore.StringSetterEnum
+import com.kenetic.blockchainvs.networking_api.VoteNetworkApi
 import com.kenetic.blockchainvs.recycler.PartyListAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -85,29 +90,56 @@ class MainScreenFragment : Fragment() {
 
     private fun applySideMenuBinding() {
         // TODO: fix functioning for both header and menu
-        //-------------------------------------------------------------------------------------tests
+        //-----------------------------------------------------------------------------------testing
+        //----------------------------------------------------------------------------header-testing
         val headerMenu = binding.navigationViewMainScreen.getHeaderView(0)
-        //------------------------------------------------------------------------------------header
+        val menuItemUserImage: ImageView = headerMenu.findViewById(R.id.user_image)
+        val menuItemUserFullname: TextView = headerMenu.findViewById(R.id.user_full_name)
+        val menuItemUserEmail: TextView = headerMenu.findViewById(R.id.user_email)
+        val menuItemUserPhoneNumber: TextView = headerMenu.findViewById(R.id.user_phone_number)
+        val menuItemUserAdharNumber: TextView = headerMenu.findViewById(R.id.adhar_card_number)
+        val menuItemUserVoterId: TextView = headerMenu.findViewById(R.id.voter_id)
 
-        val headerBinding = SideMenuBinding.inflate(layoutInflater)
-        headerBinding.apply {
-            // TODO: set image
-            accountDataStore.userFullNameFlow.asLiveData().observe(viewLifecycleOwner) {
-                userFullName.text = it
-            }
-            accountDataStore.userEmailFlow.asLiveData().observe(viewLifecycleOwner) {
-                userEmail.text = it
-            }
-            accountDataStore.userEmailFlow.asLiveData().observe(viewLifecycleOwner) {
-                userPhoneNumber.text = it
-            }
-            accountDataStore.userEmailFlow.asLiveData().observe(viewLifecycleOwner) {
-                userAdharCardNumber.text = it
-            }
-            accountDataStore.userEmailFlow.asLiveData().observe(viewLifecycleOwner) {
-                userVoterId.text = it
-            }
+        // TODO: set image
+        accountDataStore.userFullNameFlow.asLiveData().observe(viewLifecycleOwner) {
+            menuItemUserFullname.text = it
         }
+        accountDataStore.userEmailFlow.asLiveData().observe(viewLifecycleOwner) {
+            menuItemUserEmail.text = it
+        }
+        accountDataStore.userEmailFlow.asLiveData().observe(viewLifecycleOwner) {
+            menuItemUserPhoneNumber.text = it
+        }
+        accountDataStore.userEmailFlow.asLiveData().observe(viewLifecycleOwner) {
+            menuItemUserAdharNumber.text = it
+        }
+        accountDataStore.userEmailFlow.asLiveData().observe(viewLifecycleOwner) {
+            menuItemUserVoterId.text = it
+        }
+        //------------------------------------------------------------------------------menu-testing
+        val subMenu = binding.navigationViewMainScreen.menu
+
+        //------------------------------------------------------------------------------------header
+//
+//        val headerBinding = SideMenuBinding.inflate(layoutInflater)
+//        headerBinding.apply {
+//            // TODO: set image
+//            accountDataStore.userFullNameFlow.asLiveData().observe(viewLifecycleOwner) {
+//                userFullName.text = it
+//            }
+//            accountDataStore.userEmailFlow.asLiveData().observe(viewLifecycleOwner) {
+//                userEmail.text = it
+//            }
+//            accountDataStore.userEmailFlow.asLiveData().observe(viewLifecycleOwner) {
+//                userPhoneNumber.text = it
+//            }
+//            accountDataStore.userEmailFlow.asLiveData().observe(viewLifecycleOwner) {
+//                userAdharCardNumber.text = it
+//            }
+//            accountDataStore.userEmailFlow.asLiveData().observe(viewLifecycleOwner) {
+//                userVoterId.text = it
+//            }
+//        }
         //-------------------------------------------------------------------------------bottom-menu
         binding.navigationViewMainScreen.setNavigationItemSelectedListener {
             Log.d(TAG, "navigationViewMainScreen working")
@@ -127,10 +159,7 @@ class MainScreenFragment : Fragment() {
                 R.id.switch_account -> {
                     // TODO: remove present account and add new account
                     Log.d(TAG, "switch account working")
-                    CoroutineScope(Dispatchers.IO).launch {
-                        accountDataStore.resetAccounts(requireContext())
-                        loginPrompt()
-                    }
+                    switchAccount()
                     true
                 }
                 R.id.about -> {
@@ -141,6 +170,7 @@ class MainScreenFragment : Fragment() {
                 R.id.exit -> {
                     // TODO: log out and close app
                     Log.d(TAG, "exit working")
+                    logOutAndExit()
                     true
                 }
                 else -> {
@@ -152,6 +182,13 @@ class MainScreenFragment : Fragment() {
 
     private fun logOutPrompt() {
         // TODO: add sign-out exit prompt
+    }
+
+    private fun switchAccount() {
+        CoroutineScope(Dispatchers.IO).launch {
+            accountDataStore.resetAccounts(requireContext())
+            loginPrompt()
+        }
     }
 
     private fun loginPrompt() {
@@ -213,7 +250,9 @@ class MainScreenFragment : Fragment() {
             var emailAddressOk = false
             var adharOk = false
             var voterIdOk = false
-            //---------------------------------------------------------phone-number-verification
+            var phoneOtp: String? = null
+            var emailOtp: String? = null
+            //-------------------------------------------------------------phone-number-verification
             userPhoneOtpEditText.setEndIconOnClickListener {
                 userPhoneNumberEditText.error = "Enter Phone Number Correctly"
                 if (
@@ -224,6 +263,11 @@ class MainScreenFragment : Fragment() {
                     userPhoneNumberEditText.apply {
                         isErrorEnabled = false
                         isEnabled = false
+                    }
+                    CoroutineScope(Dispatchers.IO).launch {
+                        phoneOtp = VoteNetworkApi
+                            .retrofitService
+                            .getPhoneOtp(userPhoneNumberEditText.editText!!.text.toString())
                     }
                 } else {
                     userPhoneNumberEditText.apply {
@@ -237,14 +281,27 @@ class MainScreenFragment : Fragment() {
                 userPhoneOtpEditText.isEnabled = false
                 Toast.makeText(
                     requireContext(),
-                    "Waiting For Verification...",
+                    when (phoneOtp) {
+                        null -> {
+                            userPhoneOtpEditText.isEnabled = true
+                            "OTP Not Generated Yet"
+                        }
+                        userPhoneOtpEditText.editText!!.text.toString() -> {
+                            emailAddressOk = true
+                            userPhoneOtpEditText.isEnabled = false
+                            "OTP Verified"
+                        }
+                        else -> {
+                            userPhoneOtpEditText.isEnabled = true
+                            "Email Address Not Verified, Wrong OTP"
+                        }
+                    },
                     Toast.LENGTH_SHORT
-                )
-                    .show()
-                // TODO: send OTP and wait for approval
+                ).show()
             }
             clearPhoneOtp.setOnClickListener {
                 phoneNumberOk = false
+                phoneOtp = null
                 userPhoneOtpEditText.apply {
                     editText!!.setText("")
                     isEnabled = true
@@ -256,12 +313,18 @@ class MainScreenFragment : Fragment() {
                     isErrorEnabled = false
                 }
             }
-            //--------------------------------------------------------email-account-verification
+            //------------------------------------------------------------email-account-verification
             userEmailOtpEditText.setEndIconOnClickListener {
                 userEmailEditText.error = "Enter Email Correctly"
                 if (userEmailEditText.editText!!.text.endsWith("@gmail.com")) {
                     Toast.makeText(requireContext(), "OTP Generating...", Toast.LENGTH_SHORT)
                         .show()
+                    CoroutineScope(Dispatchers.IO).launch {
+                        emailOtp =
+                            VoteNetworkApi
+                                .retrofitService
+                                .getEmailOtp(userEmailEditText.editText!!.text.toString())
+                    }
                     userEmailEditText.apply {
                         isErrorEnabled = false
                         isEnabled = false
@@ -278,13 +341,27 @@ class MainScreenFragment : Fragment() {
                 userEmailOtpEditText.isEnabled = false
                 Toast.makeText(
                     requireContext(),
-                    "Waiting For Verification...",
+                    when (emailOtp) {
+                        null -> {
+                            userEmailOtpEditText.isEnabled = true
+                            "OTP Not Generated Yet"
+                        }
+                        userEmailOtpEditText.editText!!.text.toString() -> {
+                            emailAddressOk = true
+                            userEmailOtpEditText.isEnabled = false
+                            "OTP Verified"
+                        }
+                        else -> {
+                            userEmailOtpEditText.isEnabled = true
+                            "Email Address Not Verified, Wrong OTP"
+                        }
+                    },
                     Toast.LENGTH_SHORT
                 ).show()
-                // TODO: send OTP and wait for approval
             }
             clearEmailOtp.setOnClickListener {
                 emailAddressOk = false
+                emailOtp = null
                 userEmailOtpEditText.apply {
                     editText!!.setText("")
                     isEnabled = true
@@ -340,16 +417,74 @@ class MainScreenFragment : Fragment() {
                     val userEmailID = userEmailEditText.editText!!.text.toString()
                     val adharNumber = adharCardNumber.editText!!.text.toString()
                     val voterID = voterId.editText!!.text.toString()
-                    Log.d(
-                        TAG,
-                        "userName = $userName" +
-                                "userPassword = $userPassword" +
-                                "userPhoneNumber = $userPhoneNumber" +
-                                "userEmailID = $userEmailID" +
-                                "adharNumber = $adharNumber" +
-                                "voterID = $voterID"
-                    )
-                    // TODO: create a json string, send it and wait for registration if it fails, send a toast to try again. else, proceed
+                    //--------------------------------------------------------creating-a-json-string
+                    val stringToSend = "\"userName\" : \"$userName\",\n" +
+                            "\"userPassword\": \"$userPassword\",\n" +
+                            "\"userPhoneNumber\": \"$userPhoneNumber\",\n" +
+                            "\"userEmailID\": \"$userEmailID\",\n" +
+                            "\"adharNumber\": \"$adharNumber\",\n" +
+                            "\"voterID\": \"$voterID\""
+                    Log.d(TAG, stringToSend)
+                    val verification = MutableLiveData(false)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        verification.value = VoteNetworkApi
+                            .retrofitService
+                            .sendAndVerifyUserDetails(stringToSend)
+                            .toBoolean()
+                    }
+                    verification.observe(viewLifecycleOwner) {
+                        //-----------------------------------------------------------store-user-data
+                        if (it) {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                accountDataStore.dataStoreStringSetter(
+                                    StringSetterEnum.USER_FULL_NAME_KEY,
+                                    userNameEditText.editText!!.text.toString(),
+                                    requireContext()
+                                )
+                                accountDataStore.dataStoreStringSetter(
+                                    StringSetterEnum.USER_PASSWORD_KEY,
+                                    userConfirmPasswordEditText.editText!!.text.toString(),
+                                    requireContext()
+                                )
+                                accountDataStore.dataStoreStringSetter(
+                                    StringSetterEnum.USER_EMAIL_KEY,
+                                    userEmailEditText.editText!!.text.toString(),
+                                    requireContext()
+                                )
+                                accountDataStore.dataStoreStringSetter(
+                                    StringSetterEnum.USER_CONTACT_NUMBER_KEY,
+                                    userPhoneNumberEditText.editText!!.text.toString(),
+                                    requireContext()
+                                )
+                                accountDataStore.dataStoreStringSetter(
+                                    StringSetterEnum.USER_VOTERS_ID_KEY,
+                                    voterId.editText!!.text.toString(),
+                                    requireContext()
+                                )
+                                accountDataStore.dataStoreStringSetter(
+                                    StringSetterEnum.USER_ADHAR_NO_KEY,
+                                    adharCardNumber.editText!!.text.toString(),
+                                    requireContext()
+                                )
+
+                                accountDataStore.dataStoreBooleanSetter(
+                                    BooleanSetterEnum.USER_USES_FINGERPRINT_KEY,
+                                    userUseFingerprint.isChecked,
+                                    requireContext()
+                                )
+                                accountDataStore.dataStoreBooleanSetter(
+                                    BooleanSetterEnum.USER_LOGGED_IN,
+                                    true,
+                                    requireContext()
+                                )
+                                accountDataStore.dataStoreBooleanSetter(
+                                    BooleanSetterEnum.USER_REGISTERED,
+                                    true,
+                                    requireContext()
+                                )
+                            }
+                        }
+                    }
                 }
             }
             cancelLogin.setOnClickListener {
@@ -361,6 +496,31 @@ class MainScreenFragment : Fragment() {
             window!!.setLayout(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
+            )
+            setCancelable(false)
+            show()
+        }
+    }
+
+    private fun logOutAndExit() {
+        val dialogBox = Dialog(requireContext())
+        val promptLogOutBinding = PromptLogOutBinding.inflate(layoutInflater)
+        promptLogOutBinding.apply {
+            logOut.setOnClickListener {
+                CoroutineScope(Dispatchers.IO).launch {
+                    accountDataStore.resetAccounts(requireContext())
+                }
+                // TODO: log out and exit
+            }
+            cancel.setOnClickListener {
+                dialogBox.dismiss()
+            }
+        }
+        dialogBox.apply {
+            setContentView(promptLogOutBinding.root)
+            window!!.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
             )
             setCancelable(false)
             show()

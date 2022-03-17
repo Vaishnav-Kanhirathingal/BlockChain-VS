@@ -43,32 +43,43 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
-    //espresso
+    //--------------------------------------------------------------------------------------espresso
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation 'androidx.test:runner:1.4.0'
     androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:3.0.2'
 
-    //jetpack
+    //---------------------------------------------------------------------------------------jetpack
     def nav_version = "2.4.1"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
-    //room
+    //------------------------------------------------------------------------------------------room
     def room_version = "2.4.2"
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
     kapt "androidx.room:room-compiler:2.4.2"
 
-    //data-store
+    //------------------------------------------------------------------------------------data-store
     def data_store_version = "1.0.0"
     implementation "androidx.datastore:datastore-preferences:$data_store_version"
 
-    //life-cycle
+    //------------------------------------------------------------------------------------life-cycle
     def lifecycle_version = "2.4.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+
+    //-----------------------------------------------------------------------------moshi-json-parser
+    implementation "com.squareup.moshi:moshi-kotlin:1.13.0"
+    implementation "com.squareup.retrofit2:converter-moshi:2.4.0"
+    //-------------------------------------------------------------------------retro-fit-http-client
+    implementation "com.squareup.retrofit2:retrofit:2.9.0"
+
+    //------------------------------------------------------------------------------ktor-http-client
+//    def ktor_version = "1.6.7"
+//    implementation "io.ktor:ktor-client-core:$ktor_version"
+//    implementation "io.ktor:ktor-client-cio:$ktor_version"
 }
