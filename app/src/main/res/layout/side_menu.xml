@@ -44,11 +44,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/small_text"
-                tools:text="Email - " />
+                android:text="Email - " />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/user_email"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/small_text"
                 tools:text="UserEmail@EMailClient.com" />
@@ -63,11 +64,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/small_text"
-                tools:text="Phone no. - " />
+                android:text="Phone no. - " />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/user_phone_number"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/small_text"
                 tools:text="+12 1234567890" />
@@ -82,11 +84,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/small_text"
-                tools:text="Adhar - " />
+                android:text="Adhar - " />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/user_adhar_card_number"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/small_text"
                 tools:text="1234 1234 1234 1234" />
@@ -101,11 +104,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/small_text"
-                tools:text="Voter ID - " />
+                android:text="Voter ID - " />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/user_voter_id"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/small_text"
                 tools:text="A234 1B34 12C4 123D" />

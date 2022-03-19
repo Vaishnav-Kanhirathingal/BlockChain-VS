@@ -79,7 +79,10 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
 
     //------------------------------------------------------------------------------ktor-http-client
-//    def ktor_version = "1.6.7"
-//    implementation "io.ktor:ktor-client-core:$ktor_version"
-//    implementation "io.ktor:ktor-client-cio:$ktor_version"
+    //def ktor_version = "1.6.7"
+    //implementation "io.ktor:ktor-client-core:$ktor_version"
+    //implementation "io.ktor:ktor-client-cio:$ktor_version"
+
+    //---------------------------------------------------------------------------web3-implementation
+    implementation 'org.web3j:core:4.8.7'
 }

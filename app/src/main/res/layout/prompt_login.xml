@@ -52,6 +52,7 @@
             android:hint="@string/enter_password"
             app:endIconMode="password_toggle"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:helperText="Use Fingerprint If Enabled"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/user_name_edit_text"
             app:startIconDrawable="@drawable/pin_24">
