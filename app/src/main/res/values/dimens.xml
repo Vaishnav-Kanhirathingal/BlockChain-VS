@@ -8,6 +8,8 @@
     <dimen name="sub_layout_layout_margin">10dp</dimen>
     <!--text-sizes-->
     <dimen name="small_text">12sp</dimen>
-    <dimen name="medium_text">18sp</dimen>
+    <dimen name="medium_text">20sp</dimen>
     <dimen name="huge_text_size">40sp</dimen>
+    <dimen name="contract_vertical_spacing">10dp</dimen>
+    <dimen name="contract_horizontal_spacing">10dp</dimen>
 </resources>

@@ -5,8 +5,7 @@
     <group>
         <item
             android:id="@+id/item_1"
-            android:icon="@drawable/settings_24"
-            android:title="Settings">
+            android:title="Account">
             <menu>
                 <item
                     android:id="@+id/log_in"
@@ -20,6 +19,22 @@
                     android:id="@+id/switch_account"
                     android:icon="@drawable/switch_account_24"
                     android:title="Switch Account" />
+            </menu>
+        </item>
+        <item
+            android:id="@+id/item_2"
+            android:title="Contract Settings">
+            <menu>
+                <item
+                    android:id="@+id/contract_accessor"
+                    android:icon="@drawable/document_24"
+                    android:title="Contract Interface" />
+            </menu>
+        </item>
+        <item
+            android:id="@+id/item_3"
+            android:title="Settings">
+            <menu>
                 <item
                     android:id="@+id/about"
                     android:icon="@drawable/info_24"

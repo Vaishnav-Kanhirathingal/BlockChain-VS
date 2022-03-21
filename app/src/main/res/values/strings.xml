@@ -23,4 +23,5 @@
     <string name="email_otp">Email OTP</string>
     <string name="confirm_new_password">Confirm New Password</string>
     <string name="log_out">Log Out</string>
+    <string name="call">call</string>
 </resources>

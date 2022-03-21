@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#e8e8e8"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:context=".ui.ContractScreenFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/contract_horizontal_spacing">
+
+        <TextView
+            android:id="@+id/contract_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/login_card_spacing"
+            android:text="Contract"
+            android:textAlignment="center"
+            android:textSize="@dimen/huge_text_size" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/sub_layout_layout_margin">
+
+                <TextView
+                    android:id="@+id/cast_vote_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Select party To Caste Vote -"
+                    android:textSize="@dimen/medium_text"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <RadioGroup
+                    android:id="@+id/party_selector_radio_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/cast_vote_label">
+
+                    <androidx.appcompat.widget.AppCompatRadioButton
+                        android:id="@+id/party_one_radio_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Party One" />
+
+                    <androidx.appcompat.widget.AppCompatRadioButton
+                        android:id="@+id/party_two_radio_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Party Two" />
+
+                    <androidx.appcompat.widget.AppCompatRadioButton
+                        android:id="@+id/party_three_radio_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Party Three" />
+                </RadioGroup>
+
+                <Button
+                    android:id="@+id/caste_vote_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/call"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/party_selector_radio_group" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginHorizontal="@dimen/contract_vertical_spacing"
+            android:layout_marginTop="@dimen/contract_vertical_spacing"
+            android:background="#000000"
+            tools:layout_height="2dp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/contract_vertical_spacing">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/sub_layout_layout_margin"
+                android:layout_marginTop="@dimen/contract_vertical_spacing">
+
+                <TextView
+                    android:id="@+id/contract_description_one"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Get Address Values Of All Registered Voters"
+                    android:textSize="@dimen/medium_text"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/function_get_address_values_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="[getAddressValues]"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/contract_description_one" />
+
+                <TextView
+                    android:id="@+id/output_value_one"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Not Cached Yet"
+                    android:textAlignment="viewEnd"
+                    android:textSize="@dimen/small_text"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/function_get_address_values_label" />
+
+                <Button
+                    android:id="@+id/get_registered_voters_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/call"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/output_value_one" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginHorizontal="@dimen/contract_vertical_spacing"
+            android:layout_marginTop="@dimen/contract_vertical_spacing"
+            android:background="#000000"
+            tools:layout_height="2dp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/contract_vertical_spacing">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/sub_layout_layout_margin"
+                android:layout_marginTop="@dimen/contract_vertical_spacing">
+
+                <TextView
+                    android:id="@+id/contract_description_two"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Check If You Have Already Voted"
+                    android:textSize="@dimen/medium_text"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/function_has_already_voted_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="[getAddressValues]"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/contract_description_two" />
+
+                <TextView
+                    android:id="@+id/output_value_two"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="Not Cached Yet"
+                    android:textAlignment="viewEnd"
+                    android:textSize="@dimen/small_text"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/function_has_already_voted_label" />
+
+                <Button
+                    android:id="@+id/check_voter_status_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/call"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/output_value_two" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginHorizontal="@dimen/contract_vertical_spacing"
+            android:layout_marginTop="@dimen/contract_vertical_spacing"
+            android:background="#000000"
+            tools:layout_height="2dp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/contract_vertical_spacing">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/sub_layout_layout_margin">
+
+                <TextView
+                    android:id="@+id/contract_description_three"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Get Votes Of Each Party"
+                    android:textSize="@dimen/medium_text"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/function_get_party_votes_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="[getParty1Votes]\n[getParty2Votes]\n[getParty3Votes]"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/contract_description_three" />
+
+                <TextView
+                    android:id="@+id/output_value_three"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Not Cached Yet\nNot Cached Yet\nNot Cached Yet"
+                    android:textAlignment="viewStart"
+                    android:textSize="@dimen/small_text"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/function_get_party_votes_label" />
+
+                <Button
+                    android:id="@+id/get_votes_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/call"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/output_value_three" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+</ScrollView>

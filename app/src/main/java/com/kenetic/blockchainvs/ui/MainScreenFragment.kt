@@ -11,7 +11,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import com.kenetic.blockchainvs.R
@@ -21,11 +20,8 @@ import com.kenetic.blockchainvs.application_class.ApplicationStarter
 import com.kenetic.blockchainvs.databinding.FragmentMainScreenBinding
 import com.kenetic.blockchainvs.databinding.PromptLogOutBinding
 import com.kenetic.blockchainvs.databinding.PromptLoginBinding
-import com.kenetic.blockchainvs.databinding.PromptSignUpBinding
 import com.kenetic.blockchainvs.datapack.datastore.AccountDataStore
 import com.kenetic.blockchainvs.datapack.datastore.BooleanSetterEnum
-import com.kenetic.blockchainvs.datapack.datastore.StringSetterEnum
-import com.kenetic.blockchainvs.networking_api.VoteNetworkApi
 import com.kenetic.blockchainvs.recycler.PartyListAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -108,39 +104,15 @@ class MainScreenFragment : Fragment() {
         accountDataStore.userEmailFlow.asLiveData().observe(viewLifecycleOwner) {
             menuItemUserEmail.text = it
         }
-        accountDataStore.userEmailFlow.asLiveData().observe(viewLifecycleOwner) {
+        accountDataStore.userContactNumberFlow.asLiveData().observe(viewLifecycleOwner) {
             menuItemUserPhoneNumber.text = it
         }
-        accountDataStore.userEmailFlow.asLiveData().observe(viewLifecycleOwner) {
+        accountDataStore.userAdharNoFlow.asLiveData().observe(viewLifecycleOwner) {
             menuItemUserAdharNumber.text = it
         }
-        accountDataStore.userEmailFlow.asLiveData().observe(viewLifecycleOwner) {
+        accountDataStore.userVoterIDFlow.asLiveData().observe(viewLifecycleOwner) {
             menuItemUserVoterId.text = it
         }
-        //------------------------------------------------------------------------------menu-testing
-        val subMenu = binding.navigationViewMainScreen.menu
-
-        //------------------------------------------------------------------------------------header
-//
-//        val headerBinding = SideMenuBinding.inflate(layoutInflater)
-//        headerBinding.apply {
-//            // TODO: set image
-//            accountDataStore.userFullNameFlow.asLiveData().observe(viewLifecycleOwner) {
-//                userFullName.text = it
-//            }
-//            accountDataStore.userEmailFlow.asLiveData().observe(viewLifecycleOwner) {
-//                userEmail.text = it
-//            }
-//            accountDataStore.userEmailFlow.asLiveData().observe(viewLifecycleOwner) {
-//                userPhoneNumber.text = it
-//            }
-//            accountDataStore.userEmailFlow.asLiveData().observe(viewLifecycleOwner) {
-//                userAdharCardNumber.text = it
-//            }
-//            accountDataStore.userEmailFlow.asLiveData().observe(viewLifecycleOwner) {
-//                userVoterId.text = it
-//            }
-//        }
         //-------------------------------------------------------------------------------bottom-menu
         binding.navigationViewMainScreen.setNavigationItemSelectedListener {
             Log.d(TAG, "navigationViewMainScreen working")
@@ -161,6 +133,33 @@ class MainScreenFragment : Fragment() {
                     // TODO: remove present account and add new account
                     Log.d(TAG, "switch account working")
                     switchAccount()
+                    true
+                }
+                R.id.contract_accessor -> {
+//                    if (accountDataStore.userLoggedInFlow.asLiveData().value!!) {
+//                        findNavController()
+//                            .navigate(
+//                                MainScreenFragmentDirections
+//                                    .actionMainScreenFragmentToContractScreenFragment()
+//                            )
+//                    } else {
+//                        Toast.makeText(
+//                            requireContext(), "Log In Necessary To Continue", Toast.LENGTH_SHORT
+//                        ).show()
+//                        // TODO: this is for testing purposes only
+//                        findNavController()
+//                            .navigate(
+//                                MainScreenFragmentDirections
+//                                    .actionMainScreenFragmentToContractScreenFragment()
+//                            )
+//                        //loginPrompt()
+//                    }
+
+                        findNavController()
+                            .navigate(
+                                MainScreenFragmentDirections
+                                    .actionMainScreenFragmentToContractScreenFragment()
+                            )
                     true
                 }
                 R.id.about -> {
@@ -188,8 +187,8 @@ class MainScreenFragment : Fragment() {
     private fun switchAccount() {
         CoroutineScope(Dispatchers.IO).launch {
             accountDataStore.resetAccounts(requireContext())
-            loginPrompt()
         }
+        loginPrompt()
     }
 
     private fun loginPrompt() {
@@ -198,7 +197,6 @@ class MainScreenFragment : Fragment() {
         promptLoginBinding.apply {
             newUserButton.setOnClickListener {
                 dialogBox.dismiss()
-//                signupPrompt()
                 findNavController().navigate(
                     MainScreenFragmentDirections.actionMainScreenFragmentToSignUpFragment()
                 )
@@ -210,7 +208,6 @@ class MainScreenFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 ).show()
                 dialogBox.dismiss()
-                // TODO: quit app
             }
             confirmLogin.setOnClickListener {
                 if (

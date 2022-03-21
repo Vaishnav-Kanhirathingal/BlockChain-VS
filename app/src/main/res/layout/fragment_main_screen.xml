@@ -8,19 +8,19 @@
     tools:context=".ui.MainScreenFragment"
     tools:openDrawer="start">
 
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/navigation_view_main_screen"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        app:headerLayout="@layout/side_menu"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:menu="@menu/side_menu" />
-
     <include
         android:id="@+id/included_sub_layout"
         layout="@layout/main_fragment_sub_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigation_view_main_screen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/side_menu"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:menu="@menu/side_menu" />
 </androidx.drawerlayout.widget.DrawerLayout>
