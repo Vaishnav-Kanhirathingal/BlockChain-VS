@@ -97,6 +97,11 @@ class ContractScreenFragment : Fragment() {
                     // TODO: display on ui}
                 }
             }
+            testingButton.setOnClickListener {
+                CoroutineScope(Dispatchers.IO).launch {
+                    voteContractDelegate.abc()
+                }
+            }
         }
     }
 }
