@@ -48,7 +48,6 @@ class MainScreenFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         applyMainLayoutBinding()
         applyTopMenuBindings()
         applySideMenuBinding()
@@ -86,9 +85,7 @@ class MainScreenFragment : Fragment() {
     }
 
     private fun applySideMenuBinding() {
-        // TODO: fix functioning for both header and menu
-        //-----------------------------------------------------------------------------------testing
-        //----------------------------------------------------------------------------header-testing
+        //------------------------------------------------------------------------------------header
         val headerMenu = binding.navigationViewMainScreen.getHeaderView(0)
         val menuItemUserImage: ImageView = headerMenu.findViewById(R.id.user_image)
         val menuItemUserFullname: TextView = headerMenu.findViewById(R.id.user_full_name)
@@ -170,7 +167,7 @@ class MainScreenFragment : Fragment() {
                 R.id.exit -> {
                     // TODO: log out and close app
                     Log.d(TAG, "exit working")
-                    logOutAndExit()
+                    logOutAndExit(true)
                     true
                 }
                 else -> {
@@ -178,10 +175,6 @@ class MainScreenFragment : Fragment() {
                 }
             }
         }
-    }
-
-    private fun logOutPrompt() {
-        // TODO: add sign-out exit prompt
     }
 
     private fun switchAccount() {
@@ -240,7 +233,7 @@ class MainScreenFragment : Fragment() {
         }
     }
 
-    private fun logOutAndExit() {
+    private fun logOutAndExit(exit:Boolean) {
         val dialogBox = Dialog(requireContext())
         val promptLogOutBinding = PromptLogOutBinding.inflate(layoutInflater)
         promptLogOutBinding.apply {
@@ -248,7 +241,9 @@ class MainScreenFragment : Fragment() {
                 CoroutineScope(Dispatchers.IO).launch {
                     accountDataStore.resetAccounts(requireContext())
                 }
-                // TODO: log out and exit
+                if (exit){
+                    // TODO: log out and exit
+                }
             }
             cancel.setOnClickListener {
                 dialogBox.dismiss()

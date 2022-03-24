@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import com.kenetic.blockchainvs.R
@@ -24,9 +23,12 @@ class ContractScreenFragment : Fragment() {
     private var partyEnum = PartyEnum.ONE
     private var voteContractDelegate = VoteContractDelegate()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    //------------------------------------------------------------------------data-binding-live-data
+    private val defaultOutput = "Call Not Performed Yet"
+    val transactionCost: MutableLiveData<String> = MutableLiveData(defaultOutput)
+    val addressList: MutableLiveData<String> = MutableLiveData(defaultOutput)
+    val alreadyVoted: MutableLiveData<String> = MutableLiveData(defaultOutput)
+    val allPartyVotes: MutableLiveData<String> = MutableLiveData(defaultOutput)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,9 +43,12 @@ class ContractScreenFragment : Fragment() {
         applyBinding()
     }
 
-    fun applyBinding() {
-        //--------------------------------------------------------------------------------caste-vote
+    private fun applyBinding() {
         binding.apply {
+            //--------------------------------------------------------------------------data-binding
+            contractFragment = this@ContractScreenFragment
+            lifecycleOwner = viewLifecycleOwner
+
             casteVoteButton.isEnabled = false
             partySelectorRadioGroup.setOnCheckedChangeListener(
                 fun(r: RadioGroup, i: Int) {
@@ -61,45 +66,50 @@ class ContractScreenFragment : Fragment() {
                     }
                 }
             )
+            //----------------------------------------------------------------------------caste-vote
+            // TODO: solve errors
             casteVoteButton.setOnClickListener {
-                var cost: MutableLiveData<Int> = MutableLiveData<Int>(0)
-                    cost.value = voteContractDelegate.casteVote(partyEnum)
-                cost.observe(viewLifecycleOwner) {
-                    Toast.makeText(
-                        requireContext(),
-                        "cost of transfer = ${cost}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                CoroutineScope(Dispatchers.IO).launch {
+                    val cost = voteContractDelegate.casteVote(partyEnum).toString()
+                    Log.d(TAG, "transaction cost = $cost")
+                    CoroutineScope(Dispatchers.Main).launch {
+                        transactionCost.value = cost
+                    }
                 }
-                // TODO: display cost on ui
             }
+            //----------------------------------------------------------------------------get-voters
             getRegisteredVotersButton.setOnClickListener {
                 CoroutineScope(Dispatchers.IO).launch {
                     val votersListAsString = voteContractDelegate.getVoterAddresses()
-                    Log.d(TAG, "addresses returned -\n$votersListAsString")
-                    // TODO: display on ui}
+                    Log.d(TAG, "registered voter addresses = $votersListAsString")
+                    CoroutineScope(Dispatchers.Main).launch {
+                        addressList.value = votersListAsString
+                    }
                 }
             }
+            //------------------------------------------------------------------------has-user-voted
             checkVoterStatusButton.setOnClickListener {
                 CoroutineScope(Dispatchers.IO).launch {
                     val hasUserVoted = voteContractDelegate.getHasAlreadyVoted()
-                    Log.d(
-                        TAG, "voting status = $hasUserVoted"
-                    )
-                    // TODO: display on ui}
+                    Log.d(TAG, "voting status = $hasUserVoted")
+                    CoroutineScope(Dispatchers.Main).launch {
+                        alreadyVoted.value = hasUserVoted
+                    }
                 }
             }
+            //------------------------------------------------------------------get-voters-addresses
             getVotesButton.setOnClickListener {
                 CoroutineScope(Dispatchers.IO).launch {
-                    // TODO: call respective contract function
                     val electionStatus = voteContractDelegate.partyVotesStatus()
                     Log.d(TAG, "election status received: \n$electionStatus")
-                    // TODO: display on ui}
+                    CoroutineScope(Dispatchers.Main).launch {
+                        allPartyVotes.value = electionStatus
+                    }
                 }
             }
             testingButton.setOnClickListener {
                 CoroutineScope(Dispatchers.IO).launch {
-                    voteContractDelegate.abc()
+                    voteContractDelegate.testingFunction()
                 }
             }
         }

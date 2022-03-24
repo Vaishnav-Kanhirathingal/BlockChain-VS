@@ -8,14 +8,13 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.kenetic.blockchainvs.databinding.ActivityMainBinding
 import com.kenetic.blockchainvs.databinding.PromptLogOutBinding
 import com.kenetic.blockchainvs.datapack.datastore.AccountDataStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlin.coroutines.coroutineContext
 
 class MainActivity : AppCompatActivity() {
 

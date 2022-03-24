@@ -283,7 +283,6 @@ class SignUpFragment : Fragment() {
                                     adharCardNumber.editText!!.text.toString(),
                                     requireContext()
                                 )
-
                                 accountDataStore.dataStoreBooleanSetter(
                                     BooleanSetterEnum.USER_USES_FINGERPRINT_KEY,
                                     userUseFingerprint.isChecked,

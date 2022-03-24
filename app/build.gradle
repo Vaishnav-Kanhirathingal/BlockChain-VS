@@ -85,4 +85,5 @@ dependencies {
 
     //---------------------------------------------------------------------------web3-implementation
     implementation 'org.web3j:core:4.8.7'
+    implementation 'org.web3j:infura:3.3.1-android'
 }

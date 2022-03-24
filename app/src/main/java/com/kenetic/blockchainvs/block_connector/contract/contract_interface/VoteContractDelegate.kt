@@ -1,7 +1,6 @@
 package com.kenetic.blockchainvs.block_connector.contract.contract_interface
 
 import android.util.Log
-import org.web3j.abi.datatypes.generated.Uint256
 import org.web3j.crypto.Credentials
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
@@ -9,24 +8,17 @@ import org.web3j.tx.RawTransactionManager
 import org.web3j.tx.TransactionManager
 import org.web3j.tx.gas.ContractGasProvider
 import org.web3j.tx.gas.DefaultGasProvider
-import java.math.BigInteger
 import java.util.concurrent.TimeUnit
-
 
 private const val TAG = "VoteContractDelegate"
 
 class VoteContractDelegate() {
     //-----------------------------------------------------------------------------contract-elements
-    // TODO: check these values
-    private val MINIMUM_GAS_LIMIT = 30000
-    private val MAX_GAS_LIMIT: BigInteger = BigInteger.valueOf(3000000)//-------------self-added
-
-    private val PRIVATE_KEY_ROPSTEN = "c9852fcf061b47c58d5294cd7a23548c"
+    private val USER_PRIVATE_KEY =
+        "66c53799ee0c63f2564305e738ea7479d7aee84aed3aac4c01e54a7acbcc4d92"
     private val ROPSTEN_INFURA_URL = "https://ropsten.infura.io/v3/c358089e1aaa4746aa50e61d4ec41c5c"
 
-
-    //    private val credentials = WalletUtils.loadCredentials("qISTALO-42", "0xE4e609e2E928E8F8b74C6Bb37e13503b337f8C70")
-    private val credentials = Credentials.create(PRIVATE_KEY_ROPSTEN)
+    private val credentials = Credentials.create(USER_PRIVATE_KEY)
 
     private lateinit var web3j: Web3j//--------------------------------------------works-as-intended
     private lateinit var contract: VoteContractAccessor
@@ -40,32 +32,38 @@ class VoteContractDelegate() {
         initializeContract()
     }
 
-    private fun instantiateWeb3J() {// TODO: first
-        try {
-            web3j = Web3j.build(HttpService(ROPSTEN_INFURA_URL))
-            Log.d(TAG, "Connection Successful")
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Log.d(TAG, "Connection Unsuccessful, error : ${e.message}")
-        }
+    private fun instantiateWeb3J() {
+        Log.d(
+            TAG, try {
+                web3j = Web3j.build(HttpService(ROPSTEN_INFURA_URL))
+                "Connection Successful"
+            } catch (e: Exception) {
+                e.printStackTrace()
+                "Connection Unsuccessful, error : ${e.message}"
+            }
+        )
     }
 
-    private fun initializeContract() {// TODO: second
-        try {
-            contract = VoteContractAccessor(web3j, transactionManager, gasProvider)
-            Log.d(TAG, "Contract Initialized Successfully")
-        } catch (e: Exception) {
-            Log.d(TAG, "Contract Initialization Error")
-        }
+    private fun initializeContract() {
+        Log.d(
+            TAG, try {
+                contract = VoteContractAccessor(web3j, transactionManager, gasProvider)
+                "Contract Initialized Successfully"
+            } catch (e: Exception) {
+                "Contract Initialization Error"
+            }
+        )
     }
 
-    //------------------------------------------------------------------------visual-type-check-done
+    //------------------------------------------------------------------------------------------done
     fun partyVotesStatus(): String {
         return try {
-            // TODO: get values of votes and add them to the string
-            val votesForOne: Uint256 = contract.getPartyVotes(PartyEnum.ONE).sendAsync().get()
-            val votesForTwo: Uint256 = contract.getPartyVotes(PartyEnum.TWO).sendAsync().get()
-            val votesForThree: Uint256 = contract.getPartyVotes(PartyEnum.THREE).sendAsync().get()
+            val votesForOne: Int =
+                contract.getPartyVotes(PartyEnum.ONE).sendAsync().get().value.toInt()
+            val votesForTwo: Int =
+                contract.getPartyVotes(PartyEnum.TWO).sendAsync().get().value.toInt()
+            val votesForThree: Int =
+                contract.getPartyVotes(PartyEnum.THREE).sendAsync().get().value.toInt()
             "party votes status: " +
                     "\nparty one votes = " + votesForOne +
                     "\nparty one votes = " + votesForTwo +
@@ -76,7 +74,7 @@ class VoteContractDelegate() {
         }
     }
 
-    //------------------------------------------------------------------------visual-type-check-done
+    // TODO: make changes
     fun casteVote(party: PartyEnum): Int {
         return try {
             contract
@@ -93,43 +91,30 @@ class VoteContractDelegate() {
 
     // TODO: change set return type to array
     fun getVoterAddresses(): String {
-
         return try {
-            contract.getAddressValues().sendAsync().get().typeAsString
+            "voters = " + contract.getAddressValues().sendAsync().get().toString()
         } catch (e: Exception) {
             e.printStackTrace()
             "Error has occurred while receiving address list - ${e.message}"
         }
     }
 
-    fun getHasAlreadyVoted(): Boolean {
-        // TODO: change this
+    //------------------------------------------------------------------------------------------done
+    fun getHasAlreadyVoted(): String {
         return try {
-            contract.getHasAlreadyVoted().sendAsync().get().value
+            contract.getHasAlreadyVoted().sendAsync().get().value.toString()
         } catch (e: Exception) {
-            // TODO: check if to change according to error
-            true
+            "Error has occurred while making calls :-\n${e.message}"
         }
     }
 
     //checking connection for testing
-    fun abc() {
-        try{
-            val privateKeyPersonal =
-                "66c53799ee0c63f2564305e738ea7479d7aee84aed3aac4c01e54a7acbcc4d92"
-            val web3: Web3j =
-                Web3j.build(HttpService("https://ropsten.infura.io/v3/c358089e1aaa4746aa50e61d4ec41c5c"))
-            val cred = Credentials.create(privateKeyPersonal)
-            val transactionManager2 = RawTransactionManager(web3, cred)
-            val gasProvider = DefaultGasProvider()
-            val accessor = VoteContractAccessor(web3j, transactionManager2, gasProvider)
-            Log.d(
-                TAG,
-                "the returned output = ${
-                    accessor.getPartyVotes(PartyEnum.ONE).sendAsync().get().value
-                } Transaction successful"
-            )
-        }catch (e:Exception){
+    fun testingFunction() {
+        try {
+            contract.apply {
+                test4()
+            }
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
