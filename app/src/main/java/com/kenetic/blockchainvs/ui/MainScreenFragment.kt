@@ -132,7 +132,7 @@ class MainScreenFragment : Fragment() {
                     switchAccount()
                     true
                 }
-                R.id.contract_accessor -> {
+                R.id.contract_interface -> {
 //                    if (accountDataStore.userLoggedInFlow.asLiveData().value!!) {
 //                        findNavController()
 //                            .navigate(

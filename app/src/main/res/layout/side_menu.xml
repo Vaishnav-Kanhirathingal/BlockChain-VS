@@ -17,7 +17,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:background="#888888"
-        tools:src="@drawable/account_box_24" />
+        android:src="@drawable/account_box_24" />
 
     <LinearLayout
         android:layout_width="0dp"

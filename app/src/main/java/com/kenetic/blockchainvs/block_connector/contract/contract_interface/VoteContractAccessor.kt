@@ -8,12 +8,17 @@ import org.web3j.abi.datatypes.Array
 import org.web3j.abi.datatypes.Function
 import org.web3j.abi.datatypes.generated.Uint256
 import org.web3j.crypto.Credentials
+import org.web3j.crypto.RawTransaction
+import org.web3j.crypto.TransactionEncoder
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.core.RemoteCall
 import org.web3j.protocol.core.methods.request.Transaction
+import org.web3j.protocol.core.methods.response.EthGetBalance
 import org.web3j.protocol.core.methods.response.TransactionReceipt
 import org.web3j.protocol.http.HttpService
+import org.web3j.protocol.infura.InfuraHttpService
+import org.web3j.tx.ChainIdLong
 import org.web3j.tx.Contract
 import org.web3j.tx.RawTransactionManager
 import org.web3j.tx.TransactionManager
@@ -21,6 +26,7 @@ import org.web3j.tx.gas.ContractGasProvider
 import org.web3j.tx.gas.DefaultGasProvider
 import org.web3j.tx.response.PollingTransactionReceiptProcessor
 import org.web3j.utils.Convert
+import org.web3j.utils.Numeric
 import java.math.BigInteger
 
 
@@ -139,9 +145,11 @@ class VoteContractAccessor(
         val userAccount = "0xE4e609e2E928E8F8b74C6Bb37e13503b337f8C70"
         val userPrivateKey = "66c53799ee0c63f2564305e738ea7479d7aee84aed3aac4c01e54a7acbcc4d92"
         val hostUrl = "https://ropsten.infura.io/v3/c358089e1aaa4746aa50e61d4ec41c5c"
-        val web3Obj = Web3j.build(HttpService(hostUrl))
+//        val web3Obj = Web3j.build(HttpService(hostUrl))
+        val web3Obj = Web3j.build(InfuraHttpService(hostUrl))
         val credentials = Credentials.create(userPrivateKey, userAccount)
-
+        val x = web3Obj.ethBlockNumber().sendAsync().get().blockNumber
+        Log.d(TAG, "block number = $x")
         val function = Function(
             functionRegisterVote,
             listOf<Type<*>>(
@@ -149,6 +157,7 @@ class VoteContractAccessor(
             ),
             emptyList()
         )
+
         /**
          * the below log statements generates the balance as zero even though
          * the account has 0.99 eth on the test net. The contract was deployed using
@@ -170,6 +179,103 @@ class VoteContractAccessor(
         Log.d(TAG, "transaction receipt, gas used = ${transactionReceipt.gasUsed}")
     }
 
+    fun test5() {
+        val functionRegisterVote = "registerVote"
+        val contactAddress = "0xe2d8a60415adaa2Ba87c44b8C20C9A15e3F9178a"
+        val userAccount = "0xE4e609e2E928E8F8b74C6Bb37e13503b337f8C70"
+        val userPrivateKey = "66c53799ee0c63f2564305e738ea7479d7aee84aed3aac4c01e54a7acbcc4d92"
+        val hostUrl = "https://ropsten.infura.io/v3/c358089e1aaa4746aa50e61d4ec41c5c"
+        val web3Obj = Web3j.build(InfuraHttpService(hostUrl))
+        val cred = Credentials.create(
+            "66c53799ee0c63f2564305e738ea7479d7aee84aed3aac4c01e54a7acbcc4d92",
+            "0xE4e609e2E928E8F8b74C6Bb37e13503b337f8C70"
+        )
+        val function = Function(
+            functionRegisterVote,
+            listOf<Type<*>>(
+                Uint256(2)
+            ),
+            emptyList()
+        )
+        val txData = FunctionEncoder.encode(function)
+        // TODO: use transaction manager 'raw' with chain-id = 3
+        val txManager = RawTransactionManager(
+            web3Obj, cred, ChainIdLong.ROPSTEN
+        )
+        //chain-id = 3
+        Log.d(TAG, "web3Obj.netVersion().send().id = ${web3Obj.netVersion().send().netVersion}")
+        /**
+         * can't generate txHash. Error - Could not construct a recoverable key. Are your credentials valid?
+         */
+        val txHash = txManager.sendTransaction(
+            this.requestCurrentGasPrice(),
+            DefaultGasProvider.GAS_LIMIT,
+            contactAddress,
+            txData,
+            BigInteger.ZERO
+        ).transactionHash
+        val receiptProcessor = PollingTransactionReceiptProcessor(
+            web3j, TransactionManager.DEFAULT_POLLING_FREQUENCY,
+            TransactionManager.DEFAULT_POLLING_ATTEMPTS_PER_TX_HASH
+        )
+        val txReceipt = receiptProcessor.waitForTransactionReceipt(txHash)
+        Log.d(TAG, "transaction receipt = \ngas used = ${txReceipt.gasUsed}")
+    }
+
+    fun test6() {
+        val functionRegisterVote = "registerVote"
+        val contactAddress = "0xe2d8a60415adaa2Ba87c44b8C20C9A15e3F9178a"
+        val userAccount = "0xE4e609e2E928E8F8b74C6Bb37e13503b337f8C70"
+        val userPrivateKey = "66c53799ee0c63f2564305e738ea7479d7aee84aed3aac4c01e54a7acbcc4d92"
+        val hostUrl = "https://ropsten.infura.io/v3/c358089e1aaa4746aa50e61d4ec41c5c"
+        val web3Obj = Web3j.build(InfuraHttpService(hostUrl))
+        Log.d(TAG, "web version = ${web3Obj.netVersion().send().netVersion}")
+
+        val credentials = Credentials.create(userPrivateKey, userAccount)
+        Log.d(
+            TAG,
+            "credentials =\naddress = ${credentials.address}" +
+                    "\npublic key = ${credentials.ecKeyPair.publicKey}\n" +
+                    "private key = ${credentials.ecKeyPair.privateKey}"
+        )
+
+        val function = Function(
+            functionRegisterVote,
+            listOf<Type<*>>(
+                Uint256(2)
+            ),
+            emptyList()
+        )
+        val txData = FunctionEncoder.encode(function)
+
+        // TODO: use chain-id = 3
+        val txManager = RawTransactionManager(web3Obj, credentials, ChainIdLong.ROPSTEN)
+
+        val nonce = web3j.ethGetTransactionCount(userAccount, DefaultBlockParameterName.LATEST)
+            .sendAsync()
+            .get()
+            .transactionCount
+        Log.d(TAG, "nonce = $nonce")
+
+        val balance: EthGetBalance =
+            web3Obj.ethGetBalance(credentials.address, DefaultBlockParameterName.LATEST)
+                .sendAsync().get()
+        Log.d(TAG, "balance = ${balance.balance}")
+
+        val rawTransaction = RawTransaction.createTransaction(
+            (ChainIdLong.ROPSTEN).toBigInteger(),
+            requestCurrentGasPrice(),
+            DefaultGasProvider.GAS_LIMIT,
+            contactAddress,
+            txData
+        )
+        val signedTransaction =
+            TransactionEncoder.signMessage(rawTransaction, ChainIdLong.ROPSTEN, credentials)
+        val ethSendTransaction =
+            web3Obj.ethSendRawTransaction(Numeric.toHexString(signedTransaction)).send()
+        Log.d(TAG, "ethSendTransaction = ${ethSendTransaction.transactionHash}")
+    }
+
     fun test3(party: PartyEnum) {
         val contactAddress = "0xe2d8a60415adaa2Ba87c44b8C20C9A15e3F9178a"
         val userAccount = "0xE4e609e2E928E8F8b74C6Bb37e13503b337f8C70"
@@ -177,8 +283,6 @@ class VoteContractAccessor(
         val hostUrl = "https://ropsten.infura.io/v3/c358089e1aaa4746aa50e61d4ec41c5c"
         val web3Obj = Web3j.build(HttpService(hostUrl))
         val credentials = Credentials.create(userPrivateKey, userAccount)
-        val projectSecret = "c9852fcf061b47c58d5294cd7a23548c"
-
         val function = Function(
             functionRegisterVote,
             listOf<Type<*>>(

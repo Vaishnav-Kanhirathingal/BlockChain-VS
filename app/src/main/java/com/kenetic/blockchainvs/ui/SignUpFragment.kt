@@ -17,6 +17,12 @@ import com.kenetic.blockchainvs.networking_api.VoteNetworkApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.web3j.crypto.Credentials
+import org.web3j.protocol.Web3j
+import org.web3j.protocol.core.DefaultBlockParameterName
+import org.web3j.protocol.http.HttpService
+import org.web3j.protocol.infura.InfuraHttpService
+import org.web3j.utils.Convert
 
 private const val TAG = "SignUpFragment"
 
@@ -30,6 +36,7 @@ class SignUpFragment : Fragment() {
     private var emailAddressOk = false
     private var adharOk = false
     private var voterIdOk = false
+    private var walletOk = false
     private var phoneOtp: String? = null
     private var emailOtp: String? = null
 
@@ -71,9 +78,9 @@ class SignUpFragment : Fragment() {
                         isEnabled = false
                     }
                     CoroutineScope(Dispatchers.IO).launch {
-                        phoneOtp = VoteNetworkApi
-                            .retrofitService
-                            .getPhoneOtp(userPhoneNumberEditText.editText!!.text.toString())
+                        //phoneOtp = VoteNetworkApi.retrofitService.getPhoneOtp(userPhoneNumberEditText.editText!!.text.toString())
+                        // TODO: remove testing assignment
+                        phoneOtp = "1111"
                     }
                 } else {
                     userPhoneNumberEditText.apply {
@@ -131,10 +138,9 @@ class SignUpFragment : Fragment() {
                     Toast.makeText(requireContext(), "OTP Generating...", Toast.LENGTH_SHORT)
                         .show()
                     CoroutineScope(Dispatchers.IO).launch {
-                        emailOtp =
-                            VoteNetworkApi
-                                .retrofitService
-                                .getEmailOtp(userEmailEditText.editText!!.text.toString())
+                        //emailOtp = VoteNetworkApi.retrofitService.getEmailOtp(userEmailEditText.editText!!.text.toString())
+                        // TODO: remove testing assignment
+                        emailOtp = "1111"
                     }
                     userEmailEditText.apply {
                         isErrorEnabled = false
@@ -185,7 +191,6 @@ class SignUpFragment : Fragment() {
                 }
             }
         }
-
     }
 
     private fun registrationBinding() {
@@ -196,38 +201,16 @@ class SignUpFragment : Fragment() {
                 userNameOk = (userNameEditText.editText!!.text.split(" ").size) == 3
                 userNameEditText.isErrorEnabled = !userNameOk
                 //--------------------------------------------------------------------password-match
-                val passwordsMatch =
-                    userConfirmPasswordEditText.editText!!.text.toString() == userSetPasswordEditText.editText!!.text.toString()
-                userConfirmPasswordEditText.apply {
-                    isErrorEnabled = passwordsMatch
-                    error = "Passwords Do not Match"
-                }
-                //-----------------------------------------------------------password-length-correct
-                val passwordLengthCorrect =
-                    userSetPasswordEditText.editText!!.text.toString().length in (9..25)
-                userSetPasswordEditText.apply {
-                    isErrorEnabled = passwordLengthCorrect
-                    error = "Password Length Should Be Between 8 to 24"
-                }
-                passwordOk = passwordsMatch && passwordLengthCorrect
+                passwordOk = checkPasswordOk()
                 //------------------------------------------------------------------------adhar-card
-                (adharCardNumber.editText!!.text.toString().length == 12).let {
-                    adharCardNumber.apply {
-                        error = "Enter Correct Adhar Number"
-                        isErrorEnabled = !it
-                    }
-                    adharOk = it
-                }
+                adharOk = checkAdharOk()
                 //--------------------------------------------------------------------------voter-id
-                (voterId.editText!!.text.length == 10).let {
-                    voterId.apply {
-                        error = "Enter Correct Voter ID"
-                        isErrorEnabled = !it
-                    }
-                    voterIdOk = it
-                }
+                voterIdOk = checkVoterIdOk()
+                //----------------------------------------------------------------------------wallet
+                walletOk = checkWalletOk()
+                Log.d(TAG, "wallet status = $walletOk")
                 //------------------------------------------------------sending-registration-details
-                if (userNameOk && passwordOk && phoneNumberOk && emailAddressOk && adharOk && voterIdOk) {
+                if (userNameOk && passwordOk && phoneNumberOk && emailAddressOk && adharOk && voterIdOk && walletOk) {
                     val userName = userNameEditText.editText!!.text.toString()
                     val userPassword = userSetPasswordEditText.editText!!.text.toString()
                     val userPhoneNumber = userPhoneNumberEditText.editText!!.text.toString()
@@ -306,10 +289,88 @@ class SignUpFragment : Fragment() {
         }
     }
 
+
+    private fun checkWalletOk(): Boolean {
+        binding.apply {
+            val wallet = userWallet.editText!!.text.toString()
+            val privateKey = userPrivateKey.editText!!.text.toString()
+
+            val hostUrl = "https://ropsten.infura.io/v3/c358089e1aaa4746aa50e61d4ec41c5c"
+            val web3Obj = Web3j.build(HttpService(hostUrl))
+            val credentials = Credentials.create(privateKey, wallet)
+            return try {
+                val balance = Convert.fromWei(
+                    web3Obj
+                        .ethGetBalance(credentials.address, DefaultBlockParameterName.LATEST)
+                        .send().balance.toString(),
+                    Convert.Unit.ETHER
+                )
+                Log.d(TAG, "balance = $balance")
+                userWallet.isErrorEnabled = true
+                userPrivateKey.isErrorEnabled = true
+                true
+            } catch (e: Exception) {
+                e.printStackTrace()
+                userWallet.error = "Wallet incorrect"
+                userWallet.isErrorEnabled = true
+                userPrivateKey.error = "PrivateKey incorrect"
+                userPrivateKey.isErrorEnabled = true
+                false
+            }
+        }
+    }
+
+    private fun checkAdharOk(): Boolean {
+        binding.apply {
+            (adharCardNumber.editText!!.text.toString().length == 12).let {
+                adharCardNumber.apply {
+                    error = "Enter Correct Adhar Number"
+                    isErrorEnabled = !it
+                }
+                return it
+            }
+        }
+    }
+
+    private fun checkVoterIdOk(): Boolean {
+        binding.apply {
+            (voterId.editText!!.text.length == 10).let {
+                voterId.apply {
+                    error = "Enter Correct Voter ID"
+                    isErrorEnabled = !it
+                }
+                return it
+            }
+        }
+    }
+
+    private fun checkPasswordOk(): Boolean {
+        binding.apply {
+            val passwordsMatch =
+                userConfirmPasswordEditText.editText!!.text.toString() == userSetPasswordEditText.editText!!.text.toString()
+            userConfirmPasswordEditText.apply {
+                isErrorEnabled = !passwordsMatch
+                error = "Passwords Do not Match"
+            }
+            //-----------------------------------------------------------password-length-correct
+            val passwordLengthCorrect =
+                userSetPasswordEditText.editText!!.text.toString().length in (9..25)
+            userSetPasswordEditText.apply {
+                isErrorEnabled = !passwordLengthCorrect
+                error = "Password Length Should Be Between 8 to 24"
+            }
+            return passwordsMatch && passwordLengthCorrect
+        }
+    }
+
     private fun cancelBinding() {
         binding.apply {
             cancelLogin.setOnClickListener {
-                Toast.makeText(requireContext(),"Registration process cancelled",Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Registration process cancelled",
+                    Toast.LENGTH_SHORT
+                ).show()
                 findNavController().navigate(SignUpFragmentDirections.actionSignUpFragmentToMainScreenFragment())
             }
         }

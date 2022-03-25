@@ -112,7 +112,7 @@ class VoteContractDelegate() {
     fun testingFunction() {
         try {
             contract.apply {
-                test4()
+                test6()
             }
         } catch (e: Exception) {
             e.printStackTrace()

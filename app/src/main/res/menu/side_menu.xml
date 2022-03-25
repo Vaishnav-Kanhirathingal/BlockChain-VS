@@ -23,10 +23,10 @@
         </item>
         <item
             android:id="@+id/item_2"
-            android:title="Contract Settings">
+            android:title="Contract">
             <menu>
                 <item
-                    android:id="@+id/contract_accessor"
+                    android:id="@+id/contract_interface"
                     android:icon="@drawable/document_24"
                     android:title="Contract Interface" />
             </menu>
