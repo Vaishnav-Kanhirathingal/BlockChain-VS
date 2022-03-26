@@ -16,6 +16,10 @@
                     android:icon="@drawable/manage_accounts_24"
                     android:title="Log Out" />
                 <item
+                    android:id="@+id/sign_up"
+                    android:icon="@drawable/add_account_24"
+                    android:title="Sign Up" />
+                <item
                     android:id="@+id/switch_account"
                     android:icon="@drawable/switch_account_24"
                     android:title="Switch Account" />

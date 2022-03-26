@@ -21,7 +21,6 @@ import org.web3j.crypto.Credentials
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.http.HttpService
-import org.web3j.protocol.infura.InfuraHttpService
 import org.web3j.utils.Convert
 
 private const val TAG = "SignUpFragment"
@@ -43,7 +42,7 @@ class SignUpFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentSignUpBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -59,8 +58,18 @@ class SignUpFragment : Fragment() {
             phoneNumberVerificationBinding()
             emailAccountVerification()
             registrationBinding()
+            topMenuBinding()
+            cancelBinding()
         }
-        cancelBinding()
+    }
+
+    private fun topMenuBinding() {
+        binding.topAppBar.setNavigationOnClickListener {
+            CoroutineScope(Dispatchers.Main).launch {
+                findNavController()
+                    .navigate(SignUpFragmentDirections.actionSignUpFragmentToMainScreenFragment())
+            }
+        }
     }
 
     private fun phoneNumberVerificationBinding() {
@@ -289,7 +298,6 @@ class SignUpFragment : Fragment() {
         }
     }
 
-
     private fun checkWalletOk(): Boolean {
         binding.apply {
             val wallet = userWallet.editText!!.text.toString()
@@ -366,12 +374,14 @@ class SignUpFragment : Fragment() {
     private fun cancelBinding() {
         binding.apply {
             cancelLogin.setOnClickListener {
-                Toast.makeText(
-                    requireContext(),
-                    "Registration process cancelled",
-                    Toast.LENGTH_SHORT
-                ).show()
-                findNavController().navigate(SignUpFragmentDirections.actionSignUpFragmentToMainScreenFragment())
+                CoroutineScope(Dispatchers.Main).launch {
+                    Toast.makeText(
+                        requireContext(),
+                        "Registration process cancelled",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    findNavController().navigate(SignUpFragmentDirections.actionSignUpFragmentToMainScreenFragment())
+                }
             }
         }
     }

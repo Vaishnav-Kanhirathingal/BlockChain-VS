@@ -4,10 +4,13 @@ import android.util.Log
 import org.web3j.crypto.Credentials
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
+import org.web3j.tx.ChainIdLong
 import org.web3j.tx.RawTransactionManager
-import org.web3j.tx.TransactionManager
 import org.web3j.tx.gas.ContractGasProvider
 import org.web3j.tx.gas.DefaultGasProvider
+import org.web3j.tx.gas.StaticGasProvider
+import java.math.BigDecimal
+import java.math.BigInteger
 import java.util.concurrent.TimeUnit
 
 private const val TAG = "VoteContractDelegate"
@@ -23,12 +26,16 @@ class VoteContractDelegate() {
     private lateinit var web3j: Web3j//--------------------------------------------works-as-intended
     private lateinit var contract: VoteContractAccessor
 
-    private lateinit var transactionManager: TransactionManager
     private val gasProvider: ContractGasProvider = DefaultGasProvider()
+
+    // TODO: change this
+    private val newGasProvider: ContractGasProvider = StaticGasProvider(
+        BigInteger.valueOf(3000000),
+        BigInteger.valueOf(3000000)
+    )
 
     init {
         instantiateWeb3J()
-        transactionManager = RawTransactionManager(web3j, credentials)
         initializeContract()
     }
 
@@ -47,7 +54,11 @@ class VoteContractDelegate() {
     private fun initializeContract() {
         Log.d(
             TAG, try {
-                contract = VoteContractAccessor(web3j, transactionManager, gasProvider)
+                contract = VoteContractAccessor(
+                    web3j,
+                    RawTransactionManager(web3j, credentials, ChainIdLong.ROPSTEN),
+                    gasProvider, credentials
+                )
                 "Contract Initialized Successfully"
             } catch (e: Exception) {
                 "Contract Initialization Error"
@@ -89,13 +100,12 @@ class VoteContractDelegate() {
         }
     }
 
-    // TODO: change set return type to array
     fun getVoterAddresses(): String {
         return try {
             "voters = " + contract.getAddressValues().sendAsync().get().toString()
         } catch (e: Exception) {
             e.printStackTrace()
-            "Error has occurred while receiving address list - ${e.message}"
+            "Error - ${e.message}"
         }
     }
 
@@ -108,14 +118,41 @@ class VoteContractDelegate() {
         }
     }
 
+    fun getBalance(): BigDecimal = contract.printBalance()
+
     //checking connection for testing
     fun testingFunction() {
-        try {
-            contract.apply {
-                test6()
+        contract.apply {
+            Log.d(TAG, "Start testing-\n\n\nStarting new function")
+            try {
+                test1()
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
+            Log.d(TAG, "finished test - 1,\n\n\nStarting the next function")
+            try {
+                test2()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            Log.d(TAG, "finished test - 2,\n\n\nStarting the next function")
+            try {
+                test3()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            Log.d(TAG, "finished test - 3,\n\n\nStarting the next function")
+            try {
+                test4()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            Log.d(TAG, "finished test - 4\n\n\nBalance -")
+            try {
+                printBalance()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 }

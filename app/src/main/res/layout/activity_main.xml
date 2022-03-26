@@ -2,10 +2,8 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:fitsSystemWindows="true"
     tools:context=".MainActivity"
     tools:openDrawer="start">
-    <!--TODO: layout width and height removed. Check move validity-->
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_view"

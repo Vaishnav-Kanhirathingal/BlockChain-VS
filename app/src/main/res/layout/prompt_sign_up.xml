@@ -26,7 +26,7 @@
 
 
         <ScrollView
-            android:id="@+id/scrollable_card_view"
+            android:id="@+id/scroll_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginHorizontal="@dimen/sub_layout_layout_margin"

@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -87,8 +86,7 @@ class MainScreenFragment : Fragment() {
     private fun applySideMenuBinding() {
         //------------------------------------------------------------------------------------header
         val headerMenu = binding.navigationViewMainScreen.getHeaderView(0)
-        val menuItemUserImage: ImageView = headerMenu.findViewById(R.id.user_image)
-        val menuItemUserFullname: TextView = headerMenu.findViewById(R.id.user_full_name)
+        val menuItemUserFullName: TextView = headerMenu.findViewById(R.id.user_full_name)
         val menuItemUserEmail: TextView = headerMenu.findViewById(R.id.user_email)
         val menuItemUserPhoneNumber: TextView = headerMenu.findViewById(R.id.user_phone_number)
         val menuItemUserAdharNumber: TextView = headerMenu.findViewById(R.id.user_adhar_card_number)
@@ -96,7 +94,7 @@ class MainScreenFragment : Fragment() {
 
         // TODO: set image
         accountDataStore.userFullNameFlow.asLiveData().observe(viewLifecycleOwner) {
-            menuItemUserFullname.text = it
+            menuItemUserFullName.text = it
         }
         accountDataStore.userEmailFlow.asLiveData().observe(viewLifecycleOwner) {
             menuItemUserEmail.text = it
@@ -111,28 +109,36 @@ class MainScreenFragment : Fragment() {
             menuItemUserVoterId.text = it
         }
         //-------------------------------------------------------------------------------bottom-menu
-        binding.navigationViewMainScreen.setNavigationItemSelectedListener {
-            Log.d(TAG, "navigationViewMainScreen working")
-            when (it.itemId) {
-                R.id.log_in -> {
-                    Log.d(TAG, "log in working")
-                    loginPrompt()
-                    true
-                }
-                R.id.log_out -> {
-                    Log.d(TAG, "log out working")
-                    CoroutineScope(Dispatchers.IO).launch {
-                        accountDataStore.resetAccounts(requireContext())
+        CoroutineScope(Dispatchers.IO).launch {
+            binding.navigationViewMainScreen.setNavigationItemSelectedListener {
+                Log.d(TAG, "navigationViewMainScreen working")
+                when (it.itemId) {
+                    R.id.log_in -> {
+                        Log.d(TAG, "log in working")
+                        loginPrompt()
+                        true
                     }
-                    true
-                }
-                R.id.switch_account -> {
-                    // TODO: remove present account and add new account
-                    Log.d(TAG, "switch account working")
-                    switchAccount()
-                    true
-                }
-                R.id.contract_interface -> {
+                    R.id.log_out -> {
+                        Log.d(TAG, "log out working")
+                        CoroutineScope(Dispatchers.IO).launch {
+                            accountDataStore.resetAccounts(requireContext())
+                        }
+                        true
+                    }
+                    R.id.sign_up -> {
+                        findNavController()
+                            .navigate(
+                                MainScreenFragmentDirections.actionMainScreenFragmentToSignUpFragment()
+                            )
+                        true
+                    }
+                    R.id.switch_account -> {
+                        // TODO: remove present account and add new account
+                        Log.d(TAG, "switch account working")
+                        switchAccount()
+                        true
+                    }
+                    R.id.contract_interface -> {
 //                    if (accountDataStore.userLoggedInFlow.asLiveData().value!!) {
 //                        findNavController()
 //                            .navigate(
@@ -151,27 +157,29 @@ class MainScreenFragment : Fragment() {
 //                            )
 //                        //loginPrompt()
 //                    }
-
-                        findNavController()
-                            .navigate(
-                                MainScreenFragmentDirections
-                                    .actionMainScreenFragmentToContractScreenFragment()
-                            )
-                    true
-                }
-                R.id.about -> {
-                    // TODO: navigate to about screen
-                    Log.d(TAG, "about working")
-                    true
-                }
-                R.id.exit -> {
-                    // TODO: log out and close app
-                    Log.d(TAG, "exit working")
-                    logOutAndExit(true)
-                    true
-                }
-                else -> {
-                    throw IllegalArgumentException("side menu item not registered.")
+                        CoroutineScope(Dispatchers.Main).launch {
+                            findNavController()
+                                .navigate(
+                                    MainScreenFragmentDirections
+                                        .actionMainScreenFragmentToContractScreenFragment()
+                                )
+                        }
+                        true
+                    }
+                    R.id.about -> {
+                        // TODO: navigate to about screen
+                        Log.d(TAG, "about working")
+                        true
+                    }
+                    R.id.exit -> {
+                        // TODO: log out and close app
+                        Log.d(TAG, "exit working")
+                        logOutAndExit(true)
+                        true
+                    }
+                    else -> {
+                        throw IllegalArgumentException("side menu item not registered.")
+                    }
                 }
             }
         }
@@ -181,7 +189,11 @@ class MainScreenFragment : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
             accountDataStore.resetAccounts(requireContext())
         }
-        loginPrompt()
+        findNavController()
+            .navigate(
+                MainScreenFragmentDirections
+                    .actionMainScreenFragmentToSignUpFragment()
+            )
     }
 
     private fun loginPrompt() {
@@ -190,9 +202,10 @@ class MainScreenFragment : Fragment() {
         promptLoginBinding.apply {
             newUserButton.setOnClickListener {
                 dialogBox.dismiss()
-                findNavController().navigate(
-                    MainScreenFragmentDirections.actionMainScreenFragmentToSignUpFragment()
-                )
+                findNavController()
+                    .navigate(
+                        MainScreenFragmentDirections.actionMainScreenFragmentToSignUpFragment()
+                    )
             }
             cancelLogin.setOnClickListener {
                 Toast.makeText(
@@ -212,7 +225,7 @@ class MainScreenFragment : Fragment() {
                     &&
                     (userSetPasswordEditText.editText!!.text.toString() != accountDataStore.default)
                 ) {
-                    CoroutineScope(Dispatchers.IO).launch {
+                    CoroutineScope(Dispatchers.Main).launch {
                         accountDataStore.dataStoreBooleanSetter(
                             BooleanSetterEnum.USER_LOGGED_IN,
                             true,
@@ -233,7 +246,7 @@ class MainScreenFragment : Fragment() {
         }
     }
 
-    private fun logOutAndExit(exit:Boolean) {
+    private fun logOutAndExit(exit: Boolean) {
         val dialogBox = Dialog(requireContext())
         val promptLogOutBinding = PromptLogOutBinding.inflate(layoutInflater)
         promptLogOutBinding.apply {
@@ -241,7 +254,7 @@ class MainScreenFragment : Fragment() {
                 CoroutineScope(Dispatchers.IO).launch {
                     accountDataStore.resetAccounts(requireContext())
                 }
-                if (exit){
+                if (exit) {
                     // TODO: log out and exit
                 }
             }

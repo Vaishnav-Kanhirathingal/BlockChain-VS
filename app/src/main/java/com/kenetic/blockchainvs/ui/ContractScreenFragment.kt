@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.fragment.findNavController
 import com.kenetic.blockchainvs.R
 import com.kenetic.blockchainvs.block_connector.contract.contract_interface.PartyEnum
 import com.kenetic.blockchainvs.block_connector.contract.contract_interface.VoteContractDelegate
@@ -45,6 +46,10 @@ class ContractScreenFragment : Fragment() {
 
     private fun applyBinding() {
         binding.apply {
+            topAppBar.setNavigationOnClickListener {
+                findNavController()
+                    .navigate(ContractScreenFragmentDirections.actionContractScreenFragmentToMainScreenFragment())
+            }
             //--------------------------------------------------------------------------data-binding
             contractFragment = this@ContractScreenFragment
             lifecycleOwner = viewLifecycleOwner
@@ -110,6 +115,14 @@ class ContractScreenFragment : Fragment() {
             testingButton.setOnClickListener {
                 CoroutineScope(Dispatchers.IO).launch {
                     voteContractDelegate.testingFunction()
+                }
+            }
+            getBalanceButton.setOnClickListener {
+                CoroutineScope(Dispatchers.IO).launch {
+                    val balance = voteContractDelegate.getBalance()
+                    CoroutineScope(Dispatchers.Main).launch {
+                        userBalance.text = "$balance ETH"
+                    }
                 }
             }
         }
