@@ -76,7 +76,7 @@ class ContractScreenFragment : Fragment() {
             casteVoteButton.setOnClickListener {
                 CoroutineScope(Dispatchers.IO).launch {
                     val cost = voteContractDelegate.casteVote(partyEnum).toString()
-                    Log.d(TAG, "transaction cost = $cost")
+                    Log.d(TAG, "transaction output:-\n$cost")
                     CoroutineScope(Dispatchers.Main).launch {
                         transactionCost.value = cost
                     }

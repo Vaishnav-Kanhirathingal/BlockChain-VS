@@ -30,8 +30,8 @@ class VoteContractDelegate() {
 
     // TODO: change this
     private val newGasProvider: ContractGasProvider = StaticGasProvider(
-        BigInteger.valueOf(3000000),
-        BigInteger.valueOf(3000000)
+        BigInteger.valueOf(8000000),
+        BigInteger.valueOf(8000000)
     )
 
     init {
@@ -57,7 +57,7 @@ class VoteContractDelegate() {
                 contract = VoteContractAccessor(
                     web3j,
                     RawTransactionManager(web3j, credentials, ChainIdLong.ROPSTEN),
-                    gasProvider, credentials
+                    newGasProvider, credentials
                 )
                 "Contract Initialized Successfully"
             } catch (e: Exception) {
@@ -86,17 +86,19 @@ class VoteContractDelegate() {
     }
 
     // TODO: make changes
-    fun casteVote(party: PartyEnum): Int {
+    fun casteVote(party: PartyEnum): String {
         return try {
-            contract
-                .putVote(party)
-                .sendAsync()
-                .get(3, TimeUnit.MINUTES)
-                .gasUsed
-                .toInt()
-        } catch (e: java.lang.Exception) {
+            "cost = " + (
+                    contract
+                        .putVote(party)
+                        .sendAsync()
+                        .get(9, TimeUnit.MINUTES)
+                        .gasUsed
+                        .toString()
+                    )
+        } catch (e: Exception) {
             e.printStackTrace()
-            0
+            e.message.toString()
         }
     }
 
@@ -123,31 +125,42 @@ class VoteContractDelegate() {
     //checking connection for testing
     fun testingFunction() {
         contract.apply {
-            Log.d(TAG, "Start testing-\n\n\nStarting new function")
+
+            Log.d(TAG, "Start testing-\n\n\nStarting function - 1")
             try {
                 test1()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            Log.d(TAG, "finished test - 1,\n\n\nStarting the next function")
+            Log.d(TAG, "finished test - 1,\n\n\nStarting function - 2")
             try {
-                test2()
+//                test2()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            Log.d(TAG, "finished test - 2,\n\n\nStarting the next function")
+            Log.d(TAG, "finished test - 2,\n\n\nStarting function - 3")
+
             try {
                 test3()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            Log.d(TAG, "finished test - 3,\n\n\nStarting the next function")
+            Log.d(TAG, "finished test - 3,\n\n\nStarting function - 4")
+
             try {
                 test4()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            Log.d(TAG, "finished test - 4\n\n\nBalance -")
+            Log.d(TAG, "finished test - 4,\n\n\nStarting function - 5")
+
+            try {
+                test5()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            Log.d(TAG, "finished test - 5\n\n\nBalance -")
+
             try {
                 printBalance()
             } catch (e: Exception) {
