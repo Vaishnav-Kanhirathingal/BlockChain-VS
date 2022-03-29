@@ -8,10 +8,10 @@
     tools:context=".ui.SignUpFragment">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
         android:id="@+id/top_app_bar_layout"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/top_app_bar"
@@ -152,6 +152,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/login_card_spacing"
                     android:hint="@string/phone_otp"
+                    app:endIconContentDescription="@string/phone_otp_description"
                     app:endIconDrawable="@drawable/refresh_24"
                     app:endIconMode="custom"
                     app:helperText="Check Message Box For The \nEntered Phone Number"
@@ -222,6 +223,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/login_card_spacing"
                     android:hint="@string/email_otp"
+                    app:endIconContentDescription="@string/email_otp_description"
                     app:endIconDrawable="@drawable/refresh_24"
                     app:endIconMode="custom"
                     app:helperText="Check Inbox For The Entered\nEmail"
@@ -336,26 +338,6 @@
                 app:dividerThickness="1dp" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/user_wallet"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/login_card_spacing"
-                android:hint="Enter Wallet Id"
-                app:counterEnabled="true"
-                app:counterMaxLength="10"
-                app:endIconDrawable="@drawable/refresh_24"
-                app:endIconMode="custom"
-                app:helperText="Enter Your Wallet ID"
-                app:startIconDrawable="@drawable/hexagon_24">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/user_wallet_text_field"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/user_private_key"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -363,7 +345,7 @@
                 android:layout_marginTop="@dimen/login_card_spacing"
                 android:hint="Enter Private Key"
                 app:counterEnabled="true"
-                app:counterMaxLength="10"
+                app:counterMaxLength="64"
                 app:endIconDrawable="@drawable/refresh_24"
                 app:endIconMode="custom"
                 app:helperText="Enter Your Wallet Privat Key"
@@ -382,10 +364,11 @@
                 android:layout_marginHorizontal="@dimen/margin_horizontal_spacing"
                 android:layout_marginTop="@dimen/login_card_spacing"
                 app:dividerThickness="1dp" />
+
             <LinearLayout
-                android:layout_marginTop="@dimen/login_card_spacing"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/login_card_spacing"
                 android:orientation="horizontal">
 
                 <Button

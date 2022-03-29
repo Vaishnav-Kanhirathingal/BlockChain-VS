@@ -1,14 +1,17 @@
 package com.kenetic.blockchainvs.block_connector.contract.contract_interface
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import org.web3j.crypto.Credentials
 import org.web3j.protocol.Web3j
+import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.ChainIdLong
 import org.web3j.tx.RawTransactionManager
 import org.web3j.tx.gas.ContractGasProvider
-import org.web3j.tx.gas.DefaultGasProvider
 import org.web3j.tx.gas.StaticGasProvider
+import org.web3j.utils.Convert
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.util.concurrent.TimeUnit
@@ -17,6 +20,7 @@ private const val TAG = "VoteContractDelegate"
 
 class VoteContractDelegate() {
     //-----------------------------------------------------------------------------contract-elements
+    // TODO: get this from data store
     private val USER_PRIVATE_KEY =
         "66c53799ee0c63f2564305e738ea7479d7aee84aed3aac4c01e54a7acbcc4d92"
     private val ROPSTEN_INFURA_URL = "https://ropsten.infura.io/v3/c358089e1aaa4746aa50e61d4ec41c5c"
@@ -26,16 +30,17 @@ class VoteContractDelegate() {
     private lateinit var web3j: Web3j//--------------------------------------------works-as-intended
     private lateinit var contract: VoteContractAccessor
 
-    private val gasProvider: ContractGasProvider = DefaultGasProvider()
+    // TODO: set correct value
+    private val gasPrice: BigInteger = Convert.toWei("40", Convert.Unit.GWEI).toBigInteger()
 
-    // TODO: change this
-    private val newGasProvider: ContractGasProvider = StaticGasProvider(
-        BigInteger.valueOf(8000000),
-        BigInteger.valueOf(8000000)
-    )
+    //this gas limit value is from deployment and has to be constant
+    private val gasLimit = BigInteger.valueOf(4000000)
+
+    private val gasProvider: ContractGasProvider = StaticGasProvider(gasPrice, gasLimit)
 
     init {
         instantiateWeb3J()
+        web3j.ethGetTransactionCount(credentials.address, DefaultBlockParameterName.LATEST)
         initializeContract()
     }
 
@@ -56,8 +61,12 @@ class VoteContractDelegate() {
             TAG, try {
                 contract = VoteContractAccessor(
                     web3j,
-                    RawTransactionManager(web3j, credentials, ChainIdLong.ROPSTEN),
-                    newGasProvider, credentials
+                    RawTransactionManager(
+                        web3j,
+                        credentials,
+                        ChainIdLong.ROPSTEN
+                    ),
+                    gasProvider, credentials
                 )
                 "Contract Initialized Successfully"
             } catch (e: Exception) {
@@ -75,27 +84,30 @@ class VoteContractDelegate() {
                 contract.getPartyVotes(PartyEnum.TWO).sendAsync().get().value.toInt()
             val votesForThree: Int =
                 contract.getPartyVotes(PartyEnum.THREE).sendAsync().get().value.toInt()
-            "party votes status: " +
-                    "\nparty one votes = " + votesForOne +
-                    "\nparty one votes = " + votesForTwo +
-                    "\nparty one votes = " + votesForThree
+                    "party 1 votes = " + votesForOne +
+                    "\nparty 2 votes = " + votesForTwo +
+                    "\nparty 3 votes = " + votesForThree
         } catch (e: Exception) {
             e.printStackTrace()
             "error has occurred, ${e.message}"
         }
     }
 
-    // TODO: make changes
+    // TODO: this is the problem function...
     fun casteVote(party: PartyEnum): String {
         return try {
-            "cost = " + (
-                    contract
-                        .putVote(party)
-                        .sendAsync()
-                        .get(9, TimeUnit.MINUTES)
-                        .gasUsed
-                        .toString()
-                    )
+            Log.d(TAG, "started casteVote, Vote to be caste for ${party.name}")
+            /**
+             * this starts but never completes. No errors outputted.
+             * If you watch closely, You'll see a '9' inside the get.
+             * that is the timeout duration. This function times out
+             * before being executed. It keeps waiting for whole 9
+             * minutes and then outputs a timeout error
+             */
+            contract.putVote(party).sendAsync().get(9, TimeUnit.MINUTES).gasUsed.toString()
+            /**
+             * returns null as a result.
+             */
         } catch (e: Exception) {
             e.printStackTrace()
             e.message.toString()
@@ -123,9 +135,9 @@ class VoteContractDelegate() {
     fun getBalance(): BigDecimal = contract.printBalance()
 
     //checking connection for testing
+    @RequiresApi(Build.VERSION_CODES.N)
     fun testingFunction() {
         contract.apply {
-
             Log.d(TAG, "Start testing-\n\n\nStarting function - 1")
             try {
                 test1()
@@ -134,7 +146,7 @@ class VoteContractDelegate() {
             }
             Log.d(TAG, "finished test - 1,\n\n\nStarting function - 2")
             try {
-//                test2()
+                test2()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -145,27 +157,7 @@ class VoteContractDelegate() {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            Log.d(TAG, "finished test - 3,\n\n\nStarting function - 4")
-
-            try {
-                test4()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            Log.d(TAG, "finished test - 4,\n\n\nStarting function - 5")
-
-            try {
-                test5()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            Log.d(TAG, "finished test - 5\n\n\nBalance -")
-
-            try {
-                printBalance()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            Log.d(TAG, "finished test - 3")
         }
     }
 }

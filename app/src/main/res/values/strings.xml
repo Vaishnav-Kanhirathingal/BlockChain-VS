@@ -25,4 +25,6 @@
     <string name="log_out">Log Out</string>
     <string name="call">call</string>
     <string name="not_cached_yet">Not Cached Yet</string>
+    <string name="phone_otp_description">Generate phone Otp</string>
+    <string name="email_otp_description">Generate Email Otp</string>
 </resources>

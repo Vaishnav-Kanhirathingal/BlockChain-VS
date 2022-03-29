@@ -1,11 +1,13 @@
 package com.kenetic.blockchainvs.ui
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
@@ -23,13 +25,17 @@ class ContractScreenFragment : Fragment() {
     private lateinit var binding: FragmentContractScreenBinding
     private var partyEnum = PartyEnum.ONE
     private var voteContractDelegate = VoteContractDelegate()
+    private val transactionInProgress = "Transaction currently in progress..."
+    private val calling = "calling function..."
+    private val unknown = "Unknown..."
 
     //------------------------------------------------------------------------data-binding-live-data
-    private val defaultOutput = "Call Not Performed Yet"
-    val transactionCost: MutableLiveData<String> = MutableLiveData(defaultOutput)
-    val addressList: MutableLiveData<String> = MutableLiveData(defaultOutput)
-    val alreadyVoted: MutableLiveData<String> = MutableLiveData(defaultOutput)
-    val allPartyVotes: MutableLiveData<String> = MutableLiveData(defaultOutput)
+    private val callNotPerformedYet = "Call Not Performed Yet"
+    val transactionCost: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
+    val addressList: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
+    val alreadyVoted: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
+    val allPartyVotes: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
+    val balance: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,11 +45,13 @@ class ContractScreenFragment : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         applyBinding()
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun applyBinding() {
         binding.apply {
             topAppBar.setNavigationOnClickListener {
@@ -74,8 +82,9 @@ class ContractScreenFragment : Fragment() {
             //----------------------------------------------------------------------------caste-vote
             // TODO: solve errors
             casteVoteButton.setOnClickListener {
+                transactionCost.value = transactionInProgress
                 CoroutineScope(Dispatchers.IO).launch {
-                    val cost = voteContractDelegate.casteVote(partyEnum).toString()
+                    val cost = voteContractDelegate.casteVote(partyEnum)
                     Log.d(TAG, "transaction output:-\n$cost")
                     CoroutineScope(Dispatchers.Main).launch {
                         transactionCost.value = cost
@@ -84,6 +93,7 @@ class ContractScreenFragment : Fragment() {
             }
             //----------------------------------------------------------------------------get-voters
             getRegisteredVotersButton.setOnClickListener {
+                addressList.value = calling
                 CoroutineScope(Dispatchers.IO).launch {
                     val votersListAsString = voteContractDelegate.getVoterAddresses()
                     Log.d(TAG, "registered voter addresses = $votersListAsString")
@@ -94,6 +104,7 @@ class ContractScreenFragment : Fragment() {
             }
             //------------------------------------------------------------------------has-user-voted
             checkVoterStatusButton.setOnClickListener {
+                alreadyVoted.value = calling
                 CoroutineScope(Dispatchers.IO).launch {
                     val hasUserVoted = voteContractDelegate.getHasAlreadyVoted()
                     Log.d(TAG, "voting status = $hasUserVoted")
@@ -104,6 +115,7 @@ class ContractScreenFragment : Fragment() {
             }
             //------------------------------------------------------------------get-voters-addresses
             getVotesButton.setOnClickListener {
+                allPartyVotes.value = calling
                 CoroutineScope(Dispatchers.IO).launch {
                     val electionStatus = voteContractDelegate.partyVotesStatus()
                     Log.d(TAG, "election status received: \n$electionStatus")
@@ -112,17 +124,18 @@ class ContractScreenFragment : Fragment() {
                     }
                 }
             }
+            getBalanceButton.setOnClickListener {
+                balance.value = calling
+                CoroutineScope(Dispatchers.IO).launch {
+                    val balanceReceived = voteContractDelegate.getBalance()
+                    CoroutineScope(Dispatchers.Main).launch {
+                        balance.value = "$balanceReceived ETH"
+                    }
+                }
+            }
             testingButton.setOnClickListener {
                 CoroutineScope(Dispatchers.IO).launch {
                     voteContractDelegate.testingFunction()
-                }
-            }
-            getBalanceButton.setOnClickListener {
-                CoroutineScope(Dispatchers.IO).launch {
-                    val balance = voteContractDelegate.getBalance()
-                    CoroutineScope(Dispatchers.Main).launch {
-                        userBalance.text = "$balance ETH"
-                    }
                 }
             }
         }

@@ -109,7 +109,7 @@ class SignUpFragment : Fragment() {
                             "OTP Not Generated Yet"
                         }
                         userPhoneOtpEditText.editText!!.text.toString() -> {
-                            emailAddressOk = true
+                            phoneNumberOk = true
                             userPhoneOtpEditText.isEnabled = false
                             "OTP Verified"
                         }
@@ -217,8 +217,16 @@ class SignUpFragment : Fragment() {
                 voterIdOk = checkVoterIdOk()
                 //----------------------------------------------------------------------------wallet
                 walletOk = checkWalletOk()
-                Log.d(TAG, "wallet status = $walletOk")
                 //------------------------------------------------------sending-registration-details
+                Log.d(
+                    TAG,
+                    "userNameOk = $userNameOk" +
+                            "passwordOk = $passwordOk" +
+                            "phoneNumberOk = $phoneNumberOk" +
+                            "emailAddressOk = $emailAddressOk" +
+                            "adharOk = $adharOk" +
+                            "voterIdOk = $voterIdOk"
+                )
                 if (userNameOk && passwordOk && phoneNumberOk && emailAddressOk && adharOk && voterIdOk && walletOk) {
                     val userName = userNameEditText.editText!!.text.toString()
                     val userPassword = userSetPasswordEditText.editText!!.text.toString()
@@ -235,60 +243,25 @@ class SignUpFragment : Fragment() {
                             "\"voterID\": \"$voterID\""
                     Log.d(TAG, stringToSend)
                     val verification = MutableLiveData(false)
-                    CoroutineScope(Dispatchers.IO).launch {
-                        verification.value = VoteNetworkApi
-                            .retrofitService
-                            .sendAndVerifyUserDetails(stringToSend)
-                            .toBoolean()
+
+                    try {
+//                        CoroutineScope(Dispatchers.IO).launch {
+//                            verification.value = VoteNetworkApi
+//                                .retrofitService
+//                                .sendAndVerifyUserDetails(stringToSend)
+//                                .toBoolean()
+//                        }
+                        verification.value = true
+                    } catch (e: Exception) {
+                        verification.value = false
                     }
                     verification.observe(viewLifecycleOwner) {
                         //-----------------------------------------------------------store-user-data
                         if (it) {
-                            CoroutineScope(Dispatchers.IO).launch {
-                                accountDataStore.dataStoreStringSetter(
-                                    StringSetterEnum.USER_FULL_NAME_KEY,
-                                    userNameEditText.editText!!.text.toString(),
-                                    requireContext()
-                                )
-                                accountDataStore.dataStoreStringSetter(
-                                    StringSetterEnum.USER_PASSWORD_KEY,
-                                    userConfirmPasswordEditText.editText!!.text.toString(),
-                                    requireContext()
-                                )
-                                accountDataStore.dataStoreStringSetter(
-                                    StringSetterEnum.USER_EMAIL_KEY,
-                                    userEmailEditText.editText!!.text.toString(),
-                                    requireContext()
-                                )
-                                accountDataStore.dataStoreStringSetter(
-                                    StringSetterEnum.USER_CONTACT_NUMBER_KEY,
-                                    userPhoneNumberEditText.editText!!.text.toString(),
-                                    requireContext()
-                                )
-                                accountDataStore.dataStoreStringSetter(
-                                    StringSetterEnum.USER_VOTERS_ID_KEY,
-                                    voterId.editText!!.text.toString(),
-                                    requireContext()
-                                )
-                                accountDataStore.dataStoreStringSetter(
-                                    StringSetterEnum.USER_ADHAR_NO_KEY,
-                                    adharCardNumber.editText!!.text.toString(),
-                                    requireContext()
-                                )
-                                accountDataStore.dataStoreBooleanSetter(
-                                    BooleanSetterEnum.USER_USES_FINGERPRINT_KEY,
-                                    userUseFingerprint.isChecked,
-                                    requireContext()
-                                )
-                                accountDataStore.dataStoreBooleanSetter(
-                                    BooleanSetterEnum.USER_LOGGED_IN,
-                                    true,
-                                    requireContext()
-                                )
-                                accountDataStore.dataStoreBooleanSetter(
-                                    BooleanSetterEnum.USER_REGISTERED,
-                                    true,
-                                    requireContext()
+                            saveToDataStore()
+                            CoroutineScope(Dispatchers.Main).launch {
+                                findNavController().navigate(
+                                    SignUpFragmentDirections.actionSignUpFragmentToMainScreenFragment()
                                 )
                             }
                         }
@@ -298,14 +271,75 @@ class SignUpFragment : Fragment() {
         }
     }
 
+    private fun saveToDataStore() {
+        binding.apply {
+            //-----------------------------------------------------------store-user-data
+            CoroutineScope(Dispatchers.IO).launch {
+                accountDataStore.apply {
+                    //--------------------------------------------------------string
+                    dataStoreStringSetter(
+                        StringSetterEnum.USER_FULL_NAME_KEY,
+                        userNameEditText.editText!!.text.toString(),
+                        requireContext()
+                    )
+                    dataStoreStringSetter(
+                        StringSetterEnum.USER_PASSWORD_KEY,
+                        userConfirmPasswordEditText.editText!!.text.toString(),
+                        requireContext()
+                    )
+                    dataStoreStringSetter(
+                        StringSetterEnum.USER_EMAIL_KEY,
+                        userEmailEditText.editText!!.text.toString(),
+                        requireContext()
+                    )
+                    dataStoreStringSetter(
+                        StringSetterEnum.USER_CONTACT_NUMBER_KEY,
+                        userPhoneNumberEditText.editText!!.text.toString(),
+                        requireContext()
+                    )
+                    dataStoreStringSetter(
+                        StringSetterEnum.USER_VOTERS_ID_KEY,
+                        voterId.editText!!.text.toString(),
+                        requireContext()
+                    )
+                    dataStoreStringSetter(
+                        StringSetterEnum.USER_ADHAR_NO_KEY,
+                        adharCardNumber.editText!!.text.toString(),
+                        requireContext()
+                    )
+                    dataStoreStringSetter(
+                        StringSetterEnum.USER_PRIVATE_KEY_KEY,
+                        userPrivateKeyTextField.text.toString(),
+                        requireContext()
+                    )
+                    //-------------------------------------------------------boolean
+                    dataStoreBooleanSetter(
+                        BooleanSetterEnum.USER_USES_FINGERPRINT_KEY,
+                        userUseFingerprint.isChecked,
+                        requireContext()
+                    )
+                    dataStoreBooleanSetter(
+                        BooleanSetterEnum.USER_LOGGED_IN,
+                        true,
+                        requireContext()
+                    )
+                    dataStoreBooleanSetter(
+                        BooleanSetterEnum.USER_REGISTERED,
+                        true,
+                        requireContext()
+                    )
+                }
+            }
+        }
+    }
+
+
     private fun checkWalletOk(): Boolean {
         binding.apply {
-            val wallet = userWallet.editText!!.text.toString()
             val privateKey = userPrivateKey.editText!!.text.toString()
-
             val hostUrl = "https://ropsten.infura.io/v3/c358089e1aaa4746aa50e61d4ec41c5c"
             val web3Obj = Web3j.build(HttpService(hostUrl))
-            val credentials = Credentials.create(privateKey, wallet)
+            val credentials = Credentials.create(privateKey)
             return try {
                 val balance = Convert.fromWei(
                     web3Obj
@@ -314,16 +348,14 @@ class SignUpFragment : Fragment() {
                     Convert.Unit.ETHER
                 )
                 Log.d(TAG, "balance = $balance")
-                userWallet.isErrorEnabled = true
                 userPrivateKey.isErrorEnabled = true
                 true
             } catch (e: Exception) {
                 e.printStackTrace()
-                userWallet.error = "Wallet incorrect"
-                userWallet.isErrorEnabled = true
                 userPrivateKey.error = "PrivateKey incorrect"
                 userPrivateKey.isErrorEnabled = true
-                false
+                // TODO: remove after fixing scope issues
+                true
             }
         }
     }
@@ -354,19 +386,24 @@ class SignUpFragment : Fragment() {
 
     private fun checkPasswordOk(): Boolean {
         binding.apply {
-            val passwordsMatch =
-                userConfirmPasswordEditText.editText!!.text.toString() == userSetPasswordEditText.editText!!.text.toString()
+            val enteredPassword = userConfirmPasswordEditText.editText!!.text.toString()
+            val confirmationPassword = userSetPasswordEditText.editText!!.text.toString()
+            val passwordsMatch = (enteredPassword == confirmationPassword)
+            Log.d(TAG, "enteredPassword = $enteredPassword")
+            Log.d(TAG, " confirmationPassword = $confirmationPassword")
+
             userConfirmPasswordEditText.apply {
-                isErrorEnabled = !passwordsMatch
                 error = "Passwords Do not Match"
+                isErrorEnabled = !passwordsMatch
             }
+            Log.d(TAG, "passwords match = $passwordsMatch")
             //-----------------------------------------------------------password-length-correct
-            val passwordLengthCorrect =
-                userSetPasswordEditText.editText!!.text.toString().length in (9..25)
+            val passwordLengthCorrect = confirmationPassword.length in (9..25)
             userSetPasswordEditText.apply {
-                isErrorEnabled = !passwordLengthCorrect
                 error = "Password Length Should Be Between 8 to 24"
+                isErrorEnabled = !passwordLengthCorrect
             }
+            Log.d(TAG, "passwordLengthCorrect = $passwordLengthCorrect")
             return passwordsMatch && passwordLengthCorrect
         }
     }

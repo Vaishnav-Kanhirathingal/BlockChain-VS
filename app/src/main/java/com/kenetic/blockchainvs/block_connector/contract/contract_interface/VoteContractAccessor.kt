@@ -1,6 +1,8 @@
 package com.kenetic.blockchainvs.block_connector.contract.contract_interface
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import org.web3j.abi.FunctionEncoder
 import org.web3j.abi.TypeReference
 import org.web3j.abi.datatypes.*
@@ -13,7 +15,7 @@ import org.web3j.crypto.TransactionEncoder
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.core.RemoteCall
-import org.web3j.protocol.core.methods.request.Transaction
+import org.web3j.protocol.core.methods.response.EthGetTransactionCount
 import org.web3j.protocol.core.methods.response.TransactionReceipt
 import org.web3j.tx.ChainIdLong
 import org.web3j.tx.Contract
@@ -23,14 +25,16 @@ import org.web3j.tx.gas.ContractGasProvider
 import org.web3j.tx.gas.DefaultGasProvider
 import org.web3j.tx.response.PollingTransactionReceiptProcessor
 import org.web3j.utils.Convert
+import org.web3j.utils.Numeric
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.util.*
 
 
 private const val TAG = "VoteContractAccessor"
 private const val CONTRACT_BINARY =
-    "608060405234801561001057600080fd5b506000600181905550600060028190555060006003819055506106ea806100386000396000f3fe608060405234801561001057600080fd5b50600436106100625760003560e01c80630efcb43c1461006757806342cff73814610085578063449b6db2146100a3578063464d4a92146100c1578063a483f4e1146100dd578063f5a31579146100fb575b600080fd5b61006f610119565b60405161007c91906104f5565b60405180910390f35b61008d610123565b60405161009a9190610498565b60405180910390f35b6100ab6101b1565b6040516100b891906104ba565b60405180910390f35b6100db60048036038101906100d691906103a5565b610261565b005b6100e561037c565b6040516100f291906104f5565b60405180910390f35b610103610386565b60405161011091906104f5565b60405180910390f35b6000600354905090565b606060008054806020026020016040519081016040528092919081815260200182805480156101a757602002820191906000526020600020905b8160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001906001019080831161015d575b5050505050905090565b60008033905060005b60008054905081101561025757600081815481106101db576101da61061a565b5b9060005260206000200160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168273ffffffffffffffffffffffffffffffffffffffff1614156102445760019250505061025e565b808061024f906105a2565b9150506101ba565b6000925050505b90565b6004811080156102715750600081115b6102b0576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004016102a7906104d5565b60405180910390fd5b6000339080600181540180825580915050600190039060005260206000200160009091909190916101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055506001811415610339576001600081548092919061032f906105a2565b9190505550610379565b600281141561035f5760026000815480929190610355906105a2565b9190505550610378565b60036000815480929190610372906105a2565b91905055505b5b50565b6000600254905090565b6000600154905090565b60008135905061039f8161069d565b92915050565b6000602082840312156103bb576103ba610649565b5b60006103c984828501610390565b91505092915050565b60006103de83836103ea565b60208301905092915050565b6103f38161055a565b82525050565b600061040482610520565b61040e8185610538565b935061041983610510565b8060005b8381101561044a57815161043188826103d2565b975061043c8361052b565b92505060018101905061041d565b5085935050505092915050565b6104608161056c565b82525050565b6000610473603983610549565b915061047e8261064e565b604082019050919050565b61049281610598565b82525050565b600060208201905081810360008301526104b281846103f9565b905092915050565b60006020820190506104cf6000830184610457565b92915050565b600060208201905081810360008301526104ee81610466565b9050919050565b600060208201905061050a6000830184610489565b92915050565b6000819050602082019050919050565b600081519050919050565b6000602082019050919050565b600082825260208201905092915050565b600082825260208201905092915050565b600061056582610578565b9050919050565b60008115159050919050565b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b6000819050919050565b60006105ad82610598565b91507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff8214156105e0576105df6105eb565b5b600182019050919050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b7f4e487b7100000000000000000000000000000000000000000000000000000000600052603260045260246000fd5b600080fd5b7f74686520676976656e206e756d62657220697320696e76616c6964206173207460008201527f6865206e756d626572206973206f7574206f662072616e676500000000000000602082015250565b6106a681610598565b81146106b157600080fd5b5056fea26469706673582212205da625bda0850f1ae09940b191c98f12fd976f993abe0e3ed1fa777c406ebf0564736f6c63430008070033"
-private const val CONTRACT_ADDRESS = "0xe2d8a60415adaa2Ba87c44b8C20C9A15e3F9178a"
+    "608060405234801561001057600080fd5b506000600281905560038190556004556103be8061002f6000396000f3fe608060405234801561001057600080fd5b506004361061007d5760003560e01c8063449b6db21161005b578063449b6db2146100b8578063464d4a92146100db578063a483f4e1146100ee578063f5a31579146100f657600080fd5b8063068ea0eb146100825780630efcb43c1461008c57806342cff738146100a3575b600080fd5b61008a6100fe565b005b6004545b6040519081526020015b60405180910390f35b6100ab6101cb565b60405161009a9190610312565b3360009081526020819052604090205460ff16604051901515815260200161009a565b61008a6100e93660046102f9565b61022d565b600354610090565b600254610090565b3360009081526020819052604090205460ff16156101635760405162461bcd60e51b815260206004820152601b60248201527f596f75204861766520416c7265616479204265656e204164646564000000000060448201526064015b60405180910390fd5b336000818152602081905260408120805460ff191660019081179091558054808201825591527fb10e2d527612073b26eecdfd717e6a320cf44b4afac2b0732d9fcbe2b7fa0cf601805473ffffffffffffffffffffffffffffffffffffffff19169091179055565b6060600180548060200260200160405190810160405280929190818152602001828054801561022357602002820191906000526020600020905b81546001600160a01b03168152600190910190602001808311610205575b5050505050905090565b60048110801561023d5750600081115b6102af5760405162461bcd60e51b815260206004820152603960248201527f74686520676976656e206e756d62657220697320696e76616c6964206173207460448201527f6865206e756d626572206973206f7574206f662072616e676500000000000000606482015260840161015a565b80600114156102d057600280549060006102c88361035f565b919050555050565b80600214156102e957600380549060006102c88361035f565b600480549060006102c88361035f565b60006020828403121561030b57600080fd5b5035919050565b6020808252825182820181905260009190848201906040850190845b818110156103535783516001600160a01b03168352928401929184019160010161032e565b50909695505050505050565b600060001982141561038157634e487b7160e01b600052601160045260246000fd5b506001019056fea264697066735822122036c7a6eb905bfb9bbcbf2436975878a32327f0fd4a8648f67281fd07be0ff4b064736f6c63430008070033"
+private const val CONTRACT_ADDRESS = "0x84D46ba7aAac6221DF9038d3Ccf41F1cd46001aF"
 
 class VoteContractAccessor(
     private val web3obj: Web3j,
@@ -53,63 +57,14 @@ class VoteContractAccessor(
     private val functionGetPartyTwoVotes = "getParty2Votes"
     private val functionGetPartyThreeVotes = "getParty3Votes"
 
-    init {
-        gasProvider.getGasPrice()
-    }
-
-    //complete-fail
     fun test1() {
         val function = Function(
             functionRegisterVote,
-            listOf<Type<*>>(
-                Uint256(2)
-            ),
-            emptyList()
-        )
-        val encodedFunction = FunctionEncoder.encode(function)
-        val response =
-            web3obj.ethCall(
-                Transaction
-                    .createEthCallTransaction(
-                        credentials.address,
-                        CONTRACT_ADDRESS,
-                        encodedFunction
-                    ), DefaultBlockParameterName.LATEST
-            ).sendAsync().get()
-        Log.d(TAG, "response.value = ${response.value}")
-    }
-
-    //-----------------------------------------------------------------------------------------check
-    /**
-     * Error processing transaction request:
-     * exceeds block gas limit
-     */
-    fun test2() {
-        val function = Function(
-            functionRegisterVote,
-            listOf<Type<*>>(
-                Uint256(2)
-            ),
-            emptyList()
-        )
-        val transactionReceipt = executeRemoteCallTransaction(function).sendAsync().get()
-        Log.d(TAG, "transaction receipt, gas used = ${transactionReceipt.gasUsed}")
-    }
-
-    /**
-     * Error processing request: invalid argument 0: json:
-     * cannot unmarshal non-string into Go value of type common.Hash
-     */
-    fun test3() {
-        val function = Function(
-            functionRegisterVote,
-            listOf<Type<*>>(
-                Uint256(2)
-            ),
+            listOf<Type<*>>(Uint256(2)),
             emptyList()
         )
         val txData = FunctionEncoder.encode(function)
-        // TODO: use transaction manager 'raw' with chain-id = 3
+
         val txManager = RawTransactionManager(
             web3obj, credentials, ChainIdLong.ROPSTEN
         )
@@ -123,16 +78,18 @@ class VoteContractAccessor(
                 txData,
                 BigInteger.ZERO
             ).transactionHash
-        val receiptProcessor = PollingTransactionReceiptProcessor(
-            web3obj, TransactionManager.DEFAULT_POLLING_FREQUENCY,
-            TransactionManager.DEFAULT_POLLING_ATTEMPTS_PER_TX_HASH
-        )
+        val receiptProcessor =
+            PollingTransactionReceiptProcessor(
+                web3obj,
+                TransactionManager.DEFAULT_POLLING_FREQUENCY,
+                TransactionManager.DEFAULT_POLLING_ATTEMPTS_PER_TX_HASH
+            )
         val txReceipt = receiptProcessor.waitForTransactionReceipt(txHash)
         Log.d(TAG, "transaction receipt = \ngas used = ${txReceipt.gasUsed}")
     }
 
     //ethSendTransaction = null
-    fun test4() {
+    fun test2() {
         val function = Function(
             functionRegisterVote,
             listOf<Type<*>>(
@@ -140,10 +97,10 @@ class VoteContractAccessor(
             ),
             emptyList()
         )
-        val txData = FunctionEncoder.encode(function)
+        val encodedFunction = FunctionEncoder.encode(function)
         val ethGetTransactionCount =
             web3j
-                .ethGetTransactionCount(CONTRACT_ADDRESS, DefaultBlockParameterName.LATEST)
+                .ethGetTransactionCount(credentials.address, DefaultBlockParameterName.LATEST)
                 .sendAsync()
                 .get()
 
@@ -154,7 +111,7 @@ class VoteContractAccessor(
                 requestCurrentGasPrice(),
                 DefaultGasProvider.GAS_LIMIT,
                 CONTRACT_ADDRESS,
-                txData
+                encodedFunction
             )
         val signedTransaction =
             TransactionEncoder.signMessage(rawTransaction, ChainIdLong.ROPSTEN, credentials)
@@ -164,7 +121,8 @@ class VoteContractAccessor(
         Log.d(TAG, "ethSendTransaction = ${ethSendTransaction.transactionHash}")
     }
 
-    fun test5() {
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun test3() {
         val function = Function(
             functionRegisterVote,
             listOf<Type<*>>(
@@ -172,25 +130,60 @@ class VoteContractAccessor(
             ),
             emptyList()
         )
-        val txData = FunctionEncoder.encode(function)
-        val x =
-            web3obj.ethGetTransactionCount(credentials.address, DefaultBlockParameterName.LATEST)
+        val encodedFunction = FunctionEncoder.encode(function)
+        val ethGetTransactionCount: EthGetTransactionCount =
+            web3j.ethGetTransactionCount(credentials.address, DefaultBlockParameterName.LATEST)
                 .send()
-        val y = web3obj.ethEstimateGas(
-            Transaction.createEthCallTransaction(
-                credentials.address,
-                CONTRACT_ADDRESS, txData
-            )
-        ).sendAsync().get()
-        Log.d(TAG, "y = ${y.rawResponse}")
+
+        val nonce = ethGetTransactionCount.transactionCount
+        Log.d(TAG, "nonce = $nonce")
+
+        val amountToBeSent: BigDecimal = BigDecimal.valueOf(4000000)
+        val cost: BigInteger = Convert.toWei(amountToBeSent, Convert.Unit.ETHER).toBigInteger()
+        Log.d(TAG, "cost = $cost")
+
+        val gasLimit = BigInteger.valueOf(4000000)
+        val gasPrice = BigInteger.valueOf(4000000)
+
+        val transaction = RawTransaction.createTransaction(
+            ChainIdLong.ROPSTEN,
+            nonce,
+            gasLimit,
+            CONTRACT_ADDRESS,
+            cost,
+            encodedFunction,
+            BigInteger.valueOf(4000000),
+            BigInteger.valueOf(4000000)
+        )
+
+        val signedMessage =
+            TransactionEncoder.signMessage(transaction, ChainIdLong.ROPSTEN, credentials)
+
+        val hexValue = Numeric.toHexString(signedMessage)
+        Log.d(TAG, "hexValue = $hexValue")
+
+        val gasPrice1 = Convert.toWei("1", Convert.Unit.GWEI).toBigInteger()
+        Log.d(TAG,"generated gas price = $gasPrice1, the saved gasPrice = $gasPrice")
+
+        val sentTransaction = web3j.ethSendRawTransaction(hexValue).send()
+        val transactionHash = sentTransaction.transactionHash
+        Log.d(TAG, "transactionHash = $transactionHash")
+
+        var receipt: Optional<TransactionReceipt>
+        do {
+            Log.d(TAG, "checking if transactionHash [$transactionHash] is mined yet")
+            receipt = web3j.ethGetTransactionReceipt(transactionHash).send().transactionReceipt
+            Thread.sleep(3000)
+        } while (receipt.isPresent)
+        Log.d(TAG, "transaction was mined at [${receipt.get().blockNumber}]")
+        Log.d(TAG, "balance = ${printBalance()}")
     }
+
 
     fun printBalance(): BigDecimal {
         val balance =
             Convert.fromWei(
-                web3obj.ethGetBalance(
-                    credentials.address, DefaultBlockParameterName.LATEST
-                )
+                web3obj.ethGetBalance(credentials.address, DefaultBlockParameterName.LATEST)
                     .send().balance.toString(),
                 Convert.Unit.ETHER
             )
@@ -200,7 +193,7 @@ class VoteContractAccessor(
     }
 
     // TODO: fix error - late init property has not been initiated
-    lateinit var a: Array<Address>
+    private lateinit var a: Array<Address>
     fun getAddressValues(): RemoteCall<Array<Address>> {
         val function = Function(
             functionGetAddressValues,
@@ -211,8 +204,6 @@ class VoteContractAccessor(
     }
 
     fun putVote(party: PartyEnum): RemoteCall<TransactionReceipt> {
-        val x = web3j.ethBlockNumber().send()
-        Log.d(TAG, "gas price = ${x.rawResponse}")
         Log.d(TAG, "putVote\n\n\nstarted")
         val function = Function(
             functionRegisterVote,
@@ -227,7 +218,6 @@ class VoteContractAccessor(
             ),
             emptyList()
         )
-
         Log.d(TAG, "gas price = ${gasProvider.getGasPrice(functionRegisterVote)}")
         return executeRemoteCallTransaction(function)
     }

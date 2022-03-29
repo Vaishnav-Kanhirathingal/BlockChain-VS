@@ -119,7 +119,7 @@
                             app:layout_constraintTop_toBottomOf="@id/party_selector_radio_group" />
 
                         <TextView
-                            android:id="@+id/casteVote_output"
+                            android:id="@+id/caste_vote_output"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:text='@{"Contract Cost :-\n"+contract_fragment.transactionCost}'
@@ -138,7 +138,7 @@
                             android:text="@string/call"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/casteVote_output" />
+                            app:layout_constraintTop_toBottomOf="@id/caste_vote_output" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </com.google.android.material.card.MaterialCardView>
@@ -306,6 +306,13 @@
                             app:layout_constraintTop_toBottomOf="@id/contract_description_three" />
 
                         <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Votes For Each Party :-"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/function_get_party_votes_label"
+                            android:id="@+id/party_votes_label"/>
+                        <TextView
                             android:id="@+id/get_votes_output"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -314,7 +321,7 @@
                             android:textSize="@dimen/small_text"
                             app:layout_constraintLeft_toRightOf="@id/get_votes_button"
                             app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/function_get_party_votes_label"
+                            app:layout_constraintTop_toBottomOf="@id/party_votes_label"
                             tools:text="@string/not_cached_yet" />
 
                         <Button
@@ -359,7 +366,7 @@
                             android:id="@+id/current_balance_label"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Current Balance :- "
+                            android:text="Ropsten Net Balance :- "
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/get_balance_label" />
 
@@ -367,7 +374,9 @@
                             android:id="@+id/user_balance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="balance"
+                            android:textAlignment="viewEnd"
+                            tools:text="balance:- \n0.987654321 ETH"
+                            android:text='@{"Balance:-\n"+contract_fragment.balance}'
                             android:textSize="@dimen/small_text"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/current_balance_label" />
@@ -391,6 +400,7 @@
                     android:layout_marginVertical="@dimen/contract_vertical_spacing"
                     android:background="#000000"
                     tools:layout_height="2dp" />
+
                 <Button
                     android:id="@+id/testing_button"
                     android:layout_width="wrap_content"

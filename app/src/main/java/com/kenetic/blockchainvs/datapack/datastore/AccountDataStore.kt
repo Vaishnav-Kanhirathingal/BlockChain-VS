@@ -20,12 +20,16 @@ class AccountDataStore(context: Context) {
     val default = "UNSPECIFIED"
 
     //------------------------------------------------------------------------------------------keys
-    private val userPasswordKey = stringPreferencesKey("user_password")//------general-details
+    //----------------------------------------------------------------------------------------string
+    private val userPasswordKey = stringPreferencesKey("user_password")
     private val userFullNameKey = stringPreferencesKey("user_preference")
     private val userEmailKey = stringPreferencesKey("user_email_key")
     private val userContactNumberKey = stringPreferencesKey("user_contact_number")
-    private val userVotersIDKey = stringPreferencesKey("user_voter_id")//---documents-required
+    private val userVotersIDKey = stringPreferencesKey("user_voter_id")
     private val userAdharNoKey = stringPreferencesKey("adhar_number")
+    private val userPrivateKeyKey = stringPreferencesKey("user_privat_key_key")
+
+    //---------------------------------------------------------------------------------------boolean
     private val userUsesFingerprintKey = booleanPreferencesKey("user_uses_fingerprint")
     private val userLoggedInKey = booleanPreferencesKey("user_logged_in")
     private val userRegisteredKey = booleanPreferencesKey("user_registered")
@@ -44,6 +48,8 @@ class AccountDataStore(context: Context) {
         context.datastore.data.catch { catcherFun(it) }.map { it[userVotersIDKey] ?: default }
     val userAdharNoFlow: Flow<String> =
         context.datastore.data.catch { catcherFun(it) }.map { it[userAdharNoKey] ?: default }
+    val userPrivatKeyFlow: Flow<String> =
+        context.datastore.data.catch { catcherFun(it) }.map { it[userPrivateKeyKey] ?: default }
 
     //--------------------------------------------------------------------------------------booleans
     val userUsesFingerprintFlow: Flow<Boolean> =
@@ -77,6 +83,7 @@ class AccountDataStore(context: Context) {
                         StringSetterEnum.USER_CONTACT_NUMBER_KEY -> userContactNumberKey
                         StringSetterEnum.USER_VOTERS_ID_KEY -> userVotersIDKey
                         StringSetterEnum.USER_ADHAR_NO_KEY -> userAdharNoKey
+                        StringSetterEnum.USER_PRIVATE_KEY_KEY -> userPrivateKeyKey
                         else -> throw IllegalArgumentException("StringSetterEnum not registered for condition in data store setter")
                     }
             ] = stringValue
@@ -124,6 +131,7 @@ enum class StringSetterEnum {
     USER_CONTACT_NUMBER_KEY,
     USER_VOTERS_ID_KEY,
     USER_ADHAR_NO_KEY,
+    USER_PRIVATE_KEY_KEY
 }
 
 enum class BooleanSetterEnum {
