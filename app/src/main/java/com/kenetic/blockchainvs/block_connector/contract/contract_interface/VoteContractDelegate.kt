@@ -1,8 +1,10 @@
 package com.kenetic.blockchainvs.block_connector.contract.contract_interface
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.web3j.crypto.Credentials
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
@@ -84,7 +86,7 @@ class VoteContractDelegate() {
                 contract.getPartyVotes(PartyEnum.TWO).sendAsync().get().value.toInt()
             val votesForThree: Int =
                 contract.getPartyVotes(PartyEnum.THREE).sendAsync().get().value.toInt()
-                    "party 1 votes = " + votesForOne +
+            "party 1 votes = " + votesForOne +
                     "\nparty 2 votes = " + votesForTwo +
                     "\nparty 3 votes = " + votesForThree
         } catch (e: Exception) {
@@ -134,30 +136,58 @@ class VoteContractDelegate() {
 
     fun getBalance(): BigDecimal = contract.printBalance()
 
-    //checking connection for testing
-    @RequiresApi(Build.VERSION_CODES.N)
-    fun testingFunction() {
-        contract.apply {
-            Log.d(TAG, "Start testing-\n\n\nStarting function - 1")
-            try {
-                test1()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            Log.d(TAG, "finished test - 1,\n\n\nStarting function - 2")
-            try {
-                test2()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            Log.d(TAG, "finished test - 2,\n\n\nStarting function - 3")
+    fun testFunction(number: String, testOutputChanger: (String) -> Unit) {
+        val testGasPrice: BigInteger = Convert.toWei(number, Convert.Unit.GWEI).toBigInteger()
+        //this gas limit value is from deployment and has to be constant
+        val testGasLimit = BigInteger.valueOf(4000000)
 
-            try {
-                test3()
-            } catch (e: Exception) {
-                e.printStackTrace()
+        val testGasProvider: ContractGasProvider = StaticGasProvider(testGasPrice, testGasLimit)
+
+        val testContract = VoteContractAccessor(
+            web3j,
+            RawTransactionManager(web3j, credentials, ChainIdLong.ROPSTEN),
+            testGasProvider,
+            credentials
+        )
+        CoroutineScope(Dispatchers.Main).launch {
+            testOutputChanger(
+                "\nnumber received = $number\n" +
+                        "test gas price = $testGasPrice\n" +
+                        "contract initialized,\n" +
+                        "calling Vote function for party one..."
+            )
+        }
+        try {
+            CoroutineScope(Dispatchers.IO).launch {
+                repeat(6) {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        testOutputChanger("\nTime Elapsed = $it Minutes")
+                    }
+                    Thread.sleep(60000)
+                }
             }
-            Log.d(TAG, "finished test - 3")
+            val transactionReceipt =
+                testContract.putVote(PartyEnum.ONE).sendAsync().get(5, TimeUnit.MINUTES)
+            transactionReceipt.apply {
+                CoroutineScope(Dispatchers.Main).launch {
+                    testOutputChanger(
+                        "\ntransactionReceipt received\n" +
+                                "call has been performed\n" +
+                                "blockHash = $blockHash\n" +
+                                "blockNumber = $blockNumber\n" +
+                                "cumulativeGasUsed = $cumulativeGasUsed\n" +
+                                "isStatusOK = $isStatusOK"
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            CoroutineScope(Dispatchers.Main).launch {
+                testOutputChanger(
+                    "Error Has occurred\n" +
+                            e.message!!.toString()
+                )
+            }
         }
     }
 }

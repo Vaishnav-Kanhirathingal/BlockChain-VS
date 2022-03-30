@@ -1,5 +1,6 @@
 package com.kenetic.blockchainvs.app_viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kenetic.blockchainvs.datapack.database.PartyDAO
@@ -10,6 +11,19 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class MainViewModel(private val partyDAO: PartyDAO) : ViewModel() {
+    private val transactionInProgress = "Transaction currently in progress..."
+    private val calling = "calling function..."
+    private val unknown = "Unknown..."
+    private val callNotPerformedYet = "Call Not Performed Yet"
+
+    //------------------------------------------------------------------------data-binding-live-data
+    val transactionCost: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
+    val addressList: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
+    val alreadyVoted: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
+    val allPartyVotes: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
+    val balance: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
+    val testOutput: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
+
     //---------------------------------------------------------------------------------dao-functions
     private fun insertParty(partyData: PartyData) {
         CoroutineScope(Dispatchers.IO).launch { partyDAO.insertParty(partyData) }
