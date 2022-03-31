@@ -2,10 +2,7 @@ package com.kenetic.blockchainvs.datapack.datastore
 
 import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -34,6 +31,13 @@ class AccountDataStore(context: Context) {
     private val userLoggedInKey = booleanPreferencesKey("user_logged_in")
     private val userRegisteredKey = booleanPreferencesKey("user_registered")
 
+    // TODO: remove after testing...
+    private val balanceKey = stringPreferencesKey("user_balance")
+    private val v1Key = intPreferencesKey("vo_1")
+    private val v2Key = intPreferencesKey("vo_2")
+    private val v3Key = intPreferencesKey("vo_3")
+    private val hvKey = booleanPreferencesKey("h_v")
+
     //------------------------------------------------------------------------------detail-accessors
     //---------------------------------------------------------------------------------------strings
     val userPasswordFlow: Flow<String> =
@@ -59,6 +63,14 @@ class AccountDataStore(context: Context) {
     val userRegisteredFlow =
         context.datastore.data.catch { catcherFun(it) }.map { it[userRegisteredKey] ?: false }
 
+    // TODO: remove after testing
+    val balanceFlow =
+        context.datastore.data.catch { catcherFun(it) }.map { it[balanceKey] ?: default }
+    val v1Flow = context.datastore.data.catch { catcherFun(it) }.map { it[v1Key] ?: 0 }
+    val v2Flow = context.datastore.data.catch { catcherFun(it) }.map { it[v2Key] ?: 0 }
+    val v3Flow = context.datastore.data.catch { catcherFun(it) }.map { it[v3Key] ?: 0 }
+    val hvFlow = context.datastore.data.catch { catcherFun(it) }.map { it[hvKey] ?: false }
+
     private fun catcherFun(throwable: Throwable) {
         if (throwable is IOException) {
             throwable.printStackTrace()
@@ -68,7 +80,6 @@ class AccountDataStore(context: Context) {
     }
 
     //-------------------------------------------------------------------------------general-setters
-    // TODO: check if the else section is gray
     suspend fun dataStoreStringSetter(
         setFor: StringSetterEnum,
         stringValue: String,
@@ -122,6 +133,26 @@ class AccountDataStore(context: Context) {
             it[userRegisteredKey] = false
         }
     }
+
+    // TODO: for testing purposes
+    suspend fun testSetter(
+        context: Context,
+        testEnum: TestEnum,
+        v1v2v3: Int,
+        bal: String,
+        hv: Boolean
+    ) {
+        context.datastore.edit {
+            when (testEnum) {
+                TestEnum.BALANCE -> it[balanceKey] = bal
+                TestEnum.V1 -> it[v1Key] = it[v1Key]!! + v1v2v3
+                TestEnum.V2 -> it[v2Key] = it[v2Key]!! + v1v2v3
+                TestEnum.V3 -> it[v3Key] = it[v3Key]!! + v1v2v3
+                TestEnum.HV -> it[hvKey] = hv
+                else -> throw IllegalArgumentException("not a registered test enum")
+            }
+        }
+    }
 }
 
 enum class StringSetterEnum {
@@ -138,4 +169,9 @@ enum class BooleanSetterEnum {
     USER_USES_FINGERPRINT_KEY,
     USER_LOGGED_IN,
     USER_REGISTERED
+}
+
+// TODO: for testing purposes
+enum class TestEnum {
+    BALANCE, V1, V2, V3, HV
 }

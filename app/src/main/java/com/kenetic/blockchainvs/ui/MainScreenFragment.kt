@@ -78,6 +78,7 @@ class MainScreenFragment : Fragment() {
             }
             includedSubLayout.topAppBar.setNavigationOnClickListener {
                 //working
+                binding.root.openDrawer(binding.navigationViewMainScreen)
                 Log.d(TAG, "setNavigationOnClickListener working")
             }
         }

@@ -17,11 +17,11 @@ import java.util.concurrent.TimeUnit
 
 private const val MINIMUM_GAS_LIMIT = 21000
 private const val PRIVATE_KEY_ROPSTEN = "YOUR_ROPSTEN_PRIVATE_KEY"
-
 //todo: You have to create an ethereum account on the Ropsten network and put your private key here
-private const val ROPSTEN_INFURA_URL = "https://ropsten.infura.io/YOUR_API_KEY"
 
+private const val ROPSTEN_INFURA_URL = "https://ropsten.infura.io/YOUR_API_KEY"
 //todo: You have to register on the Infura website and put your api key here
+
 private const val CONTRACT_ADDRESS = "0x024b64940518779068e57352F3bDDdE08E4D9c40"
 
 class BlockAct : AppCompatActivity() {
@@ -49,27 +49,6 @@ class BlockAct : AppCompatActivity() {
             toast(result)
         }
     }
-
-    // TODO------------------------------------------------------------------------------unnecessary
-    fun writeButtonClicked() {
-        CoroutineScope(Dispatchers.Main).launch(Dispatchers.IO) {
-            isLoading.set(true)
-            val result = writeToContract()
-            isLoading.set(false)
-            toast(result)
-        }
-    }
-
-    // TODO------------------------------------------------------------------------------unnecessary
-    fun readButtonClicked() {
-        CoroutineScope(Dispatchers.Main).launch(Dispatchers.IO) {
-            isLoading.set(true)
-            val result = readFromContract()
-            isLoading.set(false)
-            textReadFromContract.set(result)
-        }
-    }
-
     // TODO-------------------------------------------------------------------------------------done
     private fun writeToContract(): String {
         val greetingToWrite = userText.get()

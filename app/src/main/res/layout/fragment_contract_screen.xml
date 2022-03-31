@@ -317,7 +317,7 @@
                             android:id="@+id/get_votes_output"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text='@{"votes For Each Party :-\n"+data_binding_view_model.allPartyVotes}'
+                            android:text='@{data_binding_view_model.allPartyVotes}'
                             android:textAlignment="viewEnd"
                             android:textSize="@dimen/small_text"
                             app:layout_constraintLeft_toRightOf="@id/get_votes_button"

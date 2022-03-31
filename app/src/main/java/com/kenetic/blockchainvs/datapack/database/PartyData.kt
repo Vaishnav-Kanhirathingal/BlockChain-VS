@@ -8,6 +8,5 @@ import androidx.room.PrimaryKey
 data class PartyData(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "party_name") var partyName: String,
-    @ColumnInfo(name = "party_promises") var partyPromises: String,
-    @ColumnInfo(name = "party_selected") var partySelected:Boolean,
+    @ColumnInfo(name = "party_promises") var partyDescription: String,
 )

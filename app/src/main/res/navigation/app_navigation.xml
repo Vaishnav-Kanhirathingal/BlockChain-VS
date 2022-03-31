@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_mainScreenFragment_to_contractScreenFragment"
             app:destination="@id/contractScreenFragment" />
+        <action
+            android:id="@+id/action_mainScreenFragment_to_contractScreensFragment"
+            app:destination="@id/contractScreensFragment" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
@@ -38,5 +41,13 @@
             app:destination="@id/mainScreenFragment"
             app:popUpTo="@id/mainScreenFragment"
             app:popUpToInclusive="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/contractScreensFragment"
+        android:name="com.kenetic.blockchainvs.block_connector.contract.reference_code.ContractScreensFragment"
+        android:label="ContractScreensFragment" >
+        <action
+            android:id="@+id/action_contractScreensFragment_to_mainScreenFragment"
+            app:destination="@id/mainScreenFragment" />
     </fragment>
 </navigation>

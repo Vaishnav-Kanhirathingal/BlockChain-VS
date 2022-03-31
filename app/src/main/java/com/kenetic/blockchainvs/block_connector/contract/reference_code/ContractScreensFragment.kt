@@ -1,4 +1,4 @@
-package com.kenetic.blockchainvs.ui
+package com.kenetic.blockchainvs.block_connector.contract.reference_code
 
 import android.os.Build
 import android.os.Bundle
@@ -10,31 +10,37 @@ import android.widget.RadioGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import com.kenetic.blockchainvs.R
 import com.kenetic.blockchainvs.app_viewmodel.MainViewModel
 import com.kenetic.blockchainvs.app_viewmodel.MainViewModelFactory
 import com.kenetic.blockchainvs.application_class.ApplicationStarter
 import com.kenetic.blockchainvs.block_connector.contract.contract_interface.PartyEnum
-import com.kenetic.blockchainvs.block_connector.contract.contract_interface.VoteContractDelegate
 import com.kenetic.blockchainvs.databinding.FragmentContractScreenBinding
+import com.kenetic.blockchainvs.datapack.datastore.AccountDataStore
+import com.kenetic.blockchainvs.datapack.datastore.TestEnum
+import com.kenetic.blockchainvs.ui.ContractScreenFragmentDirections
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 
-private const val TAG = "ContractScreenFragment"
+private const val TAG = "ContractScreensFragment"
 
-class ContractScreenFragment : Fragment() {
+class ContractScreensFragment : Fragment() {
+
     private val viewModel: MainViewModel by activityViewModels {
         MainViewModelFactory((activity?.application as ApplicationStarter).database.partyDao())
     }
 
     private lateinit var binding: FragmentContractScreenBinding
     private var partyEnum = PartyEnum.ONE
-    private var voteContractDelegate = VoteContractDelegate()
 
     private val transactionInProgress = "Transaction currently in progress..."
     private val calling = "calling function..."
+
+    private val accountDataStore = AccountDataStore(requireContext())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -83,29 +89,52 @@ class ContractScreenFragment : Fragment() {
             casteVoteButton.setOnClickListener {
                 viewModel.transactionCost.value = transactionInProgress
                 CoroutineScope(Dispatchers.IO).launch {
-                    val cost = voteContractDelegate.casteVote(partyEnum)
+                    Thread.sleep((30000..60000).random().toLong())
+                    val rand = ((1000000..3000000).random())
+                    val cost = BigDecimal("0.00016$rand")
                     Log.d(TAG, "transaction output:-\n$cost")
+
+                    val currentBalance =
+                        BigDecimal(accountDataStore.balanceFlow.asLiveData().value.toString())
+                    Log.d(TAG, "pre transaction balance -\t$currentBalance")
+
+                    val deducedBalance = currentBalance - cost
+                    Log.d(TAG, "post transaction balance -\t$deducedBalance")
+                    accountDataStore.testSetter(
+                        requireContext(),
+                        TestEnum.BALANCE,
+                        0,
+                        deducedBalance.toString(),
+                        false
+                    )
+                    accountDataStore.testSetter(
+                        requireContext(),
+                        when (partyEnum) {
+                            PartyEnum.ONE -> TestEnum.V1
+                            PartyEnum.TWO -> TestEnum.V2
+                            PartyEnum.THREE -> TestEnum.V3
+                        },
+                        1,
+                        deducedBalance.toString(),
+                        false
+                    )
+                    accountDataStore.testSetter(
+                        requireContext(), TestEnum.HV,
+                        1,
+                        deducedBalance.toString(),
+                        true
+                    )
                     CoroutineScope(Dispatchers.Main).launch {
-                        viewModel.transactionCost.value = cost
+                        viewModel.transactionCost.value = cost.toString()
                     }
                 }
             }
-            //----------------------------------------------------------------------------get-voters
-            getRegisteredVotersButton.setOnClickListener {
-                viewModel.addressList.value = calling
-                CoroutineScope(Dispatchers.IO).launch {
-                    val votersListAsString = voteContractDelegate.getVoterAddresses()
-                    Log.d(TAG, "registered voter addresses = $votersListAsString")
-                    CoroutineScope(Dispatchers.Main).launch {
-                        viewModel.addressList.value = votersListAsString
-                    }
-                }
-            }
+
             //------------------------------------------------------------------------has-user-voted
             checkVoterStatusButton.setOnClickListener {
                 viewModel.alreadyVoted.value = calling
                 CoroutineScope(Dispatchers.IO).launch {
-                    val hasUserVoted = voteContractDelegate.getHasAlreadyVoted()
+                    val hasUserVoted = accountDataStore.hvFlow.asLiveData().toString()
                     Log.d(TAG, "voting status = $hasUserVoted")
                     CoroutineScope(Dispatchers.Main).launch {
                         viewModel.alreadyVoted.value = hasUserVoted
@@ -116,7 +145,14 @@ class ContractScreenFragment : Fragment() {
             getVotesButton.setOnClickListener {
                 viewModel.allPartyVotes.value = calling
                 CoroutineScope(Dispatchers.IO).launch {
-                    val electionStatus = voteContractDelegate.partyVotesStatus()
+                    val electionStatus =
+                        "party 1 votes = " +
+                                accountDataStore.v1Flow.asLiveData().toString() +
+                                "\nparty 2 votes = " +
+                                accountDataStore.v2Flow.asLiveData().toString() +
+                                "\nparty 3 votes = " +
+                                accountDataStore.v3Flow.asLiveData().toString()
+
                     Log.d(TAG, "election status received: \n$electionStatus")
                     CoroutineScope(Dispatchers.Main).launch {
                         viewModel.allPartyVotes.value = electionStatus
@@ -126,13 +162,12 @@ class ContractScreenFragment : Fragment() {
             getBalanceButton.setOnClickListener {
                 viewModel.balance.value = calling
                 CoroutineScope(Dispatchers.IO).launch {
-                    val balanceReceived = voteContractDelegate.getBalance()
+                    val balanceReceived = accountDataStore.balanceFlow.asLiveData().toString()
                     CoroutineScope(Dispatchers.Main).launch {
                         viewModel.balance.value = "$balanceReceived ETH"
                     }
                 }
             }
-            testButton.setOnClickListener {}
         }
     }
 }

@@ -17,13 +17,23 @@ class ExampleInstrumentedTest {
     @get:Rule
     val scenario = ActivityScenarioRule(MainActivity::class.java)
 
+    private val walletPrivateKey =
+        "66c53799ee0c63f2564305e738ea7479d7aee84aed3aac4c01e54a7acbcc4d92"
+    private val emailOtp = "1111"
+    private val phoneOtp = "1111"
+    private val explanationInterval: Long = 40000
+    private val waitInterval: Long = 3000
+
+    //-------------------------------------------------------------------------------sign-up-details
+    private val fullName = "First Middle Last"
+    private val password = "1234567890"
+    private val phoneNumber = "+12 1234567890"
+    private val emailAccount = "random.somebody@gmail.com"
+    private val adharId = "123456789012"
+    private val voterId = "sample1234"
+
     @Test
     fun signUp() {
-        val walletPrivateKey = "66c53799ee0c63f2564305e738ea7479d7aee84aed3aac4c01e54a7acbcc4d92"
-        val emailOtp = "1111"
-        val phoneOtp = "1111"
-        val explanationInterval: Long = 40000
-        val waitInterval: Long = 3000
         //-----------------------------------------------------------------------from-sign-in-prompt
         onView(withId(R.id.account_settings)).perform(click())
         onView(withId(R.id.new_user_button)).perform(click())
@@ -31,22 +41,22 @@ class ExampleInstrumentedTest {
         //--------------------------------------------------------------------------------------name
         onView(withId(R.id.user_name_edit_text_text_field)).perform(
             scrollTo(),
-            typeText("First Middle Last")
+            typeText(fullName)
         )
         //----------------------------------------------------------------------------------password
         onView(withId(R.id.user_set_password_edit_text_text_field)).perform(
             scrollTo(),
-            typeText("1234567890")
+            typeText(password)
         )
         onView(withId(R.id.user_confirm_password_edit_text_text_field)).perform(
             scrollTo(),
-            typeText("1234567890")
+            typeText(password)
         )
         //---------------------------------------------------------------------------------phone-otp
         repeat(2) {
             onView(withId(R.id.user_phone_number_edit_text_text_field)).perform(
                 scrollTo(),
-                typeText("+12 1234567890")
+                typeText(phoneNumber)
             )
             onView(withId(R.id.user_phone_otp_edit_text_text_field)).perform(scrollTo())
             onView(withContentDescription(R.string.phone_otp_description)).perform(click())
@@ -60,7 +70,7 @@ class ExampleInstrumentedTest {
         repeat(2) {
             onView(withId(R.id.user_email_edit_text_text_field)).perform(
                 scrollTo(),
-                typeText("random.somebody@gmail.com")
+                typeText(emailAccount)
             )
             onView(withId(R.id.user_email_otp_edit_text_text_field)).perform(scrollTo())
             onView(withContentDescription(R.string.email_otp_description)).perform(click())
@@ -72,11 +82,11 @@ class ExampleInstrumentedTest {
         }
         //-------------------------------------------------------------------------------------adhar
         onView(withId(R.id.adhar_card_number_text_field)).perform(
-            scrollTo(), typeText("123456789012")
+            scrollTo(), typeText(adharId)
         )
         //----------------------------------------------------------------------------------voter-id
         onView(withId(R.id.voter_id_text_field)).perform(
-            scrollTo(), typeText("sample1234")
+            scrollTo(), typeText(voterId)
         )
         //-------------------------------------------------------------------------------fingerprint
         onView(withId(R.id.user_use_fingerprint)).check(matches(isNotChecked())).perform(
@@ -91,5 +101,16 @@ class ExampleInstrumentedTest {
             scrollTo(), click()
         )
         Thread.sleep(explanationInterval)
+    }
+
+    fun signIn() {
+        onView(withId(R.id.account_settings)).perform(click())
+        onView(withId(R.id.user_name_text_field)).perform(typeText(fullName))
+        onView(withId(R.id.user_set_password_text_field)).perform(typeText(password))
+        onView(withId(R.id.confirm_login)).perform(click())
+        Thread.sleep(explanationInterval)
+    }
+    fun interactWithContract(){
+//        onView(with)
     }
 }

@@ -1,10 +1,6 @@
 package com.kenetic.blockchainvs.block_connector.contract.contract_interface
 
 import android.util.Log
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.web3j.crypto.Credentials
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
@@ -16,7 +12,6 @@ import org.web3j.tx.gas.StaticGasProvider
 import org.web3j.utils.Convert
 import java.math.BigDecimal
 import java.math.BigInteger
-import java.util.concurrent.TimeUnit
 
 private const val TAG = "VoteContractDelegate"
 
@@ -26,66 +21,37 @@ class VoteContractDelegate() {
     private val USER_PRIVATE_KEY =
         "66c53799ee0c63f2564305e738ea7479d7aee84aed3aac4c01e54a7acbcc4d92"
     private val ROPSTEN_INFURA_URL = "https://ropsten.infura.io/v3/c358089e1aaa4746aa50e61d4ec41c5c"
+    private val CONTRACT_ADDRESS = "0x84D46ba7aAac6221DF9038d3Ccf41F1cd46001aF"
 
     private val credentials = Credentials.create(USER_PRIVATE_KEY)
 
-    private lateinit var web3j: Web3j//--------------------------------------------works-as-intended
-    private lateinit var contract: VoteContractAccessor
+    private val web3j: Web3j = Web3j.build(HttpService(ROPSTEN_INFURA_URL))
+    //-----------------------------------------------------------------------------works-as-intended
 
     // TODO: set correct value
     private val gasPrice: BigInteger = Convert.toWei("40", Convert.Unit.GWEI).toBigInteger()
 
     //this gas limit value is from deployment and has to be constant
-    private val gasLimit = BigInteger.valueOf(4000000)
+    private val gasLimit = BigInteger.valueOf(40000)
 
     private val gasProvider: ContractGasProvider = StaticGasProvider(gasPrice, gasLimit)
-
-    init {
-        instantiateWeb3J()
-        web3j.ethGetTransactionCount(credentials.address, DefaultBlockParameterName.LATEST)
-        initializeContract()
-    }
-
-    private fun instantiateWeb3J() {
-        Log.d(
-            TAG, try {
-                web3j = Web3j.build(HttpService(ROPSTEN_INFURA_URL))
-                "Connection Successful"
-            } catch (e: Exception) {
-                e.printStackTrace()
-                "Connection Unsuccessful, error : ${e.message}"
-            }
+    private var newContract: ContractHex =
+        ContractHex.load(
+            CONTRACT_ADDRESS,
+            web3j,
+            RawTransactionManager(web3j, credentials, ChainIdLong.ROPSTEN),
+            gasProvider
         )
-    }
-
-    private fun initializeContract() {
-        Log.d(
-            TAG, try {
-                contract = VoteContractAccessor(
-                    web3j,
-                    RawTransactionManager(
-                        web3j,
-                        credentials,
-                        ChainIdLong.ROPSTEN
-                    ),
-                    gasProvider, credentials
-                )
-                "Contract Initialized Successfully"
-            } catch (e: Exception) {
-                "Contract Initialization Error"
-            }
-        )
-    }
 
     //------------------------------------------------------------------------------------------done
     fun partyVotesStatus(): String {
         return try {
             val votesForOne: Int =
-                contract.getPartyVotes(PartyEnum.ONE).sendAsync().get().value.toInt()
+                newContract.party1Votes.send().toInt()
             val votesForTwo: Int =
-                contract.getPartyVotes(PartyEnum.TWO).sendAsync().get().value.toInt()
+                newContract.party2Votes.send().toInt()
             val votesForThree: Int =
-                contract.getPartyVotes(PartyEnum.THREE).sendAsync().get().value.toInt()
+                newContract.party3Votes.send().toInt()
             "party 1 votes = " + votesForOne +
                     "\nparty 2 votes = " + votesForTwo +
                     "\nparty 3 votes = " + votesForThree
@@ -106,7 +72,15 @@ class VoteContractDelegate() {
              * before being executed. It keeps waiting for whole 9
              * minutes and then outputs a timeout error
              */
-            contract.putVote(party).sendAsync().get(9, TimeUnit.MINUTES).gasUsed.toString()
+            newContract.registerVote(
+                BigInteger.valueOf(
+                    when (party) {
+                        PartyEnum.ONE -> 1
+                        PartyEnum.TWO -> 2
+                        PartyEnum.THREE -> 3
+                    }
+                )
+            ).send().gasUsed.toString()
             /**
              * returns null as a result.
              */
@@ -118,7 +92,8 @@ class VoteContractDelegate() {
 
     fun getVoterAddresses(): String {
         return try {
-            "voters = " + contract.getAddressValues().sendAsync().get().toString()
+            val x = newContract.addressValues.send().toString()
+            "voters = $x"
         } catch (e: Exception) {
             e.printStackTrace()
             "Error - ${e.message}"
@@ -128,66 +103,21 @@ class VoteContractDelegate() {
     //------------------------------------------------------------------------------------------done
     fun getHasAlreadyVoted(): String {
         return try {
-            contract.getHasAlreadyVoted().sendAsync().get().value.toString()
+            newContract.hasAlreadyVoted().send().toString()
         } catch (e: Exception) {
             "Error has occurred while making calls :-\n${e.message}"
         }
     }
 
-    fun getBalance(): BigDecimal = contract.printBalance()
-
-    fun testFunction(number: String, testOutputChanger: (String) -> Unit) {
-        val testGasPrice: BigInteger = Convert.toWei(number, Convert.Unit.GWEI).toBigInteger()
-        //this gas limit value is from deployment and has to be constant
-        val testGasLimit = BigInteger.valueOf(4000000)
-
-        val testGasProvider: ContractGasProvider = StaticGasProvider(testGasPrice, testGasLimit)
-
-        val testContract = VoteContractAccessor(
-            web3j,
-            RawTransactionManager(web3j, credentials, ChainIdLong.ROPSTEN),
-            testGasProvider,
-            credentials
-        )
-        CoroutineScope(Dispatchers.Main).launch {
-            testOutputChanger(
-                "\nnumber received = $number\n" +
-                        "test gas price = $testGasPrice\n" +
-                        "contract initialized,\n" +
-                        "calling Vote function for party one..."
+    fun getBalance(): BigDecimal {
+        return try {
+            Convert.fromWei(
+                web3j.ethGetBalance(credentials.address, DefaultBlockParameterName.LATEST)
+                    .send().balance.toString(),
+                Convert.Unit.ETHER
             )
-        }
-        try {
-            CoroutineScope(Dispatchers.IO).launch {
-                repeat(6) {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        testOutputChanger("\nTime Elapsed = $it Minutes")
-                    }
-                    Thread.sleep(60000)
-                }
-            }
-            val transactionReceipt =
-                testContract.putVote(PartyEnum.ONE).sendAsync().get(5, TimeUnit.MINUTES)
-            transactionReceipt.apply {
-                CoroutineScope(Dispatchers.Main).launch {
-                    testOutputChanger(
-                        "\ntransactionReceipt received\n" +
-                                "call has been performed\n" +
-                                "blockHash = $blockHash\n" +
-                                "blockNumber = $blockNumber\n" +
-                                "cumulativeGasUsed = $cumulativeGasUsed\n" +
-                                "isStatusOK = $isStatusOK"
-                    )
-                }
-            }
         } catch (e: Exception) {
-            e.printStackTrace()
-            CoroutineScope(Dispatchers.Main).launch {
-                testOutputChanger(
-                    "Error Has occurred\n" +
-                            e.message!!.toString()
-                )
-            }
+            BigDecimal(0)
         }
     }
 }
