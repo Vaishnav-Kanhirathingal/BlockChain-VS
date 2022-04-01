@@ -12,13 +12,14 @@ import org.web3j.tx.gas.StaticGasProvider
 import org.web3j.utils.Convert
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.util.concurrent.TimeUnit
 
 private const val TAG = "VoteContractDelegate"
 
 class VoteContractDelegate() {
     //-----------------------------------------------------------------------------contract-elements
     // TODO: get this from data store
-    private val USER_PRIVATE_KEY =
+    val USER_PRIVATE_KEY =
         "66c53799ee0c63f2564305e738ea7479d7aee84aed3aac4c01e54a7acbcc4d92"
     private val ROPSTEN_INFURA_URL = "https://ropsten.infura.io/v3/c358089e1aaa4746aa50e61d4ec41c5c"
     private val CONTRACT_ADDRESS = "0x84D46ba7aAac6221DF9038d3Ccf41F1cd46001aF"
@@ -29,13 +30,14 @@ class VoteContractDelegate() {
     //-----------------------------------------------------------------------------works-as-intended
 
     // TODO: set correct value
-    private val gasPrice: BigInteger = Convert.toWei("40", Convert.Unit.GWEI).toBigInteger()
+    private val gasPrice: BigInteger = Convert.toWei("150", Convert.Unit.GWEI).toBigInteger()
 
     //this gas limit value is from deployment and has to be constant
-    private val gasLimit = BigInteger.valueOf(40000)
+    private val gasLimit = BigInteger.valueOf(4_000_000L)
 
     private val gasProvider: ContractGasProvider = StaticGasProvider(gasPrice, gasLimit)
-    private var newContract: ContractHex =
+
+    private var contract: ContractHex =
         ContractHex.load(
             CONTRACT_ADDRESS,
             web3j,
@@ -43,15 +45,52 @@ class VoteContractDelegate() {
             gasProvider
         )
 
+    fun testingFunction() {
+        Log.d(TAG, "balance before deployment - ${getBalance()} ETH")
+        val newContract = ContractHex.deploy(web3j, credentials, gasProvider).send()
+        Log.d(TAG, "new contract deployed, balance - ${getBalance()} ETH")
+        val transactionReceipt = newContract
+            .registerVote(BigInteger.valueOf(1)).sendAsync().get(4, TimeUnit.MINUTES)
+        Log.d(
+            TAG,
+            "transaction done,\nblock number - ${transactionReceipt.blockNumber}\nbalance - ${getBalance()}"
+        )
+    }
+
+    // TODO: this is the problem function...
+    fun casteVote(party: PartyEnum): String {
+        return try {
+            Log.d(TAG, "started casteVote, Vote to be caste for ${party.name}")
+            val remoteCall = contract.registerVote(
+                BigInteger.valueOf(
+                    when (party) {
+                        PartyEnum.ONE -> 1
+                        PartyEnum.TWO -> 2
+                        PartyEnum.THREE -> 3
+                    }
+                )
+            )
+            Log.d(
+                TAG,
+                "remote call generated, \nhashcode = ${remoteCall.hashCode()}\n${remoteCall.toString()}"
+            )
+            val asyncSent = remoteCall.sendAsync()
+            Log.d(TAG, "async sent")
+            val gasUsedForTransaction = asyncSent.get(5, TimeUnit.MINUTES).gasUsed.toString()
+            Log.d(TAG, "get passed")
+            gasUsedForTransaction
+        } catch (e: Exception) {
+            e.printStackTrace()
+            e.message.toString()
+        }
+    }
+
     //------------------------------------------------------------------------------------------done
     fun partyVotesStatus(): String {
         return try {
-            val votesForOne: Int =
-                newContract.party1Votes.send().toInt()
-            val votesForTwo: Int =
-                newContract.party2Votes.send().toInt()
-            val votesForThree: Int =
-                newContract.party3Votes.send().toInt()
+            val votesForOne: Int = contract.party1Votes.send().toInt()
+            val votesForTwo: Int = contract.party2Votes.send().toInt()
+            val votesForThree: Int = contract.party3Votes.send().toInt()
             "party 1 votes = " + votesForOne +
                     "\nparty 2 votes = " + votesForTwo +
                     "\nparty 3 votes = " + votesForThree
@@ -61,49 +100,19 @@ class VoteContractDelegate() {
         }
     }
 
-    // TODO: this is the problem function...
-    fun casteVote(party: PartyEnum): String {
-        return try {
-            Log.d(TAG, "started casteVote, Vote to be caste for ${party.name}")
-            /**
-             * this starts but never completes. No errors outputted.
-             * If you watch closely, You'll see a '9' inside the get.
-             * that is the timeout duration. This function times out
-             * before being executed. It keeps waiting for whole 9
-             * minutes and then outputs a timeout error
-             */
-            newContract.registerVote(
-                BigInteger.valueOf(
-                    when (party) {
-                        PartyEnum.ONE -> 1
-                        PartyEnum.TWO -> 2
-                        PartyEnum.THREE -> 3
-                    }
-                )
-            ).send().gasUsed.toString()
-            /**
-             * returns null as a result.
-             */
-        } catch (e: Exception) {
-            e.printStackTrace()
-            e.message.toString()
-        }
-    }
-
     fun getVoterAddresses(): String {
         return try {
-            val x = newContract.addressValues.send().toString()
-            "voters = $x"
+            val x = contract.addressValues.send().toString()
+            "voters:-\n$x"
         } catch (e: Exception) {
             e.printStackTrace()
             "Error - ${e.message}"
         }
     }
 
-    //------------------------------------------------------------------------------------------done
     fun getHasAlreadyVoted(): String {
         return try {
-            newContract.hasAlreadyVoted().send().toString()
+            contract.hasAlreadyVoted().send().toString()
         } catch (e: Exception) {
             "Error has occurred while making calls :-\n${e.message}"
         }

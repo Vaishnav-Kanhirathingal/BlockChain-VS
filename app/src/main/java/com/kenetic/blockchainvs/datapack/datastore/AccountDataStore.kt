@@ -37,6 +37,7 @@ class AccountDataStore(context: Context) {
     private val v2Key = intPreferencesKey("vo_2")
     private val v3Key = intPreferencesKey("vo_3")
     private val hvKey = booleanPreferencesKey("h_v")
+    private val adrKey = stringPreferencesKey("l_o_a")
 
     //------------------------------------------------------------------------------detail-accessors
     //---------------------------------------------------------------------------------------strings
@@ -65,11 +66,12 @@ class AccountDataStore(context: Context) {
 
     // TODO: remove after testing
     val balanceFlow =
-        context.datastore.data.catch { catcherFun(it) }.map { it[balanceKey] ?: default }
+        context.datastore.data.catch { catcherFun(it) }.map { it[balanceKey] ?: "0" }
     val v1Flow = context.datastore.data.catch { catcherFun(it) }.map { it[v1Key] ?: 0 }
     val v2Flow = context.datastore.data.catch { catcherFun(it) }.map { it[v2Key] ?: 0 }
     val v3Flow = context.datastore.data.catch { catcherFun(it) }.map { it[v3Key] ?: 0 }
     val hvFlow = context.datastore.data.catch { catcherFun(it) }.map { it[hvKey] ?: false }
+    val adrFlow = context.datastore.data.catch { catcherFun(it) }.map { it[adrKey] ?: "" }
 
     private fun catcherFun(throwable: Throwable) {
         if (throwable is IOException) {
@@ -140,7 +142,8 @@ class AccountDataStore(context: Context) {
         testEnum: TestEnum,
         v1v2v3: Int,
         bal: String,
-        hv: Boolean
+        hv: Boolean,
+        acc: String
     ) {
         context.datastore.edit {
             when (testEnum) {
@@ -149,6 +152,7 @@ class AccountDataStore(context: Context) {
                 TestEnum.V2 -> it[v2Key] = it[v2Key]!! + v1v2v3
                 TestEnum.V3 -> it[v3Key] = it[v3Key]!! + v1v2v3
                 TestEnum.HV -> it[hvKey] = hv
+                TestEnum.ADR -> it[adrKey] = it[adrKey]!! + acc
                 else -> throw IllegalArgumentException("not a registered test enum")
             }
         }
@@ -173,5 +177,5 @@ enum class BooleanSetterEnum {
 
 // TODO: for testing purposes
 enum class TestEnum {
-    BALANCE, V1, V2, V3, HV
+    BALANCE, V1, V2, V3, HV, ADR
 }

@@ -45,9 +45,11 @@
     <fragment
         android:id="@+id/contractScreensFragment"
         android:name="com.kenetic.blockchainvs.block_connector.contract.reference_code.ContractScreensFragment"
-        android:label="ContractScreensFragment" >
+        android:label="fragment_contract_screens"
+        tools:layout="@layout/fragment_contract_screens" >
         <action
             android:id="@+id/action_contractScreensFragment_to_mainScreenFragment"
-            app:destination="@id/mainScreenFragment" />
+            app:destination="@id/mainScreenFragment"
+            app:popUpTo="@id/mainScreenFragment" />
     </fragment>
 </navigation>

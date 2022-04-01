@@ -55,7 +55,10 @@ class ContractScreenFragment : Fragment() {
         binding.apply {
             topAppBar.setNavigationOnClickListener {
                 findNavController()
-                    .navigate(ContractScreenFragmentDirections.actionContractScreenFragmentToMainScreenFragment())
+                    .navigate(
+                        ContractScreenFragmentDirections
+                            .actionContractScreenFragmentToMainScreenFragment()
+                    )
             }
             //--------------------------------------------------------------------------data-binding
             dataBindingViewModel = viewModel
@@ -79,7 +82,6 @@ class ContractScreenFragment : Fragment() {
                 }
             )
             //----------------------------------------------------------------------------caste-vote
-            // TODO: solve errors
             casteVoteButton.setOnClickListener {
                 viewModel.transactionCost.value = transactionInProgress
                 CoroutineScope(Dispatchers.IO).launch {
@@ -123,6 +125,7 @@ class ContractScreenFragment : Fragment() {
                     }
                 }
             }
+
             getBalanceButton.setOnClickListener {
                 viewModel.balance.value = calling
                 CoroutineScope(Dispatchers.IO).launch {
@@ -132,7 +135,12 @@ class ContractScreenFragment : Fragment() {
                     }
                 }
             }
-            testButton.setOnClickListener {}
+
+            testButton.setOnClickListener {
+                CoroutineScope(Dispatchers.IO).launch {
+                    voteContractDelegate.testingFunction()
+                }
+            }
         }
     }
 }

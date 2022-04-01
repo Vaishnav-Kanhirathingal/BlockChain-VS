@@ -93,7 +93,6 @@ class MainScreenFragment : Fragment() {
         val menuItemUserAdharNumber: TextView = headerMenu.findViewById(R.id.user_adhar_card_number)
         val menuItemUserVoterId: TextView = headerMenu.findViewById(R.id.user_voter_id)
 
-        // TODO: set image
         accountDataStore.userFullNameFlow.asLiveData().observe(viewLifecycleOwner) {
             menuItemUserFullName.text = it
         }
@@ -158,11 +157,12 @@ class MainScreenFragment : Fragment() {
 //                            )
 //                        //loginPrompt()
 //                    }
+                        // TODO: remove testing
                         CoroutineScope(Dispatchers.Main).launch {
                             findNavController()
                                 .navigate(
                                     MainScreenFragmentDirections
-                                        .actionMainScreenFragmentToContractScreenFragment()
+                                        .actionMainScreenFragmentToContractScreensFragment()
                                 )
                         }
                         true
@@ -170,6 +170,13 @@ class MainScreenFragment : Fragment() {
                     R.id.about -> {
                         // TODO: navigate to about screen
                         Log.d(TAG, "about working")
+                        CoroutineScope(Dispatchers.Main).launch {
+                            findNavController()
+                                .navigate(
+                                    MainScreenFragmentDirections
+                                        .actionMainScreenFragmentToContractScreenFragment()
+                                )
+                        }
                         true
                     }
                     R.id.exit -> {
