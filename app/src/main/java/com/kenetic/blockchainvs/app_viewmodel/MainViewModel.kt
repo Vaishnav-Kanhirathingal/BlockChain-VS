@@ -22,6 +22,7 @@ class MainViewModel(private val partyDAO: PartyDAO) : ViewModel() {
     val alreadyVoted: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
     val allPartyVotes: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
     val balance: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
+    val addMeToVotersList: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
     val testOutput: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
 
     //---------------------------------------------------------------------------------dao-functions

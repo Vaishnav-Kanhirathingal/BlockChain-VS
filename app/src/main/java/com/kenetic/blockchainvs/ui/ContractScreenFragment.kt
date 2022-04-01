@@ -141,6 +141,15 @@ class ContractScreenFragment : Fragment() {
                     voteContractDelegate.testingFunction()
                 }
             }
+            addToVotersListButton.setOnClickListener {
+                viewModel.addMeToVotersList.value = calling
+                CoroutineScope(Dispatchers.IO).launch {
+                    val output = voteContractDelegate.addToVotedList()
+                    CoroutineScope(Dispatchers.Main).launch {
+                        viewModel.addMeToVotersList.value = output
+                    }
+                }
+            }
         }
     }
 }

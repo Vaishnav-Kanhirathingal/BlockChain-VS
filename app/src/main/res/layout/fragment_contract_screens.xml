@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="data_binding_view_model"
             type="com.kenetic.blockchainvs.app_viewmodel.MainViewModel" />
@@ -111,9 +112,11 @@
 
                         <TextView
                             android:id="@+id/function_register_vote_label"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:text="[registerVote]"
+                            android:textAlignment="viewEnd"
+                            app:layout_constraintLeft_toRightOf="@id/caste_vote_button"
                             app:layout_constraintRight_toRightOf="@id/party_selector_radio_group"
                             app:layout_constraintTop_toBottomOf="@id/party_selector_radio_group" />
 
@@ -173,9 +176,11 @@
 
                         <TextView
                             android:id="@+id/function_get_address_values_label"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:text="[getAddressValues]"
+                            android:textAlignment="viewEnd"
+                            app:layout_constraintLeft_toRightOf="@id/get_registered_voters_button"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/contract_description_one" />
 
@@ -200,9 +205,7 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/get_registered_voters_output" />
-
                     </androidx.constraintlayout.widget.ConstraintLayout>
-
                 </com.google.android.material.card.MaterialCardView>
 
                 <View
@@ -236,9 +239,11 @@
 
                         <TextView
                             android:id="@+id/function_has_already_voted_label"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:text="[getAddressValues]"
+                            android:textAlignment="viewEnd"
+                            app:layout_constraintLeft_toRightOf="@id/check_voter_status_button"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/contract_description_two" />
 
@@ -265,7 +270,6 @@
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/check_voter_status_output" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
-
                 </com.google.android.material.card.MaterialCardView>
 
                 <View
@@ -298,9 +302,11 @@
 
                         <TextView
                             android:id="@+id/function_get_party_votes_label"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:text="[getParty1Votes]\n[getParty2Votes]\n[getParty3Votes]"
+                            android:textAlignment="viewEnd"
+                            app:layout_constraintLeft_toRightOf="@id/get_votes_button"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/contract_description_three" />
 
@@ -355,6 +361,75 @@
                         android:layout_margin="@dimen/sub_layout_layout_margin">
 
                         <TextView
+                            android:id="@+id/add_to_voters_list_label"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Add Me To Voters List"
+                            android:textSize="@dimen/medium_text"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/function_add_me_to_voted_list_label"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="[addMeToVotedList]"
+                            android:textAlignment="viewEnd"
+                            app:layout_constraintLeft_toRightOf="@id/add_to_voters_list_button"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/add_to_voters_list_label" />
+
+                        <TextView
+                            android:id="@+id/voters_list_label"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Call output:-"
+                            android:textAlignment="viewEnd"
+                            app:layout_constraintLeft_toRightOf="@id/add_to_voters_list_button"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/function_add_me_to_voted_list_label" />
+
+                        <TextView
+                            android:id="@+id/add_me_to_voted_list_output"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text='@{data_binding_view_model.addMeToVotersList}'
+                            android:textAlignment="viewEnd"
+                            android:textSize="@dimen/small_text"
+                            app:layout_constraintLeft_toRightOf="@id/add_to_voters_list_button"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/voters_list_label"
+                            tools:text="@string/not_cached_yet" />
+
+                        <Button
+                            android:id="@+id/add_to_voters_list_button"
+                            style="?attr/materialButtonOutlinedStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/call"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/add_me_to_voted_list_output" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_marginHorizontal="@dimen/contract_vertical_spacing"
+                    android:layout_marginTop="@dimen/contract_vertical_spacing"
+                    android:background="#000000"
+                    tools:layout_height="2dp" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/contract_vertical_spacing">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/sub_layout_layout_margin">
+
+                        <TextView
                             android:id="@+id/get_balance_label"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -372,11 +447,12 @@
 
                         <TextView
                             android:id="@+id/user_balance"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:text='@{"Balance:-\n"+data_binding_view_model.balance}'
                             android:textAlignment="viewEnd"
                             android:textSize="@dimen/small_text"
+                            app:layout_constraintLeft_toRightOf="@id/get_balance_button"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/current_balance_label"
                             tools:text="balance:- \n0.987654321 ETH" />
@@ -440,22 +516,26 @@
 
                         <TextView
                             android:id="@+id/test_output_label"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="@dimen/sub_layout_layout_margin"
                             android:layout_marginTop="@dimen/sub_layout_layout_margin"
                             android:text="Output :-"
                             android:textAlignment="viewEnd"
+                            app:layout_constraintLeft_toRightOf="@id/test_button"
+                            app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/testing_text_layout" />
 
                         <TextView
                             android:id="@+id/test_output"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="@dimen/sub_layout_layout_margin"
                             android:layout_marginBottom="@dimen/sub_layout_layout_margin"
-                            android:textAlignment="viewEnd"
                             android:text='@{"/-----output-----\\\n"+data_binding_view_model.testOutput}'
+                            android:textAlignment="viewEnd"
+                            app:layout_constraintLeft_toRightOf="@id/test_button"
+                            app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/test_output_label"
                             tools:text="output status text" />
 
@@ -479,6 +559,5 @@
                     tools:layout_height="2dp" />
             </LinearLayout>
         </ScrollView>
-
     </LinearLayout>
 </layout>

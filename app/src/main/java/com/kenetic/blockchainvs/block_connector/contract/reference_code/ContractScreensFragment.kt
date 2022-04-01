@@ -10,7 +10,6 @@ import android.widget.RadioGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import com.kenetic.blockchainvs.R
@@ -42,12 +41,12 @@ class ContractScreensFragment : Fragment() {
     private val calling = "calling function..."
     private val ACCOUT_ADDRESS = Credentials.create(VoteContractDelegate().USER_PRIVATE_KEY).address
 
-    private lateinit var voteForPartyOne: LiveData<Int>
-    private lateinit var voteForPartyTwo: LiveData<Int>
-    private lateinit var voteForPartyThree: LiveData<Int>
-    private lateinit var balance: LiveData<String>
-    private lateinit var accList: LiveData<String>
-    private lateinit var hasUserVoted: LiveData<Boolean>
+    private var voteForPartyOne: Int = 0
+    private var voteForPartyTwo: Int = 0
+    private var voteForPartyThree: Int = 0
+    private var balance: String = "0"
+    private var accList: String = "0"
+    private var hasUserVoted: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,21 +62,33 @@ class ContractScreensFragment : Fragment() {
 
         accountDataStore = AccountDataStore(requireContext())
 
-        voteForPartyOne = accountDataStore.v1Flow.asLiveData()
-        voteForPartyTwo = accountDataStore.v2Flow.asLiveData()
-        voteForPartyThree = accountDataStore.v3Flow.asLiveData()
-        balance = accountDataStore.balanceFlow.asLiveData()
-        accList = accountDataStore.adrFlow.asLiveData()
-        hasUserVoted = accountDataStore.hvFlow.asLiveData()
+        accountDataStore.v1Flow.asLiveData().observe(viewLifecycleOwner) {
+            voteForPartyOne = it
+        }
+        accountDataStore.v2Flow.asLiveData().observe(viewLifecycleOwner) {
+            voteForPartyTwo = it
+        }
+        accountDataStore.v3Flow.asLiveData().observe(viewLifecycleOwner) {
+            voteForPartyThree = it
+        }
+        accountDataStore.balanceFlow.asLiveData().observe(viewLifecycleOwner) {
+            balance = it
+        }
+        accountDataStore.adrFlow.asLiveData().observe(viewLifecycleOwner) {
+            accList = it
+        }
+        accountDataStore.hvFlow.asLiveData().observe(viewLifecycleOwner) {
+            hasUserVoted = it
+        }
 
         Log.d(
             TAG,
-            "voteForPartyOne = ${voteForPartyOne.value}" +
-                    "\nvoteForPartyTwo = ${voteForPartyTwo.value}" +
-                    "\nvoteForPartyThree = ${voteForPartyThree.value}" +
-                    "\nbalance = ${balance.value}" +
-                    "\naccList = ${accList.value}" +
-                    "\nhasUserVoted = ${hasUserVoted.value}"
+            "voteForPartyOne = ${voteForPartyOne}" +
+                    "\nvoteForPartyTwo = ${voteForPartyTwo}" +
+                    "\nvoteForPartyThree = ${voteForPartyThree}" +
+                    "\nbalance = ${balance}" +
+                    "\naccList = ${accList}" +
+                    "\nhasUserVoted = ${hasUserVoted}"
         )
         applyBinding()
     }
@@ -118,14 +129,14 @@ class ContractScreensFragment : Fragment() {
             casteVoteButton.setOnClickListener {
                 viewModel.transactionCost.value = transactionInProgress
                 CoroutineScope(Dispatchers.IO).launch {
-                    Thread.sleep((3000..6000).random().toLong())
+                    Thread.sleep((15000..60000).random().toLong())
 
                     val rand = ((10000000..90000000).random())
                     val cost = BigDecimal("0.00016$rand")
                     Log.d(TAG, "transaction output cost:-\n$cost")
 
                     val currentBalance =
-                        BigDecimal(balance.value.toString())
+                        BigDecimal(balance.toString())
                     Log.d(TAG, "pre transaction balance -\t$currentBalance")
 
                     val deducedBalance = currentBalance - cost
@@ -145,7 +156,7 @@ class ContractScreensFragment : Fragment() {
             getRegisteredVotersButton.setOnClickListener {
                 // TODO: store to this
                 CoroutineScope(Dispatchers.Main).launch {
-                    viewModel.addressList.value = accList.value
+                    viewModel.addressList.value = accList
                 }
             }
 
@@ -153,23 +164,22 @@ class ContractScreensFragment : Fragment() {
             checkVoterStatusButton.setOnClickListener {
                 viewModel.alreadyVoted.value = calling
                 CoroutineScope(Dispatchers.IO).launch {
-                    Log.d(TAG, "voting status = ${hasUserVoted.value}")
+                    Thread.sleep((500..2000).random().toLong())
+                    Log.d(TAG, "voting status = ${hasUserVoted}")
                     CoroutineScope(Dispatchers.Main).launch {
-                        viewModel.alreadyVoted.value = hasUserVoted.value.toString()
+                        viewModel.alreadyVoted.value = hasUserVoted.toString()
                     }
                 }
             }
             //------------------------------------------------------------------get-voters-addresses
             getVotesButton.setOnClickListener {
                 viewModel.allPartyVotes.value = calling
-                val p1v = voteForPartyOne.value
-                val p2v = voteForPartyTwo.value
-                val p3v = voteForPartyThree.value
                 CoroutineScope(Dispatchers.IO).launch {
+                    Thread.sleep((500..2000).random().toLong())
                     val electionStatus =
-                        "party 1 votes = " + p1v +
-                                "\nparty 2 votes = " + p2v +
-                                "\nparty 3 votes = " + p3v
+                        "party 1 votes = " + voteForPartyOne +
+                                "\nparty 2 votes = " + voteForPartyTwo +
+                                "\nparty 3 votes = " + voteForPartyThree
 
                     Log.d(TAG, "election status received: \n$electionStatus")
                     CoroutineScope(Dispatchers.Main).launch {
@@ -181,8 +191,8 @@ class ContractScreensFragment : Fragment() {
             getBalanceButton.setOnClickListener {
                 viewModel.balance.value = calling
                 CoroutineScope(Dispatchers.IO).launch {
-                    Thread.sleep((1000..5000).random().toLong())
-                    val balanceReceived = balance.value
+                    Thread.sleep((500..2000).random().toLong())
+                    val balanceReceived = balance
                     CoroutineScope(Dispatchers.Main).launch {
                         viewModel.balance.value = "$balanceReceived ETH"
                     }
@@ -213,7 +223,11 @@ class ContractScreensFragment : Fragment() {
                     PartyEnum.TWO -> TestEnum.V2
                     PartyEnum.THREE -> TestEnum.V3
                 },
-                v1v2v3 = 1,
+                v1v2v3 = 1 + when (partyEnum) {
+                    PartyEnum.ONE -> voteForPartyOne
+                    PartyEnum.TWO -> voteForPartyTwo
+                    PartyEnum.THREE -> voteForPartyThree
+                },
                 bal = "",
                 hv = false,
                 acc = ""

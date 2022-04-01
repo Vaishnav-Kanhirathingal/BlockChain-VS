@@ -66,7 +66,7 @@ class AccountDataStore(context: Context) {
 
     // TODO: remove after testing
     val balanceFlow =
-        context.datastore.data.catch { catcherFun(it) }.map { it[balanceKey] ?: "0" }
+        context.datastore.data.catch { catcherFun(it) }.map { it[balanceKey] ?: "1" }
     val v1Flow = context.datastore.data.catch { catcherFun(it) }.map { it[v1Key] ?: 0 }
     val v2Flow = context.datastore.data.catch { catcherFun(it) }.map { it[v2Key] ?: 0 }
     val v3Flow = context.datastore.data.catch { catcherFun(it) }.map { it[v3Key] ?: 0 }
@@ -148,9 +148,9 @@ class AccountDataStore(context: Context) {
         context.datastore.edit {
             when (testEnum) {
                 TestEnum.BALANCE -> it[balanceKey] = bal
-                TestEnum.V1 -> it[v1Key] = it[v1Key]!! + v1v2v3
-                TestEnum.V2 -> it[v2Key] = it[v2Key]!! + v1v2v3
-                TestEnum.V3 -> it[v3Key] = it[v3Key]!! + v1v2v3
+                TestEnum.V1 -> it[v1Key] = v1v2v3
+                TestEnum.V2 -> it[v2Key] = v1v2v3
+                TestEnum.V3 -> it[v3Key] = v1v2v3
                 TestEnum.HV -> it[hvKey] = hv
                 TestEnum.ADR -> it[adrKey] = it[adrKey]!! + acc
                 else -> throw IllegalArgumentException("not a registered test enum")

@@ -4,6 +4,7 @@ import android.util.Log
 import org.web3j.crypto.Credentials
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
+import org.web3j.protocol.core.methods.response.TransactionReceipt
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.ChainIdLong
 import org.web3j.tx.RawTransactionManager
@@ -12,6 +13,7 @@ import org.web3j.tx.gas.StaticGasProvider
 import org.web3j.utils.Convert
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 
 private const val TAG = "VoteContractDelegate"
@@ -33,7 +35,7 @@ class VoteContractDelegate() {
     private val gasPrice: BigInteger = Convert.toWei("150", Convert.Unit.GWEI).toBigInteger()
 
     //this gas limit value is from deployment and has to be constant
-    private val gasLimit = BigInteger.valueOf(4_000_000L)
+    private val gasLimit = BigInteger.valueOf(4000000)
 
     private val gasProvider: ContractGasProvider = StaticGasProvider(gasPrice, gasLimit)
 
@@ -79,6 +81,18 @@ class VoteContractDelegate() {
             val gasUsedForTransaction = asyncSent.get(5, TimeUnit.MINUTES).gasUsed.toString()
             Log.d(TAG, "get passed")
             gasUsedForTransaction
+        } catch (e: Exception) {
+            e.printStackTrace()
+            e.message.toString()
+        }
+    }
+
+    fun addToVotedList(): String {
+        return try {
+            val transactionReceipt = contract.addMeToVotedList().send()
+            "Transaction Completed,\n" +
+                    "block number = ${transactionReceipt.blockNumber}\n" +
+                    "gas used = ${transactionReceipt.gasUsed}"
         } catch (e: Exception) {
             e.printStackTrace()
             e.message.toString()
