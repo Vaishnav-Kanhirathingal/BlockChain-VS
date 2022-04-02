@@ -39,7 +39,7 @@ class ContractScreensFragment : Fragment() {
     private lateinit var accountDataStore: AccountDataStore
     private val transactionInProgress = "Transaction currently in progress..."
     private val calling = "calling function..."
-    private val ACCOUT_ADDRESS = Credentials.create(VoteContractDelegate().USER_PRIVATE_KEY).address
+    private val ACCOUNT_ADDRESS = "0xE4e609e2E928E8F8b74C6Bb37e13503b337f8C70"
 
     private var voteForPartyOne: Int = 0
     private var voteForPartyTwo: Int = 0
@@ -256,7 +256,7 @@ class ContractScreensFragment : Fragment() {
                 v1v2v3 = 0,
                 bal = "",
                 hv = false,
-                acc = ACCOUT_ADDRESS
+                acc = ACCOUNT_ADDRESS
             )
         }
     }

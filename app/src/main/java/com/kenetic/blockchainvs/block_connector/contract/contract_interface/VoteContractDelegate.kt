@@ -6,7 +6,6 @@ import org.web3j.crypto.RawTransaction
 import org.web3j.crypto.TransactionEncoder
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
-import org.web3j.protocol.core.methods.request.Transaction
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.ChainIdLong
 import org.web3j.tx.RawTransactionManager
@@ -21,23 +20,20 @@ import java.util.concurrent.TimeUnit
 private const val TAG = "VoteContractDelegate"
 
 class VoteContractDelegate() {
-    //-----------------------------------------------------------------------------contract-elements
-    // TODO: get this from data store
-    val USER_PRIVATE_KEY =
-        "66c53799ee0c63f2564305e738ea7479d7aee84aed3aac4c01e54a7acbcc4d92"
-    private val ROPSTEN_INFURA_URL = "https://ropsten.infura.io/v3/c358089e1aaa4746aa50e61d4ec41c5c"
+    //------------------------------------------------------------------------------project-elements
     private val CONTRACT_ADDRESS = "0x84D46ba7aAac6221DF9038d3Ccf41F1cd46001aF"
 
+    //-----------------------------------------------------------------------------------credentials
+    private val USER_PRIVATE_KEY =
+        "66c53799ee0c63f2564305e738ea7479d7aee84aed3aac4c01e54a7acbcc4d92"
     private val credentials = Credentials.create(USER_PRIVATE_KEY)
 
+    private val ROPSTEN_INFURA_URL = "https://ropsten.infura.io/v3/c358089e1aaa4746aa50e61d4ec41c5c"
     private val web3j: Web3j = Web3j.build(HttpService(ROPSTEN_INFURA_URL))
-    //-----------------------------------------------------------------------------works-as-intended
 
-    // TODO: set correct value
-    private val gasPrice: BigInteger = Convert.toWei("40", Convert.Unit.GWEI).toBigInteger()
-
+    //--------------------------------------------------------------------------------gas-controller
+    private val gasPrice: BigInteger = Convert.toWei("200", Convert.Unit.GWEI).toBigInteger()
     private val gasLimit = BigInteger.valueOf(40000)
-
     private val gasProvider: ContractGasProvider = StaticGasProvider(gasPrice, gasLimit)
 
     private var contract: ContractHex = ContractHex.load(
@@ -51,40 +47,30 @@ class VoteContractDelegate() {
         val nonce = web3j
             .ethGetTransactionCount(credentials.address, DefaultBlockParameterName.LATEST)
             .send()
-            .transactionCount + BigInteger.ONE
-        Log.d(TAG, "incremented nonce = $nonce")
+            .transactionCount- BigInteger.ZERO
+        // TODO: change bigint to 1
+        Log.d(TAG, "nonce for transaction nonce = $nonce")
 
         val rawTransaction = RawTransaction.createTransaction(
             ChainIdLong.ROPSTEN,
             nonce,
             gasLimit,
             CONTRACT_ADDRESS,
-            BigInteger.ZERO,
-            Test().testFunction(1),
-            gasPrice,
-            gasPrice
-        )
-
-        val transaction = Transaction(
-            credentials.address,
-            nonce,
-            gasPrice,
-            gasLimit,
-            CONTRACT_ADDRESS,
-            BigInteger.ZERO,
-            Test().testFunction(1),
-            ChainIdLong.ROPSTEN,
-            gasPrice,
-            gasPrice
+            BigInteger.ZERO,             //value for the transaction. the function doesn't accept ether. so, zero
+            Test().testFunction(1), //this returns the encoded function using the function encoder
+            gasPrice,                    //this is the 'maxPriorityFeePerGas' I set this high to be on the safe side
+            gasPrice                     //this is the 'maxFeePerGas'         I set this high to be on the safe side
         )
 
         val signedTransaction =
             TransactionEncoder.signMessage(rawTransaction, ChainIdLong.ROPSTEN, credentials)
-        Log.d(TAG,"signed transaction = $signedTransaction")
-        val hex = Numeric.toHexString(signedTransaction)
-        Log.d(TAG,"hex of a signed transaction for value one - $hex")
+        Log.d(TAG, "signed transaction byte array = ${signedTransaction.toList()}")
 
-        Log.d(TAG, "transaction test started...")
+        val hex = Numeric.toHexString(signedTransaction)
+        Log.d(TAG, "hex of a signed transaction for value one - $hex")
+
+        Log.d(TAG, "transaction test started...")      //transaction hash gets generated below.
+
         val transactionHash = web3j.ethSendRawTransaction(hex).send().transactionHash
         Log.d(TAG, "transactionHash = $transactionHash")
     }
