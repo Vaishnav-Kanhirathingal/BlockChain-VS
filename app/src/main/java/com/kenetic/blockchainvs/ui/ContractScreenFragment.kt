@@ -16,6 +16,7 @@ import com.kenetic.blockchainvs.app_viewmodel.MainViewModel
 import com.kenetic.blockchainvs.app_viewmodel.MainViewModelFactory
 import com.kenetic.blockchainvs.application_class.ApplicationStarter
 import com.kenetic.blockchainvs.block_connector.contract.contract_interface.PartyEnum
+import com.kenetic.blockchainvs.block_connector.contract.contract_interface.Test
 import com.kenetic.blockchainvs.block_connector.contract.contract_interface.VoteContractDelegate
 import com.kenetic.blockchainvs.databinding.FragmentContractScreenBinding
 import kotlinx.coroutines.CoroutineScope

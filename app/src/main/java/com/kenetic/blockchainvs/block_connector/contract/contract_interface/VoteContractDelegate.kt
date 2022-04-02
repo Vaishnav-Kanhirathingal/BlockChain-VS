@@ -2,18 +2,20 @@ package com.kenetic.blockchainvs.block_connector.contract.contract_interface
 
 import android.util.Log
 import org.web3j.crypto.Credentials
+import org.web3j.crypto.RawTransaction
+import org.web3j.crypto.TransactionEncoder
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
-import org.web3j.protocol.core.methods.response.TransactionReceipt
+import org.web3j.protocol.core.methods.request.Transaction
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.ChainIdLong
 import org.web3j.tx.RawTransactionManager
 import org.web3j.tx.gas.ContractGasProvider
 import org.web3j.tx.gas.StaticGasProvider
 import org.web3j.utils.Convert
+import org.web3j.utils.Numeric
 import java.math.BigDecimal
 import java.math.BigInteger
-import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 
 private const val TAG = "VoteContractDelegate"
@@ -32,31 +34,59 @@ class VoteContractDelegate() {
     //-----------------------------------------------------------------------------works-as-intended
 
     // TODO: set correct value
-    private val gasPrice: BigInteger = Convert.toWei("150", Convert.Unit.GWEI).toBigInteger()
+    private val gasPrice: BigInteger = Convert.toWei("40", Convert.Unit.GWEI).toBigInteger()
 
-    //this gas limit value is from deployment and has to be constant
-    private val gasLimit = BigInteger.valueOf(4000000)
+    private val gasLimit = BigInteger.valueOf(40000)
 
     private val gasProvider: ContractGasProvider = StaticGasProvider(gasPrice, gasLimit)
 
-    private var contract: ContractHex =
-        ContractHex.load(
-            CONTRACT_ADDRESS,
-            web3j,
-            RawTransactionManager(web3j, credentials, ChainIdLong.ROPSTEN),
-            gasProvider
-        )
+    private var contract: ContractHex = ContractHex.load(
+        CONTRACT_ADDRESS,
+        web3j,
+        RawTransactionManager(web3j, credentials, ChainIdLong.ROPSTEN),
+        gasProvider
+    )
 
     fun testingFunction() {
-        Log.d(TAG, "balance before deployment - ${getBalance()} ETH")
-        val newContract = ContractHex.deploy(web3j, credentials, gasProvider).send()
-        Log.d(TAG, "new contract deployed, balance - ${getBalance()} ETH")
-        val transactionReceipt = newContract
-            .registerVote(BigInteger.valueOf(1)).sendAsync().get(4, TimeUnit.MINUTES)
-        Log.d(
-            TAG,
-            "transaction done,\nblock number - ${transactionReceipt.blockNumber}\nbalance - ${getBalance()}"
+        val nonce = web3j
+            .ethGetTransactionCount(credentials.address, DefaultBlockParameterName.LATEST)
+            .send()
+            .transactionCount + BigInteger.ONE
+        Log.d(TAG, "incremented nonce = $nonce")
+
+        val rawTransaction = RawTransaction.createTransaction(
+            ChainIdLong.ROPSTEN,
+            nonce,
+            gasLimit,
+            CONTRACT_ADDRESS,
+            BigInteger.ZERO,
+            Test().testFunction(1),
+            gasPrice,
+            gasPrice
         )
+
+        val transaction = Transaction(
+            credentials.address,
+            nonce,
+            gasPrice,
+            gasLimit,
+            CONTRACT_ADDRESS,
+            BigInteger.ZERO,
+            Test().testFunction(1),
+            ChainIdLong.ROPSTEN,
+            gasPrice,
+            gasPrice
+        )
+
+        val signedTransaction =
+            TransactionEncoder.signMessage(rawTransaction, ChainIdLong.ROPSTEN, credentials)
+        Log.d(TAG,"signed transaction = $signedTransaction")
+        val hex = Numeric.toHexString(signedTransaction)
+        Log.d(TAG,"hex of a signed transaction for value one - $hex")
+
+        Log.d(TAG, "transaction test started...")
+        val transactionHash = web3j.ethSendRawTransaction(hex).send().transactionHash
+        Log.d(TAG, "transactionHash = $transactionHash")
     }
 
     // TODO: this is the problem function...
