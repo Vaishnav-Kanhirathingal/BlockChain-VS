@@ -13,7 +13,7 @@ import org.junit.runner.RunWith
 private const val TAG = "ExampleInstrumentedTest"
 
 @RunWith(AndroidJUnit4::class)
-class ExampleInstrumentedTest {
+class ExampleInstrumentedAlternateTransactionHandler {
     @get:Rule
     val scenario = ActivityScenarioRule(MainActivity::class.java)
 

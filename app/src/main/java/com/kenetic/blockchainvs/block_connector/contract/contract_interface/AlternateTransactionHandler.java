@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
-public class Test {
+public class AlternateTransactionHandler {
     String TAG = "Test";
 
     public String registerVoteEncoded(Long num) throws IOException, ExecutionException, InterruptedException {

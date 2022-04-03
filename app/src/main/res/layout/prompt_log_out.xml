@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:backgroundTint="#dddddd"
+    tools:backgroundTint="#eeeeee"
     tools:layout_margin="20dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,7 +19,7 @@
             android:paddingStart="6dp"
             android:layout_margin="@dimen/sub_layout_layout_margin"
             android:text="Log Out And Exit?"
-            android:textSize="30sp"
+            android:textSize="@dimen/medium_text"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

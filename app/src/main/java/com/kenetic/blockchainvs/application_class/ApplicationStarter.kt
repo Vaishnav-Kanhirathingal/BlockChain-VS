@@ -1,10 +1,10 @@
 package com.kenetic.blockchainvs.application_class
 
 import android.app.Application
-import com.kenetic.blockchainvs.datapack.database.PartyDatabase
+import com.kenetic.blockchainvs.datapack.database.TransactionDatabase
 
 class ApplicationStarter : Application() {
-    val database: PartyDatabase by lazy {
-        PartyDatabase.getDatabase(this)
+    val database: TransactionDatabase by lazy {
+        TransactionDatabase.getDatabase(this)
     }
 }

@@ -25,23 +25,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="100dp"
-            android:text="LOG IN TO REGISTER YOUR VOTE"
-            android:textAlignment="center"
-            android:textSize="@dimen/medium_text"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/party_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:itemCount="2"
-            tools:listitem="@layout/party_list_item" />
+            tools:listitem="@layout/transaction_list_item" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

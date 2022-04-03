@@ -21,7 +21,7 @@ import com.kenetic.blockchainvs.databinding.PromptLogOutBinding
 import com.kenetic.blockchainvs.databinding.PromptLoginBinding
 import com.kenetic.blockchainvs.datapack.datastore.AccountDataStore
 import com.kenetic.blockchainvs.datapack.datastore.BooleanSetterEnum
-import com.kenetic.blockchainvs.recycler.PartyListAdapter
+import com.kenetic.blockchainvs.recycler.TransactionAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,7 +30,7 @@ private const val TAG = "MainScreenFragment"
 
 class MainScreenFragment : Fragment() {
     private lateinit var binding: FragmentMainScreenBinding
-    private lateinit var partyAdapter: PartyListAdapter
+    private lateinit var transactionAdapter: TransactionAdapter
     private lateinit var accountDataStore: AccountDataStore
     private val viewModel: MainViewModel by activityViewModels {
         MainViewModelFactory(
@@ -54,11 +54,12 @@ class MainScreenFragment : Fragment() {
 
     private fun applyMainLayoutBinding() {
         accountDataStore = AccountDataStore(requireContext())
-        partyAdapter = PartyListAdapter(viewModel)
+        transactionAdapter = TransactionAdapter(viewModel, viewLifecycleOwner)
         viewModel.getAllById().asLiveData().observe(viewLifecycleOwner) {
-            partyAdapter.submitList(it)
+            Log.d(TAG, "all ids = $it")
+            transactionAdapter.submitList(it)
         }
-        binding.includedSubLayout.partyRecyclerView.adapter = partyAdapter
+        binding.includedSubLayout.partyRecyclerView.adapter = transactionAdapter
     }
 
     private fun applyTopMenuBindings() {
@@ -92,6 +93,7 @@ class MainScreenFragment : Fragment() {
         val menuItemUserPhoneNumber: TextView = headerMenu.findViewById(R.id.user_phone_number)
         val menuItemUserAdharNumber: TextView = headerMenu.findViewById(R.id.user_adhar_card_number)
         val menuItemUserVoterId: TextView = headerMenu.findViewById(R.id.user_voter_id)
+        val menuItemLoggedIn: TextView = headerMenu.findViewById(R.id.logged_in)
 
         accountDataStore.userFullNameFlow.asLiveData().observe(viewLifecycleOwner) {
             menuItemUserFullName.text = it
@@ -107,6 +109,13 @@ class MainScreenFragment : Fragment() {
         }
         accountDataStore.userVoterIDFlow.asLiveData().observe(viewLifecycleOwner) {
             menuItemUserVoterId.text = it
+        }
+        accountDataStore.userLoggedInFlow.asLiveData().observe(viewLifecycleOwner) {
+            menuItemLoggedIn.text = if (it) {
+                "Logged In"
+            } else {
+                "Not Logged In"
+            }
         }
         //-------------------------------------------------------------------------------bottom-menu
         CoroutineScope(Dispatchers.IO).launch {
@@ -162,7 +171,7 @@ class MainScreenFragment : Fragment() {
                             findNavController()
                                 .navigate(
                                     MainScreenFragmentDirections
-                                        .actionMainScreenFragmentToContractScreensFragment()
+                                        .actionMainScreenFragmentToContractScreenFragment()
                                 )
                         }
                         true
@@ -170,13 +179,6 @@ class MainScreenFragment : Fragment() {
                     R.id.about -> {
                         // TODO: navigate to about screen
                         Log.d(TAG, "about working")
-                        CoroutineScope(Dispatchers.Main).launch {
-                            findNavController()
-                                .navigate(
-                                    MainScreenFragmentDirections
-                                        .actionMainScreenFragmentToContractScreenFragment()
-                                )
-                        }
                         true
                     }
                     R.id.exit -> {

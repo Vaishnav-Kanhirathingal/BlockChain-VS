@@ -31,7 +31,7 @@ class ContractScreenFragment : Fragment() {
 
     private lateinit var binding: FragmentContractScreenBinding
     private var partyEnum = PartyEnum.ONE
-    private var voteContractDelegate = VoteContractDelegate()
+    private lateinit var voteContractDelegate: VoteContractDelegate
 
     private val transactionInProgress = "Transaction currently in progress..."
     private val calling = "Calling function..."
@@ -48,6 +48,7 @@ class ContractScreenFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        voteContractDelegate = VoteContractDelegate(viewModel)
         applyBinding()
     }
 
@@ -137,10 +138,6 @@ class ContractScreenFragment : Fragment() {
                 }
             }
 
-            testButton.setOnClickListener {
-                CoroutineScope(Dispatchers.IO).launch {
-                }
-            }
             addToVotersListButton.setOnClickListener {
                 viewModel.addMeToVotersList.value = calling
                 CoroutineScope(Dispatchers.IO).launch {

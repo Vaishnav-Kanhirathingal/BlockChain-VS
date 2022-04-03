@@ -3,18 +3,19 @@ package com.kenetic.blockchainvs.app_viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.kenetic.blockchainvs.datapack.database.PartyDAO
-import com.kenetic.blockchainvs.datapack.database.PartyData
+import com.kenetic.blockchainvs.datapack.database.TransactionDAO
+import com.kenetic.blockchainvs.datapack.database.TransactionData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-class MainViewModel(private val partyDAO: PartyDAO) : ViewModel() {
-    private val transactionInProgress = "Transaction currently in progress..."
-    private val calling = "calling function..."
-    private val unknown = "Unknown..."
-    private val callNotPerformedYet = "Call Not Performed Yet"
+class MainViewModel(private val transactionDAO: TransactionDAO) : ViewModel() {
+    val transactionInProgress = "Transaction currently in progress..."
+    val calling = "calling function..."
+    val unknown = "Unknown..."
+    val callNotPerformedYet = "Call Not Performed Yet"
+    val gettingGasUsed = "Getting Gas Used..."
 
     //------------------------------------------------------------------------data-binding-live-data
     val transactionCost: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
@@ -23,31 +24,30 @@ class MainViewModel(private val partyDAO: PartyDAO) : ViewModel() {
     val allPartyVotes: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
     val balance: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
     val addMeToVotersList: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
-    val testOutput: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
 
     //---------------------------------------------------------------------------------dao-functions
-    private fun insertParty(partyData: PartyData) {
-        CoroutineScope(Dispatchers.IO).launch { partyDAO.insertParty(partyData) }
+    fun insertParty(transactionData: TransactionData) {
+        CoroutineScope(Dispatchers.IO).launch { transactionDAO.insertParty(transactionData) }
     }
 
-    private fun updateParty(partyData: PartyData) {
-        CoroutineScope(Dispatchers.IO).launch { partyDAO.updateParty(partyData) }
+    fun updateParty(transactionData: TransactionData) {
+        CoroutineScope(Dispatchers.IO).launch { transactionDAO.updateParty(transactionData) }
     }
 
-    private fun deleteParty(partyData: PartyData) {
-        CoroutineScope(Dispatchers.IO).launch { partyDAO.deleteParty(partyData) }
+    fun deleteParty(transactionData: TransactionData) {
+        CoroutineScope(Dispatchers.IO).launch { transactionDAO.deleteParty(transactionData) }
     }
 
-    fun getAllById(): Flow<List<Int>> = partyDAO.getAllById()
+    fun getAllById(): Flow<List<Int>> = transactionDAO.getAllIds()
 
-    fun getById(id: Int): Flow<PartyData> = partyDAO.getById(id)
+    fun getById(id: Int): Flow<TransactionData> = transactionDAO.getById(id)
 }
 
-class MainViewModelFactory(private val partyDAO: PartyDAO) : ViewModelProvider.Factory {
+class MainViewModelFactory(private val transactionDAO: TransactionDAO) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return MainViewModel(partyDAO) as T
+            return MainViewModel(transactionDAO) as T
         }
         throw IllegalArgumentException("Unknown Model Class")
     }

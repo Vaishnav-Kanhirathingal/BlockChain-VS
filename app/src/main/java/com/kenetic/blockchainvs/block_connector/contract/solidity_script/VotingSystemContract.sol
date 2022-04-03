@@ -3,6 +3,7 @@
 pragma solidity >=0.7.0 <0.9.0;
 
 contract VotingContract {
+    mapping(address => bool) addressMapping;
     address[] addressStorage;
 
     uint256 partyOneVotes;
@@ -15,6 +16,12 @@ contract VotingContract {
         partyThreeVotes = 0;
     }
 
+    function addMeToVotedList() public {
+        require(!addressMapping[msg.sender], "You Have Already Been Added");
+        addressMapping[msg.sender] = true;
+        addressStorage.push(msg.sender);
+    }
+
     function registerVote(uint256 num) public {
         require(
             num < 4 && num > 0,
@@ -22,7 +29,7 @@ contract VotingContract {
         );
         /*------------uncomment the requirement code to enable one person one vote------------*/
         // require(!hasAlreadyVoted());
-        addressStorage.push(msg.sender);
+        // addMeToVotedList();
         if (num == 1) {
             partyOneVotes++;
         } else if (num == 2) {
@@ -33,14 +40,7 @@ contract VotingContract {
     }
 
     function hasAlreadyVoted() public view returns (bool) {
-        address messageSender = msg.sender;
-        uint256 i;
-        for (i = 0; i < addressStorage.length; i++) {
-            if (messageSender == addressStorage[i]) {
-                return true;
-            }
-        }
-        return false;
+        return addressMapping[msg.sender];
     }
 
     function getAddressValues() public view returns (address[] memory) {

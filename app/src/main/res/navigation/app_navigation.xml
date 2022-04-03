@@ -9,22 +9,19 @@
         android:id="@+id/mainScreenFragment"
         android:name="com.kenetic.blockchainvs.ui.MainScreenFragment"
         android:label="fragment_main_screen"
-        tools:layout="@layout/fragment_main_screen" >
+        tools:layout="@layout/fragment_main_screen">
         <action
             android:id="@+id/action_mainScreenFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
         <action
             android:id="@+id/action_mainScreenFragment_to_contractScreenFragment"
             app:destination="@id/contractScreenFragment" />
-        <action
-            android:id="@+id/action_mainScreenFragment_to_contractScreensFragment"
-            app:destination="@id/contractScreensFragment" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.kenetic.blockchainvs.ui.SignUpFragment"
         android:label="fragment_sign_up"
-        tools:layout="@layout/fragment_sign_up" >
+        tools:layout="@layout/fragment_sign_up">
         <action
             android:id="@+id/action_signUpFragment_to_mainScreenFragment"
             app:destination="@id/mainScreenFragment"
@@ -35,21 +32,11 @@
         android:id="@+id/contractScreenFragment"
         android:name="com.kenetic.blockchainvs.ui.ContractScreenFragment"
         android:label="fragment_contract_screen"
-        tools:layout="@layout/fragment_contract_screen" >
+        tools:layout="@layout/fragment_contract_screen">
         <action
             android:id="@+id/action_contractScreenFragment_to_mainScreenFragment"
             app:destination="@id/mainScreenFragment"
             app:popUpTo="@id/mainScreenFragment"
             app:popUpToInclusive="false" />
-    </fragment>
-    <fragment
-        android:id="@+id/contractScreensFragment"
-        android:name="com.kenetic.blockchainvs.block_connector.contract.reference_code.ContractScreensFragment"
-        android:label="fragment_contract_screens"
-        tools:layout="@layout/fragment_contract_screens" >
-        <action
-            android:id="@+id/action_contractScreensFragment_to_mainScreenFragment"
-            app:destination="@id/mainScreenFragment"
-            app:popUpTo="@id/mainScreenFragment" />
     </fragment>
 </navigation>
