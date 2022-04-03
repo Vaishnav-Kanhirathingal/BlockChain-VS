@@ -13,13 +13,20 @@ import java.util.concurrent.ExecutionException;
 public class Test {
     String TAG = "Test";
 
-    public String testFunction(Long num) throws IOException, ExecutionException, InterruptedException {
+    public String registerVoteEncoded(Long num) throws IOException, ExecutionException, InterruptedException {
         Function function = new Function(
                 "registerVote",
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(num)),
                 Collections.<TypeReference<?>>emptyList());
 
-        String encodedFunction = FunctionEncoder.encode(function);
-        return encodedFunction;
+        return FunctionEncoder.encode(function);
+    }
+
+    public String addMeToVotedListEncoded() throws IOException, ExecutionException, InterruptedException {
+        Function function = new Function(
+                "addMeToVotedList",
+                Arrays.<Type>asList(),
+                Collections.<TypeReference<?>>emptyList());
+        return FunctionEncoder.encode(function);
     }
 }

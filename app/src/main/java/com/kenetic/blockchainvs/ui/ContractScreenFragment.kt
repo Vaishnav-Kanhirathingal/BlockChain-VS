@@ -16,7 +16,6 @@ import com.kenetic.blockchainvs.app_viewmodel.MainViewModel
 import com.kenetic.blockchainvs.app_viewmodel.MainViewModelFactory
 import com.kenetic.blockchainvs.application_class.ApplicationStarter
 import com.kenetic.blockchainvs.block_connector.contract.contract_interface.PartyEnum
-import com.kenetic.blockchainvs.block_connector.contract.contract_interface.Test
 import com.kenetic.blockchainvs.block_connector.contract.contract_interface.VoteContractDelegate
 import com.kenetic.blockchainvs.databinding.FragmentContractScreenBinding
 import kotlinx.coroutines.CoroutineScope
@@ -35,7 +34,8 @@ class ContractScreenFragment : Fragment() {
     private var voteContractDelegate = VoteContractDelegate()
 
     private val transactionInProgress = "Transaction currently in progress..."
-    private val calling = "calling function..."
+    private val calling = "Calling function..."
+    private val gasUsedIs = "Gas used for transaction : "
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -86,10 +86,10 @@ class ContractScreenFragment : Fragment() {
             casteVoteButton.setOnClickListener {
                 viewModel.transactionCost.value = transactionInProgress
                 CoroutineScope(Dispatchers.IO).launch {
-                    val cost = voteContractDelegate.casteVote(partyEnum)
+                    val cost = voteContractDelegate.registerVote(partyEnum)
                     Log.d(TAG, "transaction output:-\n$cost")
                     CoroutineScope(Dispatchers.Main).launch {
-                        viewModel.transactionCost.value = cost
+                        viewModel.transactionCost.value = gasUsedIs + cost
                     }
                 }
             }
@@ -139,15 +139,14 @@ class ContractScreenFragment : Fragment() {
 
             testButton.setOnClickListener {
                 CoroutineScope(Dispatchers.IO).launch {
-                    voteContractDelegate.testingFunction()
                 }
             }
             addToVotersListButton.setOnClickListener {
                 viewModel.addMeToVotersList.value = calling
                 CoroutineScope(Dispatchers.IO).launch {
-                    val output = voteContractDelegate.addToVotedList()
+                    val output = voteContractDelegate.addMeToVotedList()
                     CoroutineScope(Dispatchers.Main).launch {
-                        viewModel.addMeToVotersList.value = output
+                        viewModel.addMeToVotersList.value = gasUsedIs + output
                     }
                 }
             }

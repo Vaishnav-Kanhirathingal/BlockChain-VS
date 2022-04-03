@@ -6,6 +6,7 @@ import org.web3j.crypto.RawTransaction
 import org.web3j.crypto.TransactionEncoder
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
+import org.web3j.protocol.core.methods.response.TransactionReceipt
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.ChainIdLong
 import org.web3j.tx.RawTransactionManager
@@ -15,7 +16,6 @@ import org.web3j.utils.Convert
 import org.web3j.utils.Numeric
 import java.math.BigDecimal
 import java.math.BigInteger
-import java.util.concurrent.TimeUnit
 
 private const val TAG = "VoteContractDelegate"
 
@@ -43,76 +43,91 @@ class VoteContractDelegate() {
         gasProvider
     )
 
-    fun testingFunction() {
+    fun registerVote(party: PartyEnum): String {
         val nonce = web3j
             .ethGetTransactionCount(credentials.address, DefaultBlockParameterName.LATEST)
             .send()
-            .transactionCount- BigInteger.ZERO
-        // TODO: change bigint to 1
-        Log.d(TAG, "nonce for transaction nonce = $nonce")
+            .transactionCount
 
-        val rawTransaction = RawTransaction.createTransaction(
-            ChainIdLong.ROPSTEN,
-            nonce,
-            gasLimit,
-            CONTRACT_ADDRESS,
-            BigInteger.ZERO,             //value for the transaction. the function doesn't accept ether. so, zero
-            Test().testFunction(1), //this returns the encoded function using the function encoder
-            gasPrice,                    //this is the 'maxPriorityFeePerGas' I set this high to be on the safe side
-            gasPrice                     //this is the 'maxFeePerGas'         I set this high to be on the safe side
-        )
-
-        val signedTransaction =
-            TransactionEncoder.signMessage(rawTransaction, ChainIdLong.ROPSTEN, credentials)
-        Log.d(TAG, "signed transaction byte array = ${signedTransaction.toList()}")
-
-        val hex = Numeric.toHexString(signedTransaction)
-        Log.d(TAG, "hex of a signed transaction for value one - $hex")
-
-        Log.d(TAG, "transaction test started...")      //transaction hash gets generated below.
-
-        val transactionHash = web3j.ethSendRawTransaction(hex).send().transactionHash
-        Log.d(TAG, "transactionHash = $transactionHash")
-    }
-
-    // TODO: this is the problem function...
-    fun casteVote(party: PartyEnum): String {
         return try {
-            Log.d(TAG, "started casteVote, Vote to be caste for ${party.name}")
-            val remoteCall = contract.registerVote(
-                BigInteger.valueOf(
+            Log.d(TAG, "nonce for transaction nonce = $nonce")
+
+            val rawTransaction = RawTransaction.createTransaction(
+                ChainIdLong.ROPSTEN,
+                nonce,
+                gasLimit,
+                CONTRACT_ADDRESS,
+                BigInteger.ZERO,
+                Test().registerVoteEncoded(
                     when (party) {
                         PartyEnum.ONE -> 1
                         PartyEnum.TWO -> 2
                         PartyEnum.THREE -> 3
                     }
-                )
+                ),
+                gasPrice,
+                gasPrice
             )
-            Log.d(
-                TAG,
-                "remote call generated, \nhashcode = ${remoteCall.hashCode()}\n${remoteCall.toString()}"
-            )
-            val asyncSent = remoteCall.sendAsync()
-            Log.d(TAG, "async sent")
-            val gasUsedForTransaction = asyncSent.get(5, TimeUnit.MINUTES).gasUsed.toString()
-            Log.d(TAG, "get passed")
-            gasUsedForTransaction
-        } catch (e: Exception) {
+
+            val transactionHash = getTransactionHash(rawTransaction)
+            Log.d(TAG, "transactionHash = $transactionHash, generating receipt...")
+
+            val transactionReceipt = generateReceipt(transactionHash)
+            Log.d(TAG, "transactionReceipt = $transactionReceipt")
+            transactionReceipt.gasUsed.toString()
+        } catch (e: java.lang.Exception) {
             e.printStackTrace()
             e.message.toString()
         }
     }
 
-    fun addToVotedList(): String {
+    fun addMeToVotedList(): String {
+        val nonce = web3j
+            .ethGetTransactionCount(credentials.address, DefaultBlockParameterName.LATEST)
+            .send()
+            .transactionCount
+
         return try {
-            val transactionReceipt = contract.addMeToVotedList().send()
-            "Transaction Completed,\n" +
-                    "block number = ${transactionReceipt.blockNumber}\n" +
-                    "gas used = ${transactionReceipt.gasUsed}"
-        } catch (e: Exception) {
+            Log.d(TAG, "nonce for transaction nonce = $nonce")
+
+            val rawTransaction = RawTransaction.createTransaction(
+                ChainIdLong.ROPSTEN,
+                nonce,
+                gasLimit,
+                CONTRACT_ADDRESS,
+                BigInteger.ZERO,
+                Test().addMeToVotedListEncoded(),
+                gasPrice,
+                gasPrice
+            )
+
+            val transactionHash = getTransactionHash(rawTransaction)
+            Log.d(TAG, "transactionHash = $transactionHash, generating receipt...")
+
+            val transactionReceipt = generateReceipt(transactionHash)
+            Log.d(TAG, "transactionReceipt = $transactionReceipt")
+
+            transactionReceipt.gasUsed.toString()
+        } catch (e: java.lang.Exception) {
             e.printStackTrace()
             e.message.toString()
         }
+    }
+
+    private fun generateReceipt(txHash: String): TransactionReceipt {
+        do {
+            Thread.sleep(5000)
+            Log.d(TAG, "trying to get transaction receipt")
+        } while (!web3j.ethGetTransactionReceipt(txHash).send().transactionReceipt.isPresent)
+        return web3j.ethGetTransactionReceipt(txHash).send().transactionReceipt.get()
+    }
+
+    private fun getTransactionHash(rawTransaction: RawTransaction): String {
+        return web3j.ethSendRawTransaction(
+            Numeric.toHexString(
+                TransactionEncoder.signMessage(rawTransaction, ChainIdLong.ROPSTEN, credentials)
+            )
+        ).send().transactionHash
     }
 
     //------------------------------------------------------------------------------------------done
