@@ -1,6 +1,5 @@
 package com.kenetic.blockchainvs.recycler
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
@@ -14,6 +13,8 @@ import com.kenetic.blockchainvs.datapack.database.TransactionData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.web3j.protocol.Web3j
+import org.web3j.protocol.http.HttpService
 
 private const val TAG = "TransactionAdapter"
 
@@ -42,7 +43,16 @@ class TransactionAdapter(
                 if (currentTransactionData.gasFee == null) {
                     gasFeeTextView.text = viewModel.gettingGasUsed
                     CoroutineScope(Dispatchers.IO).launch {
-                        // TODO: get gas used and then store it to database
+                        val web3j =
+                            Web3j.build(HttpService("https://ropsten.infura.io/v3/c358089e1aaa4746aa50e61d4ec41c5c"))
+                        val cost = web3j
+                            .ethGetTransactionReceipt(currentTransactionData.transactionHash)
+                            .send()
+                            .transactionReceipt
+                            .get()
+                            .gasUsed
+                        currentTransactionData.gasFee = cost.toLong()
+                        viewModel.updateParty(currentTransactionData)
                     }
                 } else {
                     gasFeeTextView.text = currentTransactionData.gasFee!!.toString()

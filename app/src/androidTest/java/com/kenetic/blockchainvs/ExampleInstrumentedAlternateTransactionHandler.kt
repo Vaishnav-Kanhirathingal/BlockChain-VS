@@ -21,7 +21,7 @@ class ExampleInstrumentedAlternateTransactionHandler {
         "66c53799ee0c63f2564305e738ea7479d7aee84aed3aac4c01e54a7acbcc4d92"
     private val emailOtp = "1111"
     private val phoneOtp = "1111"
-    private val explanationInterval: Long = 40000
+    private val explanationInterval: Long = 20000
     private val waitInterval: Long = 3000
 
     //-------------------------------------------------------------------------------sign-up-details
@@ -103,14 +103,21 @@ class ExampleInstrumentedAlternateTransactionHandler {
         Thread.sleep(explanationInterval)
     }
 
-    fun signIn() {
+    @Test
+    fun signInAndInteractWithContract() {
+        Thread.sleep(waitInterval)
+        //-----------------------------------------------------------------------------------sign-in
         onView(withId(R.id.account_settings)).perform(click())
         onView(withId(R.id.user_name_text_field)).perform(typeText(fullName))
         onView(withId(R.id.user_set_password_text_field)).perform(typeText(password))
         onView(withId(R.id.confirm_login)).perform(click())
         Thread.sleep(explanationInterval)
-    }
-    fun interactWithContract(){
-//        onView(with)
+        //----------------------------------------------------------------------------------interact
+        onView(withId(R.id.contract_interface)).perform(click())
+        onView(withId(R.id.get_registered_voters_button)).perform(scrollTo(), click())
+        onView(withId(R.id.check_voter_status_button)).perform(scrollTo(), click())
+        onView(withId(R.id.get_votes_button)).perform(scrollTo(), click())
+        onView(withId(R.id.get_balance_button)).perform(scrollTo(), click())
+        Thread.sleep(explanationInterval)
     }
 }

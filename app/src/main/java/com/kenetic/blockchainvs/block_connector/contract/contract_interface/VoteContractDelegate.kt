@@ -1,5 +1,6 @@
 package com.kenetic.blockchainvs.block_connector.contract.contract_interface
 
+import android.annotation.SuppressLint
 import android.util.Log
 import com.kenetic.blockchainvs.app_viewmodel.MainViewModel
 import com.kenetic.blockchainvs.datapack.database.TransactionData
@@ -47,6 +48,7 @@ class VoteContractDelegate(private val viewModel: MainViewModel) {
         gasProvider
     )
 
+    @SuppressLint("SimpleDateFormat")
     fun registerVote(party: PartyEnum): String {
         val nonce = web3j
             .ethGetTransactionCount(credentials.address, DefaultBlockParameterName.LATEST)
@@ -87,6 +89,7 @@ class VoteContractDelegate(private val viewModel: MainViewModel) {
 
             val transactionReceipt = generateReceipt(transactionHash)
 
+            Log.d(TAG,"transaction re")
             txData.gasFee = transactionReceipt.gasUsed.toLong()
             viewModel.updateParty(txData)
 

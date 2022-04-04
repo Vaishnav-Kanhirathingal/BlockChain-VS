@@ -16,6 +16,7 @@ class MainViewModel(private val transactionDAO: TransactionDAO) : ViewModel() {
     val unknown = "Unknown..."
     val callNotPerformedYet = "Call Not Performed Yet"
     val gettingGasUsed = "Getting Gas Used..."
+    val gasUsedIs = "Gas used for transaction : "
 
     //------------------------------------------------------------------------data-binding-live-data
     val transactionCost: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)

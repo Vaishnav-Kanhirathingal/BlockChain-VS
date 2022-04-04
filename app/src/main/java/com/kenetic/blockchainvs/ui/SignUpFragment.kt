@@ -13,7 +13,6 @@ import com.kenetic.blockchainvs.databinding.FragmentSignUpBinding
 import com.kenetic.blockchainvs.datapack.datastore.AccountDataStore
 import com.kenetic.blockchainvs.datapack.datastore.BooleanSetterEnum
 import com.kenetic.blockchainvs.datapack.datastore.StringSetterEnum
-import com.kenetic.blockchainvs.networking_api.VoteNetworkApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -354,7 +353,7 @@ class SignUpFragment : Fragment() {
                 e.printStackTrace()
                 userPrivateKey.error = "PrivateKey incorrect"
                 userPrivateKey.isErrorEnabled = true
-                // TODO: remove after fixing scope issues
+                // TODO: change to false and make it a coroutine
                 true
             }
         }

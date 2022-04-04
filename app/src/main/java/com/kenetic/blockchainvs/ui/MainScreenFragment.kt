@@ -19,6 +19,7 @@ import com.kenetic.blockchainvs.application_class.ApplicationStarter
 import com.kenetic.blockchainvs.databinding.FragmentMainScreenBinding
 import com.kenetic.blockchainvs.databinding.PromptLogOutBinding
 import com.kenetic.blockchainvs.databinding.PromptLoginBinding
+import com.kenetic.blockchainvs.databinding.PromptSwitchBinding
 import com.kenetic.blockchainvs.datapack.datastore.AccountDataStore
 import com.kenetic.blockchainvs.datapack.datastore.BooleanSetterEnum
 import com.kenetic.blockchainvs.recycler.TransactionAdapter
@@ -38,6 +39,9 @@ class MainScreenFragment : Fragment() {
         )
     }
 
+    private var loggedIn = false
+    private var accountName = ""
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -47,13 +51,16 @@ class MainScreenFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        accountDataStore = AccountDataStore(requireContext())
+//        CoroutineScope(Dispatchers.IO).launch {
+//            accountDataStore.logOut(requireContext())
+//        }
         applyMainLayoutBinding()
         applyTopMenuBindings()
         applySideMenuBinding()
     }
 
     private fun applyMainLayoutBinding() {
-        accountDataStore = AccountDataStore(requireContext())
         transactionAdapter = TransactionAdapter(viewModel, viewLifecycleOwner)
         viewModel.getAllById().asLiveData().observe(viewLifecycleOwner) {
             Log.d(TAG, "all ids = $it")
@@ -68,8 +75,11 @@ class MainScreenFragment : Fragment() {
                 Log.d(TAG, "top menu button working")
                 when (it.itemId) {
                     R.id.account_settings -> {
-                        // TODO: new prompt to show log out and remove prompt
-                        loginPrompt()
+                        if (loggedIn) {
+                            switchAccountPrompt()
+                        } else {
+                            loginPrompt()
+                        }
                         true
                     }
                     else -> {
@@ -96,6 +106,7 @@ class MainScreenFragment : Fragment() {
         val menuItemLoggedIn: TextView = headerMenu.findViewById(R.id.logged_in)
 
         accountDataStore.userFullNameFlow.asLiveData().observe(viewLifecycleOwner) {
+            accountName = it
             menuItemUserFullName.text = it
         }
         accountDataStore.userEmailFlow.asLiveData().observe(viewLifecycleOwner) {
@@ -111,6 +122,7 @@ class MainScreenFragment : Fragment() {
             menuItemUserVoterId.text = it
         }
         accountDataStore.userLoggedInFlow.asLiveData().observe(viewLifecycleOwner) {
+            loggedIn = it
             menuItemLoggedIn.text = if (it) {
                 "Logged In"
             } else {
@@ -142,38 +154,28 @@ class MainScreenFragment : Fragment() {
                         true
                     }
                     R.id.switch_account -> {
-                        // TODO: remove present account and add new account
                         Log.d(TAG, "switch account working")
-                        switchAccount()
+                        switchAccountPrompt()
                         true
                     }
                     R.id.contract_interface -> {
-//                    if (accountDataStore.userLoggedInFlow.asLiveData().value!!) {
-//                        findNavController()
-//                            .navigate(
-//                                MainScreenFragmentDirections
-//                                    .actionMainScreenFragmentToContractScreenFragment()
-//                            )
-//                    } else {
-//                        Toast.makeText(
-//                            requireContext(), "Log In Necessary To Continue", Toast.LENGTH_SHORT
-//                        ).show()
-//                        // TODO: this is for testing purposes only
-//                        findNavController()
-//                            .navigate(
-//                                MainScreenFragmentDirections
-//                                    .actionMainScreenFragmentToContractScreenFragment()
-//                            )
-//                        //loginPrompt()
-//                    }
-                        // TODO: remove testing
-                        CoroutineScope(Dispatchers.Main).launch {
-                            findNavController()
-                                .navigate(
-                                    MainScreenFragmentDirections
-                                        .actionMainScreenFragmentToContractScreenFragment()
-                                )
-                        }
+                        findNavController()
+                            .navigate(
+                                MainScreenFragmentDirections
+                                    .actionMainScreenFragmentToContractScreenFragment()
+                            )
+//                        if (loggedIn) {
+//                            findNavController()
+//                                .navigate(
+//                                    MainScreenFragmentDirections
+//                                        .actionMainScreenFragmentToContractScreenFragment()
+//                                )
+//                        } else {
+//                            Toast.makeText(
+//                                requireContext(), "Log In Necessary To Continue", Toast.LENGTH_SHORT
+//                            ).show()
+//                            loginPrompt()
+//                        }
                         true
                     }
                     R.id.about -> {
@@ -182,9 +184,8 @@ class MainScreenFragment : Fragment() {
                         true
                     }
                     R.id.exit -> {
-                        // TODO: log out and close app
                         Log.d(TAG, "exit working")
-                        logOutAndExit(true)
+                        logOutAndExit()
                         true
                     }
                     else -> {
@@ -195,15 +196,34 @@ class MainScreenFragment : Fragment() {
         }
     }
 
-    private fun switchAccount() {
-        CoroutineScope(Dispatchers.IO).launch {
-            accountDataStore.resetAccounts(requireContext())
+    private fun switchAccountPrompt() {
+        val promptSwitchBinding = PromptSwitchBinding.inflate(layoutInflater)
+        val dialogBox = Dialog(requireContext())
+        promptSwitchBinding.apply {
+            cancel.setOnClickListener {
+                dialogBox.dismiss()
+            }
+            confirm.setOnClickListener {
+                CoroutineScope(Dispatchers.IO).launch {
+                    accountDataStore.resetAccounts(requireContext())
+                }
+                findNavController()
+                    .navigate(
+                        MainScreenFragmentDirections
+                            .actionMainScreenFragmentToSignUpFragment()
+                    )
+            }
+            currentAccountFullName.text = accountName
         }
-        findNavController()
-            .navigate(
-                MainScreenFragmentDirections
-                    .actionMainScreenFragmentToSignUpFragment()
+        dialogBox.apply {
+            setContentView(promptSwitchBinding.root)
+            window!!.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
             )
+            setCancelable(false)
+            show()
+        }
     }
 
     private fun loginPrompt() {
@@ -244,6 +264,7 @@ class MainScreenFragment : Fragment() {
                     }
                 }
             }
+            // TODO: add fingerprint authentication
             dialogBox.apply {
                 setContentView(promptLoginBinding.root)
                 window!!.setLayout(
@@ -256,7 +277,7 @@ class MainScreenFragment : Fragment() {
         }
     }
 
-    private fun logOutAndExit(exit: Boolean) {
+    private fun logOutAndExit() {
         val dialogBox = Dialog(requireContext())
         val promptLogOutBinding = PromptLogOutBinding.inflate(layoutInflater)
         promptLogOutBinding.apply {
@@ -264,9 +285,7 @@ class MainScreenFragment : Fragment() {
                 CoroutineScope(Dispatchers.IO).launch {
                     accountDataStore.resetAccounts(requireContext())
                 }
-                if (exit) {
-                    // TODO: log out and exit
-                }
+                // TODO: exit app after work is done
             }
             cancel.setOnClickListener {
                 dialogBox.dismiss()

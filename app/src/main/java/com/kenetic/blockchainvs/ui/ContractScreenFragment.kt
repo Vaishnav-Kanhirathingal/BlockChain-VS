@@ -33,14 +33,10 @@ class ContractScreenFragment : Fragment() {
     private var partyEnum = PartyEnum.ONE
     private lateinit var voteContractDelegate: VoteContractDelegate
 
-    private val transactionInProgress = "Transaction currently in progress..."
-    private val calling = "Calling function..."
-    private val gasUsedIs = "Gas used for transaction : "
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentContractScreenBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
@@ -68,7 +64,7 @@ class ContractScreenFragment : Fragment() {
 
             casteVoteButton.isEnabled = false
             partySelectorRadioGroup.setOnCheckedChangeListener(
-                fun(r: RadioGroup, i: Int) {
+                fun(_: RadioGroup, i: Int) {
                     casteVoteButton.isEnabled = true
                     partyEnum = when (i) {
                         R.id.party_one_radio_button -> {
@@ -85,18 +81,18 @@ class ContractScreenFragment : Fragment() {
             )
             //----------------------------------------------------------------------------caste-vote
             casteVoteButton.setOnClickListener {
-                viewModel.transactionCost.value = transactionInProgress
+                viewModel.transactionCost.value = viewModel.transactionInProgress
                 CoroutineScope(Dispatchers.IO).launch {
                     val cost = voteContractDelegate.registerVote(partyEnum)
                     Log.d(TAG, "transaction output:-\n$cost")
                     CoroutineScope(Dispatchers.Main).launch {
-                        viewModel.transactionCost.value = gasUsedIs + cost
+                        viewModel.transactionCost.value = viewModel.gasUsedIs + cost
                     }
                 }
             }
             //----------------------------------------------------------------------------get-voters
             getRegisteredVotersButton.setOnClickListener {
-                viewModel.addressList.value = calling
+                viewModel.addressList.value = viewModel.calling
                 CoroutineScope(Dispatchers.IO).launch {
                     val votersListAsString = voteContractDelegate.getVoterAddresses()
                     Log.d(TAG, "registered voter addresses = $votersListAsString")
@@ -107,7 +103,7 @@ class ContractScreenFragment : Fragment() {
             }
             //------------------------------------------------------------------------has-user-voted
             checkVoterStatusButton.setOnClickListener {
-                viewModel.alreadyVoted.value = calling
+                viewModel.alreadyVoted.value = viewModel.calling
                 CoroutineScope(Dispatchers.IO).launch {
                     val hasUserVoted = voteContractDelegate.getHasAlreadyVoted()
                     Log.d(TAG, "voting status = $hasUserVoted")
@@ -118,7 +114,7 @@ class ContractScreenFragment : Fragment() {
             }
             //------------------------------------------------------------------get-voters-addresses
             getVotesButton.setOnClickListener {
-                viewModel.allPartyVotes.value = calling
+                viewModel.allPartyVotes.value = viewModel.calling
                 CoroutineScope(Dispatchers.IO).launch {
                     val electionStatus = voteContractDelegate.partyVotesStatus()
                     Log.d(TAG, "election status received: \n$electionStatus")
@@ -129,7 +125,7 @@ class ContractScreenFragment : Fragment() {
             }
 
             getBalanceButton.setOnClickListener {
-                viewModel.balance.value = calling
+                viewModel.balance.value = viewModel.calling
                 CoroutineScope(Dispatchers.IO).launch {
                     val balanceReceived = voteContractDelegate.getBalance()
                     CoroutineScope(Dispatchers.Main).launch {
@@ -139,11 +135,11 @@ class ContractScreenFragment : Fragment() {
             }
 
             addToVotersListButton.setOnClickListener {
-                viewModel.addMeToVotersList.value = calling
+                viewModel.addMeToVotersList.value = viewModel.calling
                 CoroutineScope(Dispatchers.IO).launch {
                     val output = voteContractDelegate.addMeToVotedList()
                     CoroutineScope(Dispatchers.Main).launch {
-                        viewModel.addMeToVotersList.value = gasUsedIs + output
+                        viewModel.addMeToVotersList.value = viewModel.gasUsedIs + output
                     }
                 }
             }

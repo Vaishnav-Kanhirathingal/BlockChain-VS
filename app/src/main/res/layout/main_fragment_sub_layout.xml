@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             app:menu="@menu/main_screen"
             app:navigationIcon="@drawable/menu_24"
-            app:title="Main Screen" />
+            app:title="Transaction History" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
