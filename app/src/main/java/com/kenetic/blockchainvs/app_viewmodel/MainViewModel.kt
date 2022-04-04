@@ -27,15 +27,15 @@ class MainViewModel(private val transactionDAO: TransactionDAO) : ViewModel() {
     val addMeToVotersList: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
 
     //---------------------------------------------------------------------------------dao-functions
-    fun insertParty(transactionData: TransactionData) {
+    fun insertTransaction(transactionData: TransactionData) {
         CoroutineScope(Dispatchers.IO).launch { transactionDAO.insertParty(transactionData) }
     }
 
-    fun updateParty(transactionData: TransactionData) {
+    fun updateTransaction(transactionData: TransactionData) {
         CoroutineScope(Dispatchers.IO).launch { transactionDAO.updateParty(transactionData) }
     }
 
-    fun deleteParty(transactionData: TransactionData) {
+    fun deleteTransaction(transactionData: TransactionData) {
         CoroutineScope(Dispatchers.IO).launch { transactionDAO.deleteParty(transactionData) }
     }
 

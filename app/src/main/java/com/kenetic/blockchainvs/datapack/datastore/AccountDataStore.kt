@@ -17,7 +17,7 @@ private val Context.datastore: DataStore<Preferences> by preferencesDataStore(
 )
 
 class AccountDataStore(context: Context) {
-    val default = "UNSPECIFIED"
+    val default = "Log In Required"
 
     //------------------------------------------------------------------------------------------keys
     //----------------------------------------------------------------------------------------string
@@ -34,7 +34,7 @@ class AccountDataStore(context: Context) {
     private val userLoggedInKey = booleanPreferencesKey("user_logged_in")
     private val userRegisteredKey = booleanPreferencesKey("user_registered")
 
-    //------------------------------------------------------------------------------detail-accessors
+    //-------------------------------------------------------------------------------------accessors
     //---------------------------------------------------------------------------------------strings
     val userPasswordFlow: Flow<String> =
         context.datastore.data.catch { catcherFun(it) }.map { it[userPasswordKey] ?: default }
@@ -107,9 +107,9 @@ class AccountDataStore(context: Context) {
         }
     }
 
-//    suspend fun logOut(context: Context){
-//        context.datastore.edit { it[userLoggedInKey] = false }
-//    }
+    suspend fun logOut(context: Context){
+        context.datastore.edit { it[userLoggedInKey] = false }
+    }
 
     suspend fun resetAccounts(context: Context) {
         context.datastore.edit {

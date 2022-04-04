@@ -39,8 +39,13 @@ class MainScreenFragment : Fragment() {
         )
     }
 
-    private var loggedIn = false
-    private var accountName = ""
+    private lateinit var userFullName: String
+    private lateinit var userEmail: String
+    private lateinit var userContactNumber: String
+    private lateinit var userAdharNo: String
+    private lateinit var userVoterID: String
+    private var userLoggedIn: Boolean = false
+    private lateinit var userPassword: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -52,16 +57,16 @@ class MainScreenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         accountDataStore = AccountDataStore(requireContext())
-//        CoroutineScope(Dispatchers.IO).launch {
-//            accountDataStore.logOut(requireContext())
-//        }
+        CoroutineScope(Dispatchers.IO).launch {
+            accountDataStore.logOut(requireContext())
+        }
         applyMainLayoutBinding()
         applyTopMenuBindings()
         applySideMenuBinding()
     }
 
     private fun applyMainLayoutBinding() {
-        transactionAdapter = TransactionAdapter(viewModel, viewLifecycleOwner)
+        transactionAdapter = TransactionAdapter(viewModel, viewLifecycleOwner, requireContext())
         viewModel.getAllById().asLiveData().observe(viewLifecycleOwner) {
             Log.d(TAG, "all ids = $it")
             transactionAdapter.submitList(it)
@@ -75,7 +80,7 @@ class MainScreenFragment : Fragment() {
                 Log.d(TAG, "top menu button working")
                 when (it.itemId) {
                     R.id.account_settings -> {
-                        if (loggedIn) {
+                        if (userLoggedIn) {
                             switchAccountPrompt()
                         } else {
                             loginPrompt()
@@ -105,29 +110,38 @@ class MainScreenFragment : Fragment() {
         val menuItemUserVoterId: TextView = headerMenu.findViewById(R.id.user_voter_id)
         val menuItemLoggedIn: TextView = headerMenu.findViewById(R.id.logged_in)
 
+        //--------------------------------------------------------------------------data-store-saver
         accountDataStore.userFullNameFlow.asLiveData().observe(viewLifecycleOwner) {
-            accountName = it
+            userFullName = it
             menuItemUserFullName.text = it
         }
         accountDataStore.userEmailFlow.asLiveData().observe(viewLifecycleOwner) {
+            userEmail = it
             menuItemUserEmail.text = it
         }
         accountDataStore.userContactNumberFlow.asLiveData().observe(viewLifecycleOwner) {
+            userContactNumber = it
             menuItemUserPhoneNumber.text = it
         }
         accountDataStore.userAdharNoFlow.asLiveData().observe(viewLifecycleOwner) {
+            userAdharNo = it
             menuItemUserAdharNumber.text = it
         }
         accountDataStore.userVoterIDFlow.asLiveData().observe(viewLifecycleOwner) {
+            userVoterID = it
             menuItemUserVoterId.text = it
         }
         accountDataStore.userLoggedInFlow.asLiveData().observe(viewLifecycleOwner) {
-            loggedIn = it
+            userLoggedIn = it
             menuItemLoggedIn.text = if (it) {
                 "Logged In"
             } else {
                 "Not Logged In"
             }
+        }
+        //-----------------------------------------------------------------extra-data-store-elements
+        accountDataStore.userPasswordFlow.asLiveData().observe(viewLifecycleOwner) {
+            userPassword = it
         }
         //-------------------------------------------------------------------------------bottom-menu
         CoroutineScope(Dispatchers.IO).launch {
@@ -135,12 +149,11 @@ class MainScreenFragment : Fragment() {
                 Log.d(TAG, "navigationViewMainScreen working")
                 when (it.itemId) {
                     R.id.log_in -> {
-                        Log.d(TAG, "log in working")
                         loginPrompt()
                         true
                     }
                     R.id.log_out -> {
-                        Log.d(TAG, "log out working")
+                        Toast.makeText(requireContext(), "Logging Out", Toast.LENGTH_SHORT).show()
                         CoroutineScope(Dispatchers.IO).launch {
                             accountDataStore.resetAccounts(requireContext())
                         }
@@ -154,7 +167,6 @@ class MainScreenFragment : Fragment() {
                         true
                     }
                     R.id.switch_account -> {
-                        Log.d(TAG, "switch account working")
                         switchAccountPrompt()
                         true
                     }
@@ -164,7 +176,7 @@ class MainScreenFragment : Fragment() {
                                 MainScreenFragmentDirections
                                     .actionMainScreenFragmentToContractScreenFragment()
                             )
-//                        if (loggedIn) {
+//                        if (userLoggedIn) {
 //                            findNavController()
 //                                .navigate(
 //                                    MainScreenFragmentDirections
@@ -212,8 +224,9 @@ class MainScreenFragment : Fragment() {
                         MainScreenFragmentDirections
                             .actionMainScreenFragmentToSignUpFragment()
                     )
+                dialogBox.dismiss()
             }
-            currentAccountFullName.text = accountName
+            currentAccountFullName.text = userFullName
         }
         dialogBox.apply {
             setContentView(promptSwitchBinding.root)
@@ -247,9 +260,9 @@ class MainScreenFragment : Fragment() {
             }
             confirmLogin.setOnClickListener {
                 if (
-                    (userNameEditText.editText!!.text.toString() == accountDataStore.userFullNameFlow.asLiveData().value!!.toString())
+                    (userNameEditText.editText!!.text.toString() == userFullName)
                     &&
-                    (userSetPasswordEditText.editText!!.text.toString() == accountDataStore.userPasswordFlow.asLiveData().value!!)
+                    (userSetPasswordEditText.editText!!.text.toString() == userPassword)
                     &&
                     (userNameEditText.editText!!.text.toString() != accountDataStore.default)
                     &&

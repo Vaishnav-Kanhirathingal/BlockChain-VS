@@ -1,7 +1,14 @@
 package com.kenetic.blockchainvs.recycler
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.DiffUtil
@@ -20,7 +27,8 @@ private const val TAG = "TransactionAdapter"
 
 class TransactionAdapter(
     private val viewModel: MainViewModel,
-    private val lifecycleOwner: LifecycleOwner
+    private val lifecycleOwner: LifecycleOwner,
+    private val context: Context
 ) :
     ListAdapter<Int, TransactionAdapter.PartyViewHolder>(diffCallback) {
 
@@ -30,14 +38,26 @@ class TransactionAdapter(
     ) :
         RecyclerView.ViewHolder(itemBinding.root) {
 
-        fun bind(currentTransactionData: TransactionData) {
+        fun bind(currentTransactionData: TransactionData, context: Context) {
             itemBinding.apply {
                 transactionHashTextView.text = currentTransactionData.transactionHash
                 copyImageButton.setOnClickListener {
                     // TODO: copy
+                    val clipboardManager =
+                        context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clipData = ClipData.newPlainText(
+                        "Transaction Hash",
+                        currentTransactionData.transactionHash
+                    )
+                    clipboardManager.setPrimaryClip(clipData)
+                    Toast.makeText(context, "Transaction Hash Copied", Toast.LENGTH_SHORT).show()
                 }
                 openInBrowser.setOnClickListener {
-                    // TODO: open ether-scan
+                    val i = Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://ropsten.etherscan.io/tx/${currentTransactionData.transactionHash}")
+                    )
+                    startActivity(context, i, null)
                 }
                 methodCalledTextView.text = currentTransactionData.methodCalled
                 if (currentTransactionData.gasFee == null) {
@@ -52,7 +72,7 @@ class TransactionAdapter(
                             .get()
                             .gasUsed
                         currentTransactionData.gasFee = cost.toLong()
-                        viewModel.updateParty(currentTransactionData)
+                        viewModel.updateTransaction(currentTransactionData)
                     }
                 } else {
                     gasFeeTextView.text = currentTransactionData.gasFee!!.toString()
@@ -81,7 +101,7 @@ class TransactionAdapter(
 
     override fun onBindViewHolder(holder: PartyViewHolder, position: Int) {
         viewModel.getById(getItem(position)).asLiveData().observe(lifecycleOwner) {
-            holder.bind(it)
+            holder.bind(it, context)
         }
     }
 }

@@ -84,14 +84,14 @@ class VoteContractDelegate(private val viewModel: MainViewModel) {
                     Date(System.currentTimeMillis())
                 )
             )
-            viewModel.insertParty(txData)
+            viewModel.insertTransaction(txData)
             Log.d(TAG, "transactionHash = $transactionHash, generating receipt...")
 
             val transactionReceipt = generateReceipt(transactionHash)
 
             Log.d(TAG,"transaction re")
             txData.gasFee = transactionReceipt.gasUsed.toLong()
-            viewModel.updateParty(txData)
+            viewModel.updateTransaction(txData)
 
             Log.d(TAG, "transactionReceipt = $transactionReceipt")
             transactionReceipt.gasUsed.toString()
@@ -130,13 +130,13 @@ class VoteContractDelegate(private val viewModel: MainViewModel) {
                     Date(System.currentTimeMillis())
                 )
             )
-            viewModel.insertParty(txData)
+            viewModel.insertTransaction(txData)
             Log.d(TAG, "transactionHash = $transactionHash, generating receipt...")
 
             val transactionReceipt = generateReceipt(transactionHash)
 
             txData.gasFee = transactionReceipt.gasUsed.toLong()
-            viewModel.updateParty(txData)
+            viewModel.updateTransaction(txData)
 
             Log.d(TAG, "transactionReceipt = $transactionReceipt")
 
