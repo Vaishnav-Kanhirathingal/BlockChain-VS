@@ -160,9 +160,10 @@ class MainScreenFragment : Fragment() {
                         true
                     }
                     R.id.log_out -> {
-                        Toast.makeText(requireContext(), "Logging Out", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Logged Out", Toast.LENGTH_SHORT)
+                            .show()
                         CoroutineScope(Dispatchers.IO).launch {
-                            accountDataStore.resetAccounts(requireContext())
+                            accountDataStore.logOut(requireContext())
                         }
                         true
                     }
@@ -171,6 +172,14 @@ class MainScreenFragment : Fragment() {
                             .navigate(
                                 MainScreenFragmentDirections.actionMainScreenFragmentToSignUpFragment()
                             )
+                        true
+                    }
+                    R.id.remove_account -> {
+                        Toast.makeText(requireContext(), "Account Removed", Toast.LENGTH_SHORT)
+                            .show()
+                        CoroutineScope(Dispatchers.IO).launch {
+                            accountDataStore.resetAccounts(requireContext())
+                        }
                         true
                     }
                     R.id.switch_account -> {

@@ -20,6 +20,10 @@
                     android:icon="@drawable/add_account_24"
                     android:title="Sign Up" />
                 <item
+                    android:id="@+id/remove_account"
+                    android:icon="@drawable/account_remove_24"
+                    android:title="Remove Account" />
+                <item
                     android:id="@+id/switch_account"
                     android:icon="@drawable/switch_account_24"
                     android:title="Switch Account" />
