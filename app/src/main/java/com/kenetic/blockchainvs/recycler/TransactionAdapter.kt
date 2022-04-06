@@ -23,8 +23,6 @@ import kotlinx.coroutines.launch
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
 
-private const val TAG = "TransactionAdapter"
-
 class TransactionAdapter(
     private val viewModel: MainViewModel,
     private val lifecycleOwner: LifecycleOwner,
@@ -42,7 +40,6 @@ class TransactionAdapter(
             itemBinding.apply {
                 transactionHashTextView.text = currentTransactionData.transactionHash
                 copyImageButton.setOnClickListener {
-                    // TODO: copy
                     val clipboardManager =
                         context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     val clipData = ClipData.newPlainText(

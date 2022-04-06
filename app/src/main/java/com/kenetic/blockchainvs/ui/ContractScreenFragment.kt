@@ -1,5 +1,6 @@
 package com.kenetic.blockchainvs.ui
 
+import android.app.Dialog
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -7,9 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import com.kenetic.blockchainvs.R
 import com.kenetic.blockchainvs.app_viewmodel.MainViewModel
@@ -18,6 +21,10 @@ import com.kenetic.blockchainvs.application_class.ApplicationStarter
 import com.kenetic.blockchainvs.block_connector.contract.contract_interface.PartyEnum
 import com.kenetic.blockchainvs.block_connector.contract.contract_interface.VoteContractDelegate
 import com.kenetic.blockchainvs.databinding.FragmentContractScreenBinding
+import com.kenetic.blockchainvs.databinding.PromptPasswordBinding
+import com.kenetic.blockchainvs.datapack.datastore.AccountDataStore
+import com.kenetic.blockchainvs.fingerprint.FingerPrintAuthentication
+import com.kenetic.blockchainvs.fingerprint.FingerPrintTaskEnum
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -81,13 +88,23 @@ class ContractScreenFragment : Fragment() {
             )
             //----------------------------------------------------------------------------caste-vote
             casteVoteButton.setOnClickListener {
-                viewModel.transactionCost.value = viewModel.transactionInProgress
-                CoroutineScope(Dispatchers.IO).launch {
-                    val cost = voteContractDelegate.registerVote(partyEnum)
-                    Log.d(TAG, "transaction output:-\n$cost")
-                    CoroutineScope(Dispatchers.Main).launch {
-                        viewModel.transactionCost.value = viewModel.gasUsedIs + cost
+                val task = {
+                    viewModel.transactionCost.value = viewModel.transactionInProgress
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val cost = voteContractDelegate.registerVote(partyEnum)
+                        Log.d(TAG, "transaction output:-\n$cost")
+                        CoroutineScope(Dispatchers.Main).launch {
+                            viewModel.transactionCost.value = viewModel.gasUsedIs + cost
+                        }
                     }
+                }
+                if (viewModel.userUsesFingerprint) {
+                    FingerPrintAuthentication(
+                        requireContext(),
+                        FingerPrintTaskEnum.TRANSACTION
+                    ) { task() }
+                } else {
+                    passwordPrompt { task() }
                 }
             }
             //----------------------------------------------------------------------------get-voters
@@ -135,14 +152,61 @@ class ContractScreenFragment : Fragment() {
             }
 
             addToVotersListButton.setOnClickListener {
-                viewModel.addMeToVotersList.value = viewModel.calling
-                CoroutineScope(Dispatchers.IO).launch {
-                    val output = voteContractDelegate.addMeToVotedList()
-                    CoroutineScope(Dispatchers.Main).launch {
-                        viewModel.addMeToVotersList.value = viewModel.gasUsedIs + output
+                val task = {
+                    viewModel.addMeToVotersList.value = viewModel.calling
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val output = voteContractDelegate.addMeToVotedList()
+                        CoroutineScope(Dispatchers.Main).launch {
+                            viewModel.addMeToVotersList.value = viewModel.gasUsedIs + output
+                        }
                     }
                 }
+                if (viewModel.userUsesFingerprint) {
+                    FingerPrintAuthentication(
+                        requireContext(),
+                        FingerPrintTaskEnum.TRANSACTION
+                    ) { task() }
+                } else {
+                    passwordPrompt { task() }
+                }
             }
+        }
+    }
+
+    private fun passwordPrompt(task: () -> Unit) {
+        val dialogBox = Dialog(requireContext())
+        val promptBinding = PromptPasswordBinding.inflate(layoutInflater)
+        promptBinding.apply {
+            cancel.setOnClickListener {
+                dialogBox.dismiss()
+            }
+            confirm.setOnClickListener {
+                if (passwordTextField.text.toString() == AccountDataStore(requireContext()).userPasswordFlow.asLiveData().value.toString()) {
+                    task()
+                    dialogBox.dismiss()
+                    Toast.makeText(
+                        requireContext(),
+                        "Task Is Being Executed",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "Password Incorrect, Try Again Later",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    dialogBox.dismiss()
+                }
+            }
+        }
+        dialogBox.apply {
+            setContentView(promptBinding.root)
+            window!!.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            setCancelable(false)
+            show()
         }
     }
 }

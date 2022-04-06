@@ -18,6 +18,8 @@ class MainViewModel(private val transactionDAO: TransactionDAO) : ViewModel() {
     val gettingGasUsed = "Getting Gas Used..."
     val gasUsedIs = "Gas used for transaction : "
 
+    var userUsesFingerprint = false
+
     //------------------------------------------------------------------------data-binding-live-data
     val transactionCost: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
     val addressList: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)

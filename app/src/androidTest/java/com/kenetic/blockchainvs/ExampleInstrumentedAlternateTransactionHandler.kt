@@ -112,12 +112,22 @@ class ExampleInstrumentedAlternateTransactionHandler {
         onView(withId(R.id.user_set_password_text_field)).perform(typeText(password))
         onView(withId(R.id.confirm_login)).perform(click())
         Thread.sleep(explanationInterval)
+
+        onView(withContentDescription("Navigation Content")).perform(click())
         //----------------------------------------------------------------------------------interact
         onView(withId(R.id.contract_interface)).perform(click())
         onView(withId(R.id.get_registered_voters_button)).perform(scrollTo(), click())
+        Thread.sleep(waitInterval)
+
         onView(withId(R.id.check_voter_status_button)).perform(scrollTo(), click())
+        Thread.sleep(waitInterval)
+
         onView(withId(R.id.get_votes_button)).perform(scrollTo(), click())
+        Thread.sleep(waitInterval)
+
         onView(withId(R.id.get_balance_button)).perform(scrollTo(), click())
+        Thread.sleep(waitInterval)
+
         Thread.sleep(explanationInterval)
     }
 }

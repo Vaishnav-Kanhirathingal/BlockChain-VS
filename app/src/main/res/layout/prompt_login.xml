@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:cardBackgroundColor="#eeeeee"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
     app:layout_constraintTop_toTopOf="parent"
+    tools:cardBackgroundColor="#eeeeee"
     tools:layout_margin="20dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,6 +31,8 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            app:endIconMode="custom"
+            app:endIconDrawable="@drawable/fingerprint_24"
             android:layout_margin="@dimen/login_card_spacing"
             android:hint="@string/full_name"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -38,8 +40,8 @@
             app:layout_constraintTop_toBottomOf="@id/login_label">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
                 android:id="@+id/user_name_text_field"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -52,16 +54,16 @@
             android:layout_margin="@dimen/login_card_spacing"
             android:hint="@string/enter_password"
             app:endIconMode="password_toggle"
-            app:layout_constraintLeft_toLeftOf="parent"
             app:helperText="Use Fingerprint If Enabled"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/user_name_edit_text"
             app:startIconDrawable="@drawable/pin_24">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/user_set_password_text_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/user_set_password_text_field"
                 android:digits="0123456789+"
                 android:inputType="phone" />
 

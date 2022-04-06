@@ -1,6 +1,7 @@
 package com.kenetic.blockchainvs.ui
 
 import android.app.Dialog
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
@@ -22,6 +25,8 @@ import com.kenetic.blockchainvs.databinding.PromptLoginBinding
 import com.kenetic.blockchainvs.databinding.PromptSwitchBinding
 import com.kenetic.blockchainvs.datapack.datastore.AccountDataStore
 import com.kenetic.blockchainvs.datapack.datastore.BooleanSetterEnum
+import com.kenetic.blockchainvs.fingerprint.FingerPrintAuthentication
+import com.kenetic.blockchainvs.fingerprint.FingerPrintTaskEnum
 import com.kenetic.blockchainvs.recycler.TransactionAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -54,12 +59,10 @@ class MainScreenFragment : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         accountDataStore = AccountDataStore(requireContext())
-        CoroutineScope(Dispatchers.IO).launch {
-            accountDataStore.logOut(requireContext())
-        }
         applyMainLayoutBinding()
         applyTopMenuBindings()
         applySideMenuBinding()
@@ -74,6 +77,7 @@ class MainScreenFragment : Fragment() {
         binding.includedSubLayout.partyRecyclerView.adapter = transactionAdapter
     }
 
+    @RequiresApi(Build.VERSION_CODES.P)
     private fun applyTopMenuBindings() {
         binding.apply {
             includedSubLayout.topAppBar.setOnMenuItemClickListener {
@@ -93,13 +97,13 @@ class MainScreenFragment : Fragment() {
                 }
             }
             includedSubLayout.topAppBar.setNavigationOnClickListener {
-                //working
                 binding.root.openDrawer(binding.navigationViewMainScreen)
                 Log.d(TAG, "setNavigationOnClickListener working")
             }
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.P)
     private fun applySideMenuBinding() {
         //------------------------------------------------------------------------------------header
         val headerMenu = binding.navigationViewMainScreen.getHeaderView(0)
@@ -143,6 +147,9 @@ class MainScreenFragment : Fragment() {
         accountDataStore.userPasswordFlow.asLiveData().observe(viewLifecycleOwner) {
             userPassword = it
         }
+        accountDataStore.userUsesFingerprintFlow.asLiveData().observe(viewLifecycleOwner) {
+            viewModel.userUsesFingerprint = it
+        }
         //-------------------------------------------------------------------------------bottom-menu
         CoroutineScope(Dispatchers.IO).launch {
             binding.navigationViewMainScreen.setNavigationItemSelectedListener {
@@ -171,27 +178,26 @@ class MainScreenFragment : Fragment() {
                         true
                     }
                     R.id.contract_interface -> {
-                        findNavController()
-                            .navigate(
-                                MainScreenFragmentDirections
-                                    .actionMainScreenFragmentToContractScreenFragment()
-                            )
-//                        if (userLoggedIn) {
-//                            findNavController()
-//                                .navigate(
-//                                    MainScreenFragmentDirections
-//                                        .actionMainScreenFragmentToContractScreenFragment()
-//                                )
-//                        } else {
-//                            Toast.makeText(
-//                                requireContext(), "Log In Necessary To Continue", Toast.LENGTH_SHORT
-//                            ).show()
-//                            loginPrompt()
-//                        }
+                        if (userLoggedIn) {
+                            findNavController()
+                                .navigate(
+                                    MainScreenFragmentDirections
+                                        .actionMainScreenFragmentToContractScreenFragment()
+                                )
+                        } else {
+                            Toast.makeText(
+                                requireContext(), "Log In Necessary To Continue", Toast.LENGTH_SHORT
+                            ).show()
+                            loginPrompt()
+                        }
                         true
                     }
                     R.id.about -> {
-                        // TODO: navigate to about screen
+                        findNavController()
+                            .navigate(
+                                MainScreenFragmentDirections
+                                    .actionMainScreenFragmentToAboutFragment()
+                            )
                         Log.d(TAG, "about working")
                         true
                     }
@@ -239,6 +245,7 @@ class MainScreenFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.P)
     private fun loginPrompt() {
         val promptLoginBinding = PromptLoginBinding.inflate(layoutInflater)
         val dialogBox = Dialog(requireContext())
@@ -268,16 +275,50 @@ class MainScreenFragment : Fragment() {
                     &&
                     (userSetPasswordEditText.editText!!.text.toString() != accountDataStore.default)
                 ) {
-                    CoroutineScope(Dispatchers.Main).launch {
+                    CoroutineScope(Dispatchers.IO).launch {
                         accountDataStore.dataStoreBooleanSetter(
                             BooleanSetterEnum.USER_LOGGED_IN,
                             true,
                             requireContext()
                         )
+                        CoroutineScope(Dispatchers.Main).launch {
+                            Toast
+                                .makeText(requireContext(), "Logged In", Toast.LENGTH_SHORT)
+                                .show()
+                            dialogBox.dismiss()
+                        }
                     }
                 }
             }
-            // TODO: add fingerprint authentication
+            //---------------------------------------------------------------------------fingerprint
+            userNameEditText.setEndIconOnClickListener {
+                if (viewModel.userUsesFingerprint) {
+                    FingerPrintAuthentication(requireContext(), FingerPrintTaskEnum.LOGIN) {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            accountDataStore.dataStoreBooleanSetter(
+                                BooleanSetterEnum.USER_LOGGED_IN,
+                                true,
+                                requireContext()
+                            )
+                            CoroutineScope(Dispatchers.Main).launch {
+                                Toast
+                                    .makeText(requireContext(), "Logged In", Toast.LENGTH_SHORT)
+                                    .show()
+                                dialogBox.dismiss()
+                            }
+                        }
+                    }
+                        .verifyBiometrics()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "Fingerprint Login Disabled",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    dialogBox.dismiss()
+                }
+            }
+
             dialogBox.apply {
                 setContentView(promptLoginBinding.root)
                 window!!.setLayout(
@@ -298,7 +339,7 @@ class MainScreenFragment : Fragment() {
                 CoroutineScope(Dispatchers.IO).launch {
                     accountDataStore.resetAccounts(requireContext())
                 }
-                // TODO: exit app after work is done
+                ActivityCompat.finishAffinity(requireActivity())
             }
             cancel.setOnClickListener {
                 dialogBox.dismiss()

@@ -16,11 +16,6 @@ import com.kenetic.blockchainvs.datapack.datastore.StringSetterEnum
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.web3j.crypto.Credentials
-import org.web3j.protocol.Web3j
-import org.web3j.protocol.core.DefaultBlockParameterName
-import org.web3j.protocol.http.HttpService
-import org.web3j.utils.Convert
 
 private const val TAG = "SignUpFragment"
 
@@ -34,7 +29,7 @@ class SignUpFragment : Fragment() {
     private var emailAddressOk = false
     private var adharOk = false
     private var voterIdOk = false
-    private var walletOk = false
+
     private var phoneOtp: String? = null
     private var emailOtp: String? = null
 
@@ -214,8 +209,6 @@ class SignUpFragment : Fragment() {
                 adharOk = checkAdharOk()
                 //--------------------------------------------------------------------------voter-id
                 voterIdOk = checkVoterIdOk()
-                //----------------------------------------------------------------------------wallet
-                walletOk = checkWalletOk()
                 //------------------------------------------------------sending-registration-details
                 Log.d(
                     TAG,
@@ -226,7 +219,7 @@ class SignUpFragment : Fragment() {
                             "adharOk = $adharOk" +
                             "voterIdOk = $voterIdOk"
                 )
-                if (userNameOk && passwordOk && phoneNumberOk && emailAddressOk && adharOk && voterIdOk && walletOk) {
+                if (userNameOk && passwordOk && phoneNumberOk && emailAddressOk && adharOk && voterIdOk) {
                     val userName = userNameEditText.editText!!.text.toString()
                     val userPassword = userSetPasswordEditText.editText!!.text.toString()
                     val userPhoneNumber = userPhoneNumberEditText.editText!!.text.toString()
@@ -328,33 +321,6 @@ class SignUpFragment : Fragment() {
                         requireContext()
                     )
                 }
-            }
-        }
-    }
-
-
-    private fun checkWalletOk(): Boolean {
-        binding.apply {
-            val privateKey = userPrivateKey.editText!!.text.toString()
-            val hostUrl = "https://ropsten.infura.io/v3/c358089e1aaa4746aa50e61d4ec41c5c"
-            val web3Obj = Web3j.build(HttpService(hostUrl))
-            val credentials = Credentials.create(privateKey)
-            return try {
-                val balance = Convert.fromWei(
-                    web3Obj
-                        .ethGetBalance(credentials.address, DefaultBlockParameterName.LATEST)
-                        .send().balance.toString(),
-                    Convert.Unit.ETHER
-                )
-                Log.d(TAG, "balance = $balance")
-                userPrivateKey.isErrorEnabled = true
-                true
-            } catch (e: Exception) {
-                e.printStackTrace()
-                userPrivateKey.error = "PrivateKey incorrect"
-                userPrivateKey.isErrorEnabled = true
-                // TODO: change to false and make it a coroutine
-                true
             }
         }
     }
