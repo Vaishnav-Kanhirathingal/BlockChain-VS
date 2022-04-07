@@ -316,8 +316,7 @@ class MainScreenFragment : Fragment() {
                                 dialogBox.dismiss()
                             }
                         }
-                    }
-                        .verifyBiometrics()
+                    }.verifyBiometrics()
                 } else {
                     Toast.makeText(
                         requireContext(),

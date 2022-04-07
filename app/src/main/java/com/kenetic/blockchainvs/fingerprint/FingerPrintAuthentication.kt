@@ -5,8 +5,11 @@ import android.content.DialogInterface
 import android.hardware.biometrics.BiometricPrompt
 import android.os.Build
 import android.os.CancellationSignal
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+
+private const val TAG="FingerPrintAuthentication"
 
 class FingerPrintAuthentication(
     private val context: Context,
@@ -34,6 +37,7 @@ class FingerPrintAuthentication(
 
     @RequiresApi(Build.VERSION_CODES.P)
     fun verifyBiometrics() {
+        Log.d(TAG, "biometrics - 1")
         val biometricPrompt = BiometricPrompt.Builder(context)
             .setTitle(taskEnum.name)
             .setSubtitle("Authentication Required To Proceed")
@@ -45,6 +49,7 @@ class FingerPrintAuthentication(
             )
             .setNegativeButton("Cancel", context.mainExecutor) { _: DialogInterface, _: Int -> }
             .build()
+        Log.d(TAG, "biometrics - 2")
         biometricPrompt.authenticate(
             getCancellationSignal(),
             context.mainExecutor,

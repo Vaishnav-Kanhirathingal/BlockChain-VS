@@ -48,14 +48,14 @@ class ContractScreenFragment : Fragment() {
         return binding.root
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         voteContractDelegate = VoteContractDelegate(viewModel)
         applyBinding()
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresApi(Build.VERSION_CODES.P)
     private fun applyBinding() {
         binding.apply {
             topAppBar.setNavigationOnClickListener {
@@ -99,11 +99,14 @@ class ContractScreenFragment : Fragment() {
                     }
                 }
                 if (viewModel.userUsesFingerprint) {
-                    FingerPrintAuthentication(
+                    Log.d(TAG, "fingerprint prompt initiated")
+                    val authenticator = FingerPrintAuthentication(
                         requireContext(),
                         FingerPrintTaskEnum.TRANSACTION
                     ) { task() }
+                    authenticator.verifyBiometrics()
                 } else {
+                    Log.d(TAG, "password prompt initiated")
                     passwordPrompt { task() }
                 }
             }
@@ -162,11 +165,14 @@ class ContractScreenFragment : Fragment() {
                     }
                 }
                 if (viewModel.userUsesFingerprint) {
-                    FingerPrintAuthentication(
+                    Log.d(TAG, "fingerprint prompt initiated")
+                    val authenticator = FingerPrintAuthentication(
                         requireContext(),
                         FingerPrintTaskEnum.TRANSACTION
                     ) { task() }
+                    authenticator.verifyBiometrics()
                 } else {
+                    Log.d(TAG, "password prompt initiated")
                     passwordPrompt { task() }
                 }
             }

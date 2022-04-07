@@ -12,11 +12,11 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/top_app_bar"
-            app:navigationContentDescription="Navigation Content"
             style="@style/Widget.MaterialComponents.Toolbar.Primary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:menu="@menu/main_screen"
+            app:navigationContentDescription="Navigation Content"
             app:navigationIcon="@drawable/menu_24"
             app:title="Transaction History" />
 
@@ -30,9 +30,12 @@
             android:id="@+id/party_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginHorizontal="@dimen/recycler_margin"
+            android:clipToPadding="false"
             android:orientation="vertical"
+            android:paddingVertical="@dimen/recycler_margin"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:itemCount="2"
+            tools:itemCount="3"
             tools:listitem="@layout/transaction_list_item" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

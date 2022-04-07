@@ -9,8 +9,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/recycler_margin"
-        android:layout_marginVertical="4dp"
+        android:layout_margin="@dimen/recycler_margin"
         app:cardCornerRadius="@dimen/recycler_margin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -27,8 +26,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/medium_text"
-                android:text="Transaction Hash :-" />
+                android:text="Transaction Hash :-"
+                android:textSize="@dimen/medium_text" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"

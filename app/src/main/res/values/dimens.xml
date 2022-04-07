@@ -12,5 +12,5 @@
     <dimen name="huge_text_size">40sp</dimen>
     <dimen name="contract_vertical_spacing">10dp</dimen>
     <dimen name="contract_horizontal_spacing">10dp</dimen>
-    <dimen name="recycler_margin">8dp</dimen>
+    <dimen name="recycler_margin">4dp</dimen>
 </resources>

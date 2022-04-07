@@ -115,7 +115,7 @@ class ExampleInstrumentedAlternateTransactionHandler {
 
         onView(withContentDescription("Navigation Content")).perform(click())
         //----------------------------------------------------------------------------------interact
-        onView(withId(R.id.contract_interface)).perform(click())
+        onView(withId(R.id.contract_interface)).perform(scrollTo(), click())
         onView(withId(R.id.get_registered_voters_button)).perform(scrollTo(), click())
         Thread.sleep(waitInterval)
 

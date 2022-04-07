@@ -29,7 +29,7 @@
             android:id="@+id/action_signUpFragment_to_mainScreenFragment"
             app:destination="@id/mainScreenFragment"
             app:popUpTo="@id/mainScreenFragment"
-            app:popUpToInclusive="false" />
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/contractScreenFragment"
@@ -40,7 +40,7 @@
             android:id="@+id/action_contractScreenFragment_to_mainScreenFragment"
             app:destination="@id/mainScreenFragment"
             app:popUpTo="@id/mainScreenFragment"
-            app:popUpToInclusive="false" />
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/aboutFragment"
@@ -50,6 +50,7 @@
         <action
             android:id="@+id/action_aboutFragment_to_mainScreenFragment"
             app:destination="@id/mainScreenFragment"
-            app:popUpTo="@id/mainScreenFragment" />
+            app:popUpTo="@id/mainScreenFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>
