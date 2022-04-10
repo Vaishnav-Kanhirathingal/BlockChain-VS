@@ -23,6 +23,8 @@ import kotlinx.coroutines.launch
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
 
+private const val TAG = "TransactionAdapter"
+
 class TransactionAdapter(
     private val viewModel: MainViewModel,
     private val lifecycleOwner: LifecycleOwner,
@@ -39,6 +41,8 @@ class TransactionAdapter(
         fun bind(currentTransactionData: TransactionData, context: Context) {
             itemBinding.apply {
                 transactionHashTextView.text = currentTransactionData.transactionHash
+
+                //-----------------------------------------------------------------------copy-button
                 copyImageButton.setOnClickListener {
                     val clipboardManager =
                         context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -49,6 +53,8 @@ class TransactionAdapter(
                     clipboardManager.setPrimaryClip(clipData)
                     Toast.makeText(context, "Transaction Hash Copied", Toast.LENGTH_SHORT).show()
                 }
+
+                //------------------------------------------------------------open-in-browser-button
                 openInBrowser.setOnClickListener {
                     val i = Intent(
                         Intent.ACTION_VIEW,
@@ -56,23 +62,38 @@ class TransactionAdapter(
                     )
                     startActivity(context, i, null)
                 }
+
                 methodCalledTextView.text = currentTransactionData.methodCalled
-                if (currentTransactionData.gasFee == null) {
+
+                //---------------------------------------------------------updating-transaction-data
+                if (
+                    currentTransactionData.gasFee == null ||
+                    currentTransactionData.transactionSuccessful == null
+                ) {
                     gasFeeTextView.text = viewModel.gettingGasUsed
+                    transactionStatusTextView.text = viewModel.gettingStatus
                     CoroutineScope(Dispatchers.IO).launch {
                         val web3j =
                             Web3j.build(HttpService("https://ropsten.infura.io/v3/c358089e1aaa4746aa50e61d4ec41c5c"))
-                        val cost = web3j
+                        val transactionReceipt = web3j
                             .ethGetTransactionReceipt(currentTransactionData.transactionHash)
                             .send()
                             .transactionReceipt
                             .get()
-                            .gasUsed
+                        val cost = transactionReceipt.gasUsed
+                        val status = transactionReceipt.isStatusOK
                         currentTransactionData.gasFee = cost.toLong()
+                        currentTransactionData.transactionSuccessful = status
                         viewModel.updateTransaction(currentTransactionData)
                     }
                 } else {
                     gasFeeTextView.text = currentTransactionData.gasFee!!.toString()
+                    transactionStatusTextView.text =
+                        if (currentTransactionData.transactionSuccessful!!) {
+                            "Successful"
+                        } else {
+                            "Failed"
+                        }
                 }
                 transactionTimeTextView.text = currentTransactionData.transactionTime
             }

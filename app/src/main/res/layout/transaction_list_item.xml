@@ -90,7 +90,6 @@
                     android:layout_weight="1"
                     android:text="test text"
                     android:textAlignment="viewEnd" />
-
             </LinearLayout>
 
             <LinearLayout
@@ -111,7 +110,26 @@
                     android:layout_weight="1"
                     android:text="test text"
                     android:textAlignment="viewEnd" />
+            </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Transaction Status" />
+
+                <TextView
+                    android:id="@+id/transaction_status_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/sub_layout_layout_margin"
+                    android:layout_weight="1"
+                    android:text="test text"
+                    android:textAlignment="viewEnd" />
             </LinearLayout>
 
             <LinearLayout
@@ -133,6 +151,7 @@
                     android:text="test text"
                     android:textAlignment="viewEnd" />
             </LinearLayout>
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

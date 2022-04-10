@@ -11,12 +11,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class MainViewModel(private val transactionDAO: TransactionDAO) : ViewModel() {
-    val transactionInProgress = "Transaction currently in progress..."
-    val calling = "calling function..."
+    val transactionInProgress = "Transaction Currently In Progress..."
+    val calling = "Calling Function..."
     val unknown = "Unknown..."
     val callNotPerformedYet = "Call Not Performed Yet"
     val gettingGasUsed = "Getting Gas Used..."
-    val gasUsedIs = "Gas used for transaction : "
+    val gasUsedIs = "Gas Used For Transaction : "
+    val gettingStatus = "Getting Transaction Status"
 
     var userUsesFingerprint = false
 
@@ -27,6 +28,9 @@ class MainViewModel(private val transactionDAO: TransactionDAO) : ViewModel() {
     val allPartyVotes: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
     val balance: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
     val addMeToVotersList: MutableLiveData<String> = MutableLiveData(callNotPerformedYet)
+
+    //-------------------------------------------------------------------------------account-details
+    var accountPrivateKey = ""
 
     //---------------------------------------------------------------------------------dao-functions
     fun insertTransaction(transactionData: TransactionData) {

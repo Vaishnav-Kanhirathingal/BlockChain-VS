@@ -1,5 +1,7 @@
 package com.kenetic.blockchainvs
 
+import android.widget.Toast
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -21,7 +23,7 @@ class ExampleInstrumentedAlternateTransactionHandler {
         "66c53799ee0c63f2564305e738ea7479d7aee84aed3aac4c01e54a7acbcc4d92"
     private val emailOtp = "1111"
     private val phoneOtp = "1111"
-    private val explanationInterval: Long = 20000
+    private val explanationInterval: Long = 10000
     private val waitInterval: Long = 3000
 
     //-------------------------------------------------------------------------------sign-up-details
@@ -34,6 +36,9 @@ class ExampleInstrumentedAlternateTransactionHandler {
 
     @Test
     fun signUp() {
+        Toast.makeText(ApplicationProvider.getApplicationContext(), "Testing will start in 10 secs", Toast.LENGTH_SHORT)
+            .show()
+        Thread.sleep(explanationInterval)
         //-----------------------------------------------------------------------from-sign-in-prompt
         onView(withId(R.id.account_settings)).perform(click())
         onView(withId(R.id.new_user_button)).perform(click())

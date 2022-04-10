@@ -29,9 +29,8 @@ class VoteContractDelegate(private val viewModel: MainViewModel) {
     private val CONTRACT_ADDRESS = "0x84D46ba7aAac6221DF9038d3Ccf41F1cd46001aF"
 
     //-----------------------------------------------------------------------------------credentials
-    private val USER_PRIVATE_KEY =
-        "66c53799ee0c63f2564305e738ea7479d7aee84aed3aac4c01e54a7acbcc4d92"
-    private val credentials = Credentials.create(USER_PRIVATE_KEY)
+    private val USER_PRIVATE_KEY: String = viewModel.accountPrivateKey
+    private val credentials: Credentials = Credentials.create(USER_PRIVATE_KEY)
 
     private val ROPSTEN_INFURA_URL = "https://ropsten.infura.io/v3/c358089e1aaa4746aa50e61d4ec41c5c"
     private val web3j: Web3j = Web3j.build(HttpService(ROPSTEN_INFURA_URL))
@@ -82,15 +81,17 @@ class VoteContractDelegate(private val viewModel: MainViewModel) {
                 gasFee = null,
                 transactionTime = SimpleDateFormat("HH:mm:ss - dd/MM/yy").format(
                     Date(System.currentTimeMillis())
-                )
+                ),
+                transactionSuccessful = null
             )
             viewModel.insertTransaction(txData)
             Log.d(TAG, "transactionHash = $transactionHash, generating receipt...")
 
             val transactionReceipt = generateReceipt(transactionHash)
 
-            Log.d(TAG,"transaction re")
+            Log.d(TAG, "transaction receipt")
             txData.gasFee = transactionReceipt.gasUsed.toLong()
+            txData.transactionSuccessful = transactionReceipt.isStatusOK
             viewModel.updateTransaction(txData)
 
             Log.d(TAG, "transactionReceipt = $transactionReceipt")
@@ -128,7 +129,8 @@ class VoteContractDelegate(private val viewModel: MainViewModel) {
                 gasFee = null,
                 transactionTime = SimpleDateFormat("HH:mm:ss - dd/MM/yy").format(
                     Date(System.currentTimeMillis())
-                )
+                ),
+                transactionSuccessful = null
             )
             viewModel.insertTransaction(txData)
             Log.d(TAG, "transactionHash = $transactionHash, generating receipt...")

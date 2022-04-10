@@ -44,7 +44,7 @@ class FingerPrintAuthentication(
             .setDescription(
                 when (taskEnum) {
                     FingerPrintTaskEnum.LOGIN -> "Login To Account Through Fingerprint"
-                    FingerPrintTaskEnum.TRANSACTION -> "Scan Your Fingerprint To Authenticate Transaction"
+                    FingerPrintTaskEnum.TRANSACTION -> "Scan Your Fingerprint\nTo Authenticate Transaction"
                 }
             )
             .setNegativeButton("Cancel", context.mainExecutor) { _: DialogInterface, _: Int -> }

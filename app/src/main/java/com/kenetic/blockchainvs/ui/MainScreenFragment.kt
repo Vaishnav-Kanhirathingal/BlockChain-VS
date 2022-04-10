@@ -150,6 +150,9 @@ class MainScreenFragment : Fragment() {
         accountDataStore.userUsesFingerprintFlow.asLiveData().observe(viewLifecycleOwner) {
             viewModel.userUsesFingerprint = it
         }
+        accountDataStore.userPrivatKeyFlow.asLiveData().observe(viewLifecycleOwner) {
+            viewModel.accountPrivateKey = it
+        }
         //-------------------------------------------------------------------------------bottom-menu
         CoroutineScope(Dispatchers.IO).launch {
             binding.navigationViewMainScreen.setNavigationItemSelectedListener {
