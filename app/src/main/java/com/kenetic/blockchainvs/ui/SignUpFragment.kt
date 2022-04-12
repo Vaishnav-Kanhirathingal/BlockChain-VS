@@ -16,6 +16,7 @@ import com.kenetic.blockchainvs.datapack.datastore.StringSetterEnum
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.web3j.crypto.Credentials
 
 private const val TAG = "SignUpFragment"
 
@@ -29,6 +30,7 @@ class SignUpFragment : Fragment() {
     private var emailAddressOk = false
     private var adharOk = false
     private var voterIdOk = false
+    private var privateKeyOk = false
 
     private var phoneOtp: String? = null
     private var emailOtp: String? = null
@@ -209,6 +211,8 @@ class SignUpFragment : Fragment() {
                 adharOk = checkAdharOk()
                 //--------------------------------------------------------------------------voter-id
                 voterIdOk = checkVoterIdOk()
+                //-----------------------------------------------------------------------private-key
+                privateKeyOk = checkPrivateKeyOk(userPrivateKeyTextField.text.toString())
                 //------------------------------------------------------sending-registration-details
                 Log.d(
                     TAG,
@@ -217,9 +221,10 @@ class SignUpFragment : Fragment() {
                             "phoneNumberOk = $phoneNumberOk" +
                             "emailAddressOk = $emailAddressOk" +
                             "adharOk = $adharOk" +
-                            "voterIdOk = $voterIdOk"
+                            "voterIdOk = $voterIdOk" +
+                            "privateKeyOk = $privateKeyOk"
                 )
-                if (userNameOk && passwordOk && phoneNumberOk && emailAddressOk && adharOk && voterIdOk) {
+                if (userNameOk && passwordOk && phoneNumberOk && emailAddressOk && adharOk && voterIdOk && privateKeyOk) {
                     val userName = userNameEditText.editText!!.text.toString()
                     val userPassword = userSetPasswordEditText.editText!!.text.toString()
                     val userPhoneNumber = userPhoneNumberEditText.editText!!.text.toString()
@@ -227,15 +232,15 @@ class SignUpFragment : Fragment() {
                     val adharNumber = adharCardNumber.editText!!.text.toString()
                     val voterID = voterId.editText!!.text.toString()
                     //--------------------------------------------------------creating-a-json-string
-                    val stringToSend = "\"userName\" : \"$userName\",\n" +
-                            "\"userPassword\": \"$userPassword\",\n" +
-                            "\"userPhoneNumber\": \"$userPhoneNumber\",\n" +
-                            "\"userEmailID\": \"$userEmailID\",\n" +
-                            "\"adharNumber\": \"$adharNumber\",\n" +
-                            "\"voterID\": \"$voterID\""
-                    Log.d(TAG, stringToSend)
+                    val stringToSend = "\"userName\" : \"$userName\",\n\t" +
+                            "\"userPassword\": \"$userPassword\",\n\t" +
+                            "\"userPhoneNumber\": \"$userPhoneNumber\",\n\t" +
+                            "\"userEmailID\": \"$userEmailID\",\n\t" +
+                            "\"adharNumber\": \"$adharNumber\",\n\t" +
+                            "\"voterID\": \"$voterID\",\n\t" +
+                            "\"publicKey\": \"${Credentials.create(userPrivateKeyTextField.text.toString()).address}\""
+                    Log.d(TAG, "stringToSend\n$stringToSend")
                     val verification = MutableLiveData(false)
-
                     try {
 //                        CoroutineScope(Dispatchers.IO).launch {
 //                            verification.value = VoteNetworkApi
@@ -371,6 +376,15 @@ class SignUpFragment : Fragment() {
             Log.d(TAG, "passwordLengthCorrect = $passwordLengthCorrect")
             return passwordsMatch && passwordLengthCorrect
         }
+    }
+
+    private fun checkPrivateKeyOk(privateKey: String): Boolean {
+        val keyOk: Boolean = (privateKey.length == 64)
+        binding.apply {
+            userPrivateKey.error = "Incorrect Private Key"
+            userPrivateKey.isErrorEnabled = !keyOk
+        }
+        return keyOk
     }
 
     private fun cancelBinding() {

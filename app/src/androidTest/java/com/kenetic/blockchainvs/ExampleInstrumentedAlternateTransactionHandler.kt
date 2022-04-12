@@ -25,6 +25,7 @@ class ExampleInstrumentedAlternateTransactionHandler {
     private val phoneOtp = "1111"
     private val explanationInterval: Long = 10000
     private val waitInterval: Long = 3000
+    private val transactionInterval: Long = 45000
 
     //-------------------------------------------------------------------------------sign-up-details
     private val fullName = "First Middle Last"
@@ -36,8 +37,8 @@ class ExampleInstrumentedAlternateTransactionHandler {
 
     @Test
     fun signUp() {
-        Toast.makeText(ApplicationProvider.getApplicationContext(), "Testing will start in 10 secs", Toast.LENGTH_SHORT)
-            .show()
+//        Toast.makeText(ApplicationProvider.getApplicationContext(), "Testing will start in 10 secs", Toast.LENGTH_SHORT)
+//            .show()
         Thread.sleep(explanationInterval)
         //-----------------------------------------------------------------------from-sign-in-prompt
         onView(withId(R.id.account_settings)).perform(click())
@@ -118,9 +119,17 @@ class ExampleInstrumentedAlternateTransactionHandler {
         onView(withId(R.id.confirm_login)).perform(click())
         Thread.sleep(explanationInterval)
 
+        //---------------------------------------------------------------------------------side-menu
         onView(withContentDescription("Navigation Content")).perform(click())
-        //----------------------------------------------------------------------------------interact
-        onView(withId(R.id.contract_interface)).perform(scrollTo(), click())
+        onView(withId(R.id.navigation_view_main_screen)).perform(swipeUp())
+        onView(withId(R.id.contract_interface)).perform(click())
+
+        //----------------------------------------------------------------------------------contract
+
+        onView(withId(R.id.party_two_radio_button)).perform(scrollTo(),click())
+        onView(withId(R.id.caste_vote_button)).perform(scrollTo(),click())
+        Thread.sleep(transactionInterval)
+
         onView(withId(R.id.get_registered_voters_button)).perform(scrollTo(), click())
         Thread.sleep(waitInterval)
 
@@ -130,9 +139,10 @@ class ExampleInstrumentedAlternateTransactionHandler {
         onView(withId(R.id.get_votes_button)).perform(scrollTo(), click())
         Thread.sleep(waitInterval)
 
+        onView(withId(R.id.add_to_voters_list_button)).perform(scrollTo(), click())
+        Thread.sleep(transactionInterval)
+
         onView(withId(R.id.get_balance_button)).perform(scrollTo(), click())
         Thread.sleep(waitInterval)
-
-        Thread.sleep(explanationInterval)
     }
 }

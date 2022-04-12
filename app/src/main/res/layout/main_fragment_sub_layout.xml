@@ -38,5 +38,17 @@
             tools:itemCount="3"
             tools:listitem="@layout/transaction_list_item" />
 
+        <TextView
+            android:id="@+id/empty_list_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/login_card_spacing"
+            android:text="List Empty\nTransactions Performed Will Show Up Here"
+            android:textAlignment="center"
+            android:textSize="@dimen/medium_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>
