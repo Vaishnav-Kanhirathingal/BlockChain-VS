@@ -14,7 +14,7 @@ interface TransactionDAO {
     @Delete
     suspend fun deleteParty(transactionData: TransactionData)
 
-    @Query("SELECT ID FROM TRANSACTION_HISTORY")
+    @Query("SELECT ID FROM TRANSACTION_HISTORY ORDER BY transaction_performed_at DESC")
     fun getAllIds(): Flow<List<Int>>
 
     @Query("SELECT * FROM TRANSACTION_HISTORY WHERE ID = :id")

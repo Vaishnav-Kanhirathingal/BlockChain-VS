@@ -1,6 +1,8 @@
 package com.kenetic.blockchainvs.ui
 
 import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -22,12 +24,15 @@ import com.kenetic.blockchainvs.block_connector.contract.contract_interface.Part
 import com.kenetic.blockchainvs.block_connector.contract.contract_interface.VoteContractDelegate
 import com.kenetic.blockchainvs.databinding.FragmentContractScreenBinding
 import com.kenetic.blockchainvs.databinding.PromptPasswordBinding
+import com.kenetic.blockchainvs.databinding.PromptTransactionReceiptBinding
 import com.kenetic.blockchainvs.datapack.datastore.AccountDataStore
 import com.kenetic.blockchainvs.fingerprint.FingerPrintAuthentication
 import com.kenetic.blockchainvs.fingerprint.FingerPrintTaskEnum
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.web3j.protocol.core.methods.response.TransactionReceipt
+import java.math.BigInteger
 
 private const val TAG = "ContractScreenFragment"
 
@@ -91,10 +96,11 @@ class ContractScreenFragment : Fragment() {
                 val task = {
                     viewModel.transactionCost.value = viewModel.transactionInProgress
                     CoroutineScope(Dispatchers.IO).launch {
-                        val cost = voteContractDelegate.registerVote(partyEnum)
-                        Log.d(TAG, "transaction output:-\n$cost")
+                        val transactionReceipt = voteContractDelegate.registerVote(partyEnum)
                         CoroutineScope(Dispatchers.Main).launch {
-                            viewModel.transactionCost.value = viewModel.gasUsedIs + cost
+                            viewModel.transactionCost.value =
+                                viewModel.gasUsedIs + transactionReceipt!!.gasUsed
+                            transactionPrompt(transactionReceipt)
                         }
                     }
                 }
@@ -110,6 +116,31 @@ class ContractScreenFragment : Fragment() {
                     passwordPrompt { task() }
                 }
             }
+            addToVotersListButton.setOnClickListener {
+                val task = {
+                    viewModel.addMeToVotersList.value = viewModel.calling
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val transactionReceipt = voteContractDelegate.addMeToVotedList()
+                        CoroutineScope(Dispatchers.Main).launch {
+                            viewModel.addMeToVotersList.value =
+                                viewModel.gasUsedIs + transactionReceipt!!.gasUsed.toString()
+                            transactionPrompt(transactionReceipt)
+                        }
+                    }
+                }
+                if (viewModel.userUsesFingerprint) {
+                    Log.d(TAG, "fingerprint prompt initiated")
+                    val authenticator = FingerPrintAuthentication(
+                        requireContext(),
+                        FingerPrintTaskEnum.TRANSACTION
+                    ) { task() }
+                    authenticator.verifyBiometrics()
+                } else {
+                    Log.d(TAG, "password prompt initiated")
+                    passwordPrompt { task() }
+                }
+            }
+
             //----------------------------------------------------------------------------get-voters
             getRegisteredVotersButton.setOnClickListener {
                 viewModel.addressList.value = viewModel.calling
@@ -153,29 +184,34 @@ class ContractScreenFragment : Fragment() {
                     }
                 }
             }
+        }
+    }
 
-            addToVotersListButton.setOnClickListener {
-                val task = {
-                    viewModel.addMeToVotersList.value = viewModel.calling
-                    CoroutineScope(Dispatchers.IO).launch {
-                        val output = voteContractDelegate.addMeToVotedList()
-                        CoroutineScope(Dispatchers.Main).launch {
-                            viewModel.addMeToVotersList.value = viewModel.gasUsedIs + output
-                        }
-                    }
-                }
-                if (viewModel.userUsesFingerprint) {
-                    Log.d(TAG, "fingerprint prompt initiated")
-                    val authenticator = FingerPrintAuthentication(
-                        requireContext(),
-                        FingerPrintTaskEnum.TRANSACTION
-                    ) { task() }
-                    authenticator.verifyBiometrics()
-                } else {
-                    Log.d(TAG, "password prompt initiated")
-                    passwordPrompt { task() }
-                }
-            }
+    private fun transactionPrompt(transactionReceipt: TransactionReceipt) {
+        transactionReceipt.effectiveGasPrice = "${voteContractDelegate.gweiPrice} Gwei"
+        val dialogBox = Dialog(requireContext())
+        val promptBinding = PromptTransactionReceiptBinding.inflate(layoutInflater)
+        promptBinding.apply {
+            transactionHashTextView.text = transactionReceipt.transactionHash
+            transactionIndexTextView.text = transactionReceipt.transactionIndex.toString()
+            isStatusOKTextView.text = transactionReceipt.isStatusOK.toString()
+            revertReasonTextView.text = transactionReceipt.revertReason
+            blockNumberTextView.text = transactionReceipt.blockNumber.toString()
+            fromTextView.text = transactionReceipt.from
+            toTextView.text = transactionReceipt.to
+            effectiveGasPriceTextView.text = transactionReceipt.effectiveGasPrice
+            gasUsedTextView.text = transactionReceipt.gasUsed.toString()
+            dismissButton.setOnClickListener { dialogBox.dismiss() }
+        }
+        dialogBox.apply {
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            setContentView(promptBinding.root)
+            window!!.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            setCancelable(false)
+            show()
         }
     }
 

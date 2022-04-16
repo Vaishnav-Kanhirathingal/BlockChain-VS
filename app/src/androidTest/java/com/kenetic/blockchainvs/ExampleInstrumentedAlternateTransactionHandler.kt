@@ -1,7 +1,5 @@
 package com.kenetic.blockchainvs
 
-import android.widget.Toast
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -19,8 +17,12 @@ class ExampleInstrumentedAlternateTransactionHandler {
     @get:Rule
     val scenario = ActivityScenarioRule(MainActivity::class.java)
 
-    private val walletPrivateKey =
+    //-----------------------------------------------------------------------------------private-key
+    private val accountOnePrivateKey =
         "66c53799ee0c63f2564305e738ea7479d7aee84aed3aac4c01e54a7acbcc4d92"
+    private val accountTwoPrivateKey =
+        "6653ef960205a8584f91526da6dbeafb9b1b3e1813811c7783e34ef979e85fef"
+
     private val emailOtp = "1111"
     private val phoneOtp = "1111"
     private val explanationInterval: Long = 10000
@@ -37,8 +39,6 @@ class ExampleInstrumentedAlternateTransactionHandler {
 
     @Test
     fun signUp() {
-//        Toast.makeText(ApplicationProvider.getApplicationContext(), "Testing will start in 10 secs", Toast.LENGTH_SHORT)
-//            .show()
         Thread.sleep(explanationInterval)
         //-----------------------------------------------------------------------from-sign-in-prompt
         onView(withId(R.id.account_settings)).perform(click())
@@ -100,13 +100,12 @@ class ExampleInstrumentedAlternateTransactionHandler {
         )
         //------------------------------------------------------------------------------------wallet
         onView(withId(R.id.user_private_key_text_field)).perform(
-            scrollTo(), typeText(walletPrivateKey)
-        )
-        //----------------------------------------------------------------------------------register
-        onView(withId(R.id.register_login)).perform(
-            scrollTo(), click()
+            scrollTo(), typeText(accountOnePrivateKey)
         )
         Thread.sleep(explanationInterval)
+        //----------------------------------------------------------------------------------register
+        onView(withId(R.id.register_login)).perform(scrollTo(), click())
+        Thread.sleep(waitInterval)
     }
 
     @Test
@@ -126,8 +125,8 @@ class ExampleInstrumentedAlternateTransactionHandler {
 
         //----------------------------------------------------------------------------------contract
 
-        onView(withId(R.id.party_two_radio_button)).perform(scrollTo(),click())
-        onView(withId(R.id.caste_vote_button)).perform(scrollTo(),click())
+        onView(withId(R.id.party_two_radio_button)).perform(scrollTo(), click())
+        onView(withId(R.id.caste_vote_button)).perform(scrollTo(), click())
         Thread.sleep(transactionInterval)
 
         onView(withId(R.id.get_registered_voters_button)).perform(scrollTo(), click())

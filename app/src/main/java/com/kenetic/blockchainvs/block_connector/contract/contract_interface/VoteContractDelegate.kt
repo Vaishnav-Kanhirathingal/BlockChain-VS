@@ -1,6 +1,5 @@
 package com.kenetic.blockchainvs.block_connector.contract.contract_interface
 
-import android.annotation.SuppressLint
 import android.util.Log
 import com.kenetic.blockchainvs.app_viewmodel.MainViewModel
 import com.kenetic.blockchainvs.datapack.database.TransactionData
@@ -19,8 +18,6 @@ import org.web3j.utils.Convert
 import org.web3j.utils.Numeric
 import java.math.BigDecimal
 import java.math.BigInteger
-import java.text.SimpleDateFormat
-import java.util.*
 
 private const val TAG = "VoteContractDelegate"
 
@@ -36,7 +33,9 @@ class VoteContractDelegate(private val viewModel: MainViewModel) {
     private val web3j: Web3j = Web3j.build(HttpService(ROPSTEN_INFURA_URL))
 
     //--------------------------------------------------------------------------------gas-controller
-    private val gasPrice: BigInteger = Convert.toWei("200", Convert.Unit.GWEI).toBigInteger()
+    val gweiPrice = 200
+    private val gasPrice: BigInteger =
+        Convert.toWei(gweiPrice.toString(), Convert.Unit.GWEI).toBigInteger()
     private val gasLimit = BigInteger.valueOf(40000)
     private val gasProvider: ContractGasProvider = StaticGasProvider(gasPrice, gasLimit)
 
@@ -47,16 +46,13 @@ class VoteContractDelegate(private val viewModel: MainViewModel) {
         gasProvider
     )
 
-    @SuppressLint("SimpleDateFormat")
-    fun registerVote(party: PartyEnum): String {
-        val nonce = web3j
-            .ethGetTransactionCount(credentials.address, DefaultBlockParameterName.LATEST)
-            .send()
-            .transactionCount
-
+    fun registerVote(party: PartyEnum): TransactionReceipt? {
         return try {
+            val nonce = web3j
+                .ethGetTransactionCount(credentials.address, DefaultBlockParameterName.LATEST)
+                .send()
+                .transactionCount
             Log.d(TAG, "nonce for transaction nonce = $nonce")
-
             val rawTransaction = RawTransaction.createTransaction(
                 ChainIdLong.ROPSTEN,
                 nonce,
@@ -79,38 +75,25 @@ class VoteContractDelegate(private val viewModel: MainViewModel) {
                 transactionHash = transactionHash,
                 methodCalled = "registerVote",
                 gasFee = null,
-                transactionTime = SimpleDateFormat("HH:mm:ss - dd/MM/yy").format(
-                    Date(System.currentTimeMillis())
-                ),
+                transactionTime = System.currentTimeMillis(),
                 transactionSuccessful = null
             )
             viewModel.insertTransaction(txData)
             Log.d(TAG, "transactionHash = $transactionHash, generating receipt...")
-
-            val transactionReceipt = generateReceipt(transactionHash)
-
-            Log.d(TAG, "transaction receipt")
-            txData.gasFee = transactionReceipt.gasUsed.toLong()
-            txData.transactionSuccessful = transactionReceipt.isStatusOK
-            viewModel.updateTransaction(txData)
-
-            Log.d(TAG, "transactionReceipt = $transactionReceipt")
-            transactionReceipt.gasUsed.toString()
+            generateReceipt(transactionHash)
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
-            e.message.toString()
+            null
         }
     }
 
-    fun addMeToVotedList(): String {
-        val nonce = web3j
-            .ethGetTransactionCount(credentials.address, DefaultBlockParameterName.LATEST)
-            .send()
-            .transactionCount
-
+    fun addMeToVotedList(): TransactionReceipt? {
         return try {
+            val nonce = web3j
+                .ethGetTransactionCount(credentials.address, DefaultBlockParameterName.LATEST)
+                .send()
+                .transactionCount
             Log.d(TAG, "nonce for transaction nonce = $nonce")
-
             val rawTransaction = RawTransaction.createTransaction(
                 ChainIdLong.ROPSTEN,
                 nonce,
@@ -127,25 +110,15 @@ class VoteContractDelegate(private val viewModel: MainViewModel) {
                 transactionHash = transactionHash,
                 methodCalled = "addMeToVotedList",
                 gasFee = null,
-                transactionTime = SimpleDateFormat("HH:mm:ss - dd/MM/yy").format(
-                    Date(System.currentTimeMillis())
-                ),
+                transactionTime = System.currentTimeMillis(),
                 transactionSuccessful = null
             )
             viewModel.insertTransaction(txData)
             Log.d(TAG, "transactionHash = $transactionHash, generating receipt...")
-
-            val transactionReceipt = generateReceipt(transactionHash)
-
-            txData.gasFee = transactionReceipt.gasUsed.toLong()
-            viewModel.updateTransaction(txData)
-
-            Log.d(TAG, "transactionReceipt = $transactionReceipt")
-
-            transactionReceipt.gasUsed.toString()
+            generateReceipt(transactionHash)
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
-            e.message.toString()
+            null
         }
     }
 

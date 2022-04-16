@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#00000000">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/login_card_spacing"
+        app:cardCornerRadius="@dimen/card_corner_radius">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/receipt_text_padding"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/login_card_spacing"
+                android:text="Receipt"
+                android:textAlignment="center"
+                android:textSize="@dimen/huge_text_size" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/transaction_receipt_sub_section"
+                android:text="Transaction Details:-"
+                android:textSize="@dimen/medium_text" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginVertical="@dimen/receipt_line_spacing"
+                android:background="@color/black" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Transaction Hash"
+                    android:textSize="@dimen/small_text" />
+
+                <TextView
+                    android:id="@+id/transaction_hash_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/receipt_text_padding"
+                    android:layout_weight="1"
+                    android:textAlignment="viewEnd"
+                    android:textSize="@dimen/small_text"
+                    tools:text="transactionHash" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginVertical="@dimen/receipt_line_spacing"
+                android:background="@color/black" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Transaction Index"
+                    android:textSize="@dimen/small_text" />
+
+                <TextView
+                    android:id="@+id/transaction_index_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/receipt_text_padding"
+                    android:layout_weight="1"
+                    android:textAlignment="viewEnd"
+                    android:textSize="@dimen/small_text"
+                    tools:text="transactionIndex" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginVertical="@dimen/receipt_line_spacing"
+                android:background="@color/black" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Block Number"
+                    android:textSize="@dimen/small_text" />
+
+                <TextView
+                    android:id="@+id/block_number_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/receipt_text_padding"
+                    android:layout_weight="1"
+                    android:textAlignment="viewEnd"
+                    android:textSize="@dimen/small_text"
+                    tools:text="blockNumber" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginVertical="@dimen/receipt_line_spacing"
+                android:background="@color/black" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/transaction_receipt_sub_section"
+                android:text="Transfer Status:-"
+                android:textSize="@dimen/medium_text" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginVertical="@dimen/receipt_line_spacing"
+                android:background="@color/black" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="From"
+                    android:textSize="@dimen/small_text" />
+
+                <TextView
+                    android:id="@+id/from_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/receipt_text_padding"
+                    android:layout_weight="1"
+                    android:textAlignment="viewEnd"
+                    android:textSize="@dimen/small_text"
+                    tools:text="from" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginVertical="@dimen/receipt_line_spacing"
+                android:background="@color/black" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="To"
+                    android:textSize="@dimen/small_text" />
+
+                <TextView
+                    android:id="@+id/to_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/receipt_text_padding"
+                    android:layout_weight="1"
+                    android:textAlignment="viewEnd"
+                    android:textSize="@dimen/small_text"
+                    tools:text="to" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginVertical="@dimen/receipt_line_spacing"
+                android:background="@color/black" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Transaction Status"
+                    android:textSize="@dimen/small_text" />
+
+                <TextView
+                    android:id="@+id/is_status_oK_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/receipt_text_padding"
+                    android:layout_weight="1"
+                    android:textAlignment="viewEnd"
+                    android:textSize="@dimen/small_text"
+                    tools:text="isStatusOK" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginVertical="@dimen/receipt_line_spacing"
+                android:background="@color/black" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Revert Reason"
+                    android:textSize="@dimen/small_text" />
+
+                <TextView
+                    android:id="@+id/revert_reason_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/receipt_text_padding"
+                    android:layout_weight="1"
+                    android:textAlignment="viewEnd"
+                    android:textSize="@dimen/small_text"
+                    tools:text="revertReason" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginVertical="@dimen/receipt_line_spacing"
+                android:background="@color/black" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/transaction_receipt_sub_section"
+                android:text="Cost Status:-"
+                android:textSize="@dimen/medium_text" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginVertical="@dimen/receipt_line_spacing"
+                android:background="@color/black" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Effective Gas Price"
+                    android:textSize="@dimen/small_text" />
+
+                <TextView
+                    android:id="@+id/effective_gas_price_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/receipt_text_padding"
+                    android:layout_weight="1"
+                    android:textAlignment="viewEnd"
+                    android:textSize="@dimen/small_text"
+                    tools:text="effectiveGasPrice" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginVertical="@dimen/receipt_line_spacing"
+                android:background="@color/black" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Gas Used"
+                    android:textSize="@dimen/small_text" />
+
+                <TextView
+                    android:id="@+id/gas_used_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/receipt_text_padding"
+                    android:layout_weight="1"
+                    android:textAlignment="viewEnd"
+                    android:textSize="@dimen/small_text"
+                    tools:text="gasUsed" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginVertical="@dimen/receipt_line_spacing"
+                android:background="@color/black" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/transaction_receipt_sub_section"
+                android:text="@string/transaction_details_info"
+                android:textColor="#ff0000"
+                android:textSize="@dimen/small_text" />
+
+            <Button
+                android:id="@+id/dismiss_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/login_card_spacing"
+                android:text="@string/dismiss" />
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+</LinearLayout>

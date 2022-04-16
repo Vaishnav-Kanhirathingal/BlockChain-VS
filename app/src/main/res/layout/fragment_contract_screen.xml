@@ -7,7 +7,7 @@
 
         <variable
             name="data_binding_view_model"
-            type="com.kenetic.blockchainvs.app_viewmodel.MainViewModel" />
+            type="com.kenetic.blockchainvs.app_viewmodel.MainViewModel"/>
     </data>
 
     <LinearLayout
@@ -476,7 +476,7 @@
                     android:layout_marginHorizontal="@dimen/contract_vertical_spacing"
                     android:layout_marginVertical="@dimen/contract_vertical_spacing"
                     android:background="#000000"
-                    tools:layout_height="2dp" />
+                    tools:layout_height="2dp"/>
             </LinearLayout>
         </ScrollView>
     </LinearLayout>

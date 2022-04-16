@@ -22,6 +22,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
+import java.text.SimpleDateFormat
+import java.util.*
 
 private const val TAG = "TransactionAdapter"
 
@@ -73,18 +75,26 @@ class TransactionAdapter(
                     gasFeeTextView.text = viewModel.gettingGasUsed
                     transactionStatusTextView.text = viewModel.gettingStatus
                     CoroutineScope(Dispatchers.IO).launch {
-                        val web3j =
-                            Web3j.build(HttpService("https://ropsten.infura.io/v3/c358089e1aaa4746aa50e61d4ec41c5c"))
-                        val transactionReceipt = web3j
-                            .ethGetTransactionReceipt(currentTransactionData.transactionHash)
-                            .send()
-                            .transactionReceipt
-                            .get()
-                        val cost = transactionReceipt.gasUsed
-                        val status = transactionReceipt.isStatusOK
-                        currentTransactionData.gasFee = cost.toLong()
-                        currentTransactionData.transactionSuccessful = status
-                        viewModel.updateTransaction(currentTransactionData)
+                        try {
+                            val transactionReceipt =
+                                Web3j
+                                    .build(HttpService("https://ropsten.infura.io/v3/c358089e1aaa4746aa50e61d4ec41c5c"))
+                                    .ethGetTransactionReceipt(currentTransactionData.transactionHash)
+                                    .send()
+                                    .transactionReceipt
+                                    .get()
+                            val cost = transactionReceipt.gasUsed
+                            val status = transactionReceipt.isStatusOK
+                            currentTransactionData.gasFee = cost.toLong()
+                            currentTransactionData.transactionSuccessful = status
+                            viewModel.updateTransaction(currentTransactionData)
+                        } catch (e: Exception) {
+                            Toast.makeText(
+                                context,
+                                "Error Has Occurred:-\n${e.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 } else {
                     gasFeeTextView.text = currentTransactionData.gasFee!!.toString()
@@ -95,7 +105,9 @@ class TransactionAdapter(
                             "Failed"
                         }
                 }
-                transactionTimeTextView.text = currentTransactionData.transactionTime
+                transactionTimeTextView.text =
+                    SimpleDateFormat("HH:mm:ss - dd/MM/yy")
+                        .format(Date(currentTransactionData.transactionTime))
             }
         }
     }

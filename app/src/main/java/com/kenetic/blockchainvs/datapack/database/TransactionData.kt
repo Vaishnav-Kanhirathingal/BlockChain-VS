@@ -11,6 +11,6 @@ data class TransactionData(
     @ColumnInfo(name = "transaction_hash") var transactionHash: String,
     @ColumnInfo(name = "method_called") var methodCalled: String,
     @ColumnInfo(name = "gas_fee") var gasFee: Long?,
-    @ColumnInfo(name = "transaction_performed_at") var transactionTime: String,
+    @ColumnInfo(name = "transaction_performed_at") var transactionTime: Long,
     @ColumnInfo(name = "transaction_successful") var transactionSuccessful: Boolean?,
 )
