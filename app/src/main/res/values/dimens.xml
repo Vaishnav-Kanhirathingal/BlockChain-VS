@@ -6,14 +6,14 @@
     <dimen name="card_corner_radius">8dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="sub_layout_layout_margin">10dp</dimen>
-    <!--text-sizes-->
-    <dimen name="small_text">12sp</dimen>
-    <dimen name="medium_text">20sp</dimen>
-    <dimen name="huge_text_size">40sp</dimen>
     <dimen name="contract_vertical_spacing">10dp</dimen>
     <dimen name="contract_horizontal_spacing">10dp</dimen>
     <dimen name="recycler_margin">4dp</dimen>
     <dimen name="receipt_text_padding">20dp</dimen>
     <dimen name="receipt_line_spacing">5dp</dimen>
     <dimen name="transaction_receipt_sub_section">10dp</dimen>
+    <!--text-sizes-->
+    <dimen name="small_text">12sp</dimen>
+    <dimen name="medium_text">20sp</dimen>
+    <dimen name="huge_text_size">40sp</dimen>
 </resources>

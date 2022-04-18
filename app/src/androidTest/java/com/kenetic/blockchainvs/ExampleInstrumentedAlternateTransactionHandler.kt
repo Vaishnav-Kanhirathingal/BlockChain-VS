@@ -18,10 +18,6 @@ class ExampleInstrumentedAlternateTransactionHandler {
     val scenario = ActivityScenarioRule(MainActivity::class.java)
 
     //-----------------------------------------------------------------------------------private-key
-    private val accountOnePrivateKey =
-        "66c53799ee0c63f2564305e738ea7479d7aee84aed3aac4c01e54a7acbcc4d92"
-    private val accountTwoPrivateKey =
-        "6653ef960205a8584f91526da6dbeafb9b1b3e1813811c7783e34ef979e85fef"
 
     private val emailOtp = "1111"
     private val phoneOtp = "1111"
@@ -30,15 +26,43 @@ class ExampleInstrumentedAlternateTransactionHandler {
     private val transactionInterval: Long = 45000
 
     //-------------------------------------------------------------------------------sign-up-details
-    private val fullName = "First Middle Last"
-    private val password = "1234567890"
-    private val phoneNumber = "+12 1234567890"
-    private val emailAccount = "random.somebody@gmail.com"
-    private val adharId = "123456789012"
-    private val voterId = "sample1234"
+    private val accountOnePrivateKey =
+        "66c53799ee0c63f2564305e738ea7479d7aee84aed3aac4c01e54a7acbcc4d92"
+    private val accountTwoPrivateKey =
+        "6653ef960205a8584f91526da6dbeafb9b1b3e1813811c7783e34ef979e85fef"
+
+    private lateinit var accountPrivateKey: String
+    private lateinit var fullName: String
+    private lateinit var password: String
+    private lateinit var phoneNumber: String
+    private lateinit var emailAccount: String
+    private lateinit var adharId: String
+    private lateinit var voterId: String
+
+    private fun useAccountOne() {
+        accountPrivateKey = accountOnePrivateKey
+        fullName = "Vaishnav Prashant Kanhirathingal"
+        password = "0000000001"
+        phoneNumber = "+12 1111111111"
+        emailAccount = "vaishnav.kanhira@gmail.com"
+        adharId = "123456123456"
+        voterId = "voter11111"
+    }
+
+    private fun useAccountTwo() {
+        accountPrivateKey = accountTwoPrivateKey
+        fullName = "Adil Jalaluddin Khan"
+        password = "0000000002"
+        phoneNumber = "+12 2222222222"
+        emailAccount = "adil.khan@gmail.com"
+        adharId = "654321654321"
+        voterId = "voter22222"
+    }
 
     @Test
     fun signUp() {
+        //----------------------------------------------------------------------------choose-account
+        useAccountOne()
         Thread.sleep(explanationInterval)
         //-----------------------------------------------------------------------from-sign-in-prompt
         onView(withId(R.id.account_settings)).perform(click())
@@ -100,7 +124,7 @@ class ExampleInstrumentedAlternateTransactionHandler {
         )
         //------------------------------------------------------------------------------------wallet
         onView(withId(R.id.user_private_key_text_field)).perform(
-            scrollTo(), typeText(accountOnePrivateKey)
+            scrollTo(), typeText(accountPrivateKey)
         )
         Thread.sleep(explanationInterval)
         //----------------------------------------------------------------------------------register
@@ -110,6 +134,7 @@ class ExampleInstrumentedAlternateTransactionHandler {
 
     @Test
     fun signInAndInteractWithContract() {
+        useAccountOne()
         Thread.sleep(waitInterval)
         //-----------------------------------------------------------------------------------sign-in
         onView(withId(R.id.account_settings)).perform(click())

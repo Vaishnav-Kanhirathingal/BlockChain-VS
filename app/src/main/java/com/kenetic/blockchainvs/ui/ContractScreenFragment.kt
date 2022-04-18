@@ -20,8 +20,8 @@ import com.kenetic.blockchainvs.R
 import com.kenetic.blockchainvs.app_viewmodel.MainViewModel
 import com.kenetic.blockchainvs.app_viewmodel.MainViewModelFactory
 import com.kenetic.blockchainvs.application_class.ApplicationStarter
-import com.kenetic.blockchainvs.block_connector.contract.contract_interface.PartyEnum
-import com.kenetic.blockchainvs.block_connector.contract.contract_interface.VoteContractDelegate
+import com.kenetic.blockchainvs.contract_classes.PartyEnum
+import com.kenetic.blockchainvs.contract_classes.VoteContractDelegate
 import com.kenetic.blockchainvs.databinding.FragmentContractScreenBinding
 import com.kenetic.blockchainvs.databinding.PromptPasswordBinding
 import com.kenetic.blockchainvs.databinding.PromptTransactionReceiptBinding
@@ -32,7 +32,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.web3j.protocol.core.methods.response.TransactionReceipt
-import java.math.BigInteger
 
 private const val TAG = "ContractScreenFragment"
 

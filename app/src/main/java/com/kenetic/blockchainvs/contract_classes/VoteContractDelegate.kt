@@ -1,7 +1,9 @@
-package com.kenetic.blockchainvs.block_connector.contract.contract_interface
+package com.kenetic.blockchainvs.contract_classes
 
 import android.util.Log
 import com.kenetic.blockchainvs.app_viewmodel.MainViewModel
+import com.kenetic.blockchainvs.contract_classes.contract_auto_generate.ContractAutoGenOriginal
+import com.kenetic.blockchainvs.contract_classes.contract_auto_generate.ContractAutoGenTesting
 import com.kenetic.blockchainvs.datapack.database.TransactionData
 import org.web3j.crypto.Credentials
 import org.web3j.crypto.RawTransaction
@@ -23,7 +25,8 @@ private const val TAG = "VoteContractDelegate"
 
 class VoteContractDelegate(private val viewModel: MainViewModel) {
     //------------------------------------------------------------------------------project-elements
-    private val CONTRACT_ADDRESS = "0x84D46ba7aAac6221DF9038d3Ccf41F1cd46001aF"
+    private val ORIGINAL_CONTRACT_ADDRESS = "0x83890163793aEE9e4c088d1475954e4f6eA342Cd"
+    private val TESTING_CONTRACT_ADDRESS = "0x84D46ba7aAac6221DF9038d3Ccf41F1cd46001aF"
 
     //-----------------------------------------------------------------------------------credentials
     private val USER_PRIVATE_KEY: String = viewModel.accountPrivateKey
@@ -39,12 +42,22 @@ class VoteContractDelegate(private val viewModel: MainViewModel) {
     private val gasLimit = BigInteger.valueOf(40000)
     private val gasProvider: ContractGasProvider = StaticGasProvider(gasPrice, gasLimit)
 
-    private var contract: ContractHex = ContractHex.load(
-        CONTRACT_ADDRESS,
+    //-------------------------------------------------------------------------------testing-setters
+    private val originalContract = ContractAutoGenOriginal.load(
+        ORIGINAL_CONTRACT_ADDRESS,
         web3j,
         RawTransactionManager(web3j, credentials, ChainIdLong.ROPSTEN),
         gasProvider
     )
+
+    private var testingContract: ContractAutoGenTesting = ContractAutoGenTesting.load(
+        TESTING_CONTRACT_ADDRESS,
+        web3j,
+        RawTransactionManager(web3j, credentials, ChainIdLong.ROPSTEN),
+        gasProvider
+    )
+
+    private var contract = testingContract
 
     fun registerVote(party: PartyEnum): TransactionReceipt? {
         return try {
@@ -57,7 +70,7 @@ class VoteContractDelegate(private val viewModel: MainViewModel) {
                 ChainIdLong.ROPSTEN,
                 nonce,
                 gasLimit,
-                CONTRACT_ADDRESS,
+                TESTING_CONTRACT_ADDRESS,
                 BigInteger.ZERO,
                 AlternateTransactionHandler().registerVoteEncoded(
                     when (party) {
@@ -98,7 +111,7 @@ class VoteContractDelegate(private val viewModel: MainViewModel) {
                 ChainIdLong.ROPSTEN,
                 nonce,
                 gasLimit,
-                CONTRACT_ADDRESS,
+                TESTING_CONTRACT_ADDRESS,
                 BigInteger.ZERO,
                 AlternateTransactionHandler().addMeToVotedListEncoded(),
                 gasPrice,

@@ -1,4 +1,4 @@
-package com.kenetic.blockchainvs.block_connector.contract.contract_interface;
+package com.kenetic.blockchainvs.contract_classes.contract_auto_generate;
 
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
@@ -32,7 +32,7 @@ import java.util.concurrent.Callable;
  * <p>Generated with web3j version 1.4.1.
  */
 @SuppressWarnings("rawtypes")
-public class ContractHex extends Contract {
+public class ContractAutoGenTesting extends Contract {
     public static final String BINARY = "{\n"
             + "\t\"functionDebugData\": {\n"
             + "\t\t\"@_30\": {\n"
@@ -64,57 +64,57 @@ public class ContractHex extends Contract {
     public static final String FUNC_REGISTERVOTE = "registerVote";
 
     @Deprecated
-    protected ContractHex(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
+    protected ContractAutoGenTesting(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
         super(BINARY, contractAddress, web3j, credentials, gasPrice, gasLimit);
     }
 
-    protected ContractHex(String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
+    protected ContractAutoGenTesting(String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
         super(BINARY, contractAddress, web3j, credentials, contractGasProvider);
     }
 
     @Deprecated
-    protected ContractHex(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
+    protected ContractAutoGenTesting(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
         super(BINARY, contractAddress, web3j, transactionManager, gasPrice, gasLimit);
     }
 
-    protected ContractHex(String contractAddress, Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
+    protected ContractAutoGenTesting(String contractAddress, Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
         super(BINARY, contractAddress, web3j, transactionManager, contractGasProvider);
     }
 
     @Deprecated
-    public static ContractHex load(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
-        return new ContractHex(contractAddress, web3j, credentials, gasPrice, gasLimit);
+    public static ContractAutoGenTesting load(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
+        return new ContractAutoGenTesting(contractAddress, web3j, credentials, gasPrice, gasLimit);
     }
 
     @Deprecated
-    public static ContractHex load(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
-        return new ContractHex(contractAddress, web3j, transactionManager, gasPrice, gasLimit);
+    public static ContractAutoGenTesting load(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
+        return new ContractAutoGenTesting(contractAddress, web3j, transactionManager, gasPrice, gasLimit);
     }
 
-    public static ContractHex load(String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
-        return new ContractHex(contractAddress, web3j, credentials, contractGasProvider);
+    public static ContractAutoGenTesting load(String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
+        return new ContractAutoGenTesting(contractAddress, web3j, credentials, contractGasProvider);
     }
 
-    public static ContractHex load(String contractAddress, Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
-        return new ContractHex(contractAddress, web3j, transactionManager, contractGasProvider);
+    public static ContractAutoGenTesting load(String contractAddress, Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
+        return new ContractAutoGenTesting(contractAddress, web3j, transactionManager, contractGasProvider);
     }
 
-    public static RemoteCall<ContractHex> deploy(Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
-        return deployRemoteCall(ContractHex.class, web3j, credentials, contractGasProvider, BINARY, "");
+    public static RemoteCall<ContractAutoGenTesting> deploy(Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
+        return deployRemoteCall(ContractAutoGenTesting.class, web3j, credentials, contractGasProvider, BINARY, "");
     }
 
-    public static RemoteCall<ContractHex> deploy(Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
-        return deployRemoteCall(ContractHex.class, web3j, transactionManager, contractGasProvider, BINARY, "");
-    }
-
-    @Deprecated
-    public static RemoteCall<ContractHex> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
-        return deployRemoteCall(ContractHex.class, web3j, credentials, gasPrice, gasLimit, BINARY, "");
+    public static RemoteCall<ContractAutoGenTesting> deploy(Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
+        return deployRemoteCall(ContractAutoGenTesting.class, web3j, transactionManager, contractGasProvider, BINARY, "");
     }
 
     @Deprecated
-    public static RemoteCall<ContractHex> deploy(Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
-        return deployRemoteCall(ContractHex.class, web3j, transactionManager, gasPrice, gasLimit, BINARY, "");
+    public static RemoteCall<ContractAutoGenTesting> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
+        return deployRemoteCall(ContractAutoGenTesting.class, web3j, credentials, gasPrice, gasLimit, BINARY, "");
+    }
+
+    @Deprecated
+    public static RemoteCall<ContractAutoGenTesting> deploy(Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
+        return deployRemoteCall(ContractAutoGenTesting.class, web3j, transactionManager, gasPrice, gasLimit, BINARY, "");
     }
 
     public RemoteFunctionCall<TransactionReceipt> addMeToVotedList() {

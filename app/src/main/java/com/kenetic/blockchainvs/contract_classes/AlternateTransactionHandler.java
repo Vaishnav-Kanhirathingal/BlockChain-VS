@@ -1,4 +1,4 @@
-package com.kenetic.blockchainvs.block_connector.contract.contract_interface;
+package com.kenetic.blockchainvs.contract_classes;
 
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.TypeReference;
