@@ -3,7 +3,6 @@ package com.kenetic.blockchainvs.datapack.database
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import io.reactivex.internal.operators.maybe.MaybeDoAfterSuccess
 
 @Entity(tableName = "transaction_history")
 data class TransactionData(

@@ -1,10 +1,5 @@
 package com.kenetic.blockchainvs.contract_classes.contract_auto_generate;
 
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.Callable;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Bool;
@@ -20,6 +15,12 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.Contract;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
+
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * <p>Auto generated code.
@@ -80,65 +81,6 @@ public class ContractAutoGenOriginal extends Contract {
         super(BINARY, contractAddress, web3j, transactionManager, contractGasProvider);
     }
 
-    public RemoteFunctionCall<TransactionReceipt> addMeToVotedList() {
-        final Function function = new Function(
-                FUNC_ADDMETOVOTEDLIST,
-                Arrays.<Type>asList(),
-                Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function);
-    }
-
-    public RemoteFunctionCall<TransactionReceipt> registerVote(BigInteger num) {
-        final Function function = new Function(
-                FUNC_REGISTERVOTE,
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(num)),
-                Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function);
-    }
-
-    public RemoteFunctionCall<List> getAddressValues() {
-        final Function function = new Function(FUNC_GETADDRESSVALUES,
-                Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<Address>>() {}));
-        return new RemoteFunctionCall<List>(function,
-                new Callable<List>() {
-                    @Override
-                    @SuppressWarnings("unchecked")
-                    public List call() throws Exception {
-                        List<Type> result = (List<Type>) executeCallSingleValueReturn(function, List.class);
-                        return convertToNative(result);
-                    }
-                });
-    }
-
-    public RemoteFunctionCall<BigInteger> getParty1Votes() {
-        final Function function = new Function(FUNC_GETPARTY1VOTES,
-                Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
-    }
-
-    public RemoteFunctionCall<BigInteger> getParty2Votes() {
-        final Function function = new Function(FUNC_GETPARTY2VOTES,
-                Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
-    }
-
-    public RemoteFunctionCall<BigInteger> getParty3Votes() {
-        final Function function = new Function(FUNC_GETPARTY3VOTES,
-                Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
-    }
-
-    public RemoteFunctionCall<Boolean> hasAlreadyVoted() {
-        final Function function = new Function(FUNC_HASALREADYVOTED,
-                Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
-        return executeRemoteCallSingleValueReturn(function, Boolean.class);
-    }
-
     @Deprecated
     public static ContractAutoGenOriginal load(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
         return new ContractAutoGenOriginal(contractAddress, web3j, credentials, gasPrice, gasLimit);
@@ -173,6 +115,70 @@ public class ContractAutoGenOriginal extends Contract {
     @Deprecated
     public static RemoteCall<ContractAutoGenOriginal> deploy(Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
         return deployRemoteCall(ContractAutoGenOriginal.class, web3j, transactionManager, gasPrice, gasLimit, BINARY, "");
+    }
+
+    public RemoteFunctionCall<TransactionReceipt> addMeToVotedList() {
+        final Function function = new Function(
+                FUNC_ADDMETOVOTEDLIST,
+                Arrays.<Type>asList(),
+                Collections.<TypeReference<?>>emptyList());
+        return executeRemoteCallTransaction(function);
+    }
+
+    public RemoteFunctionCall<TransactionReceipt> registerVote(BigInteger num) {
+        final Function function = new Function(
+                FUNC_REGISTERVOTE,
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(num)),
+                Collections.<TypeReference<?>>emptyList());
+        return executeRemoteCallTransaction(function);
+    }
+
+    public RemoteFunctionCall<List> getAddressValues() {
+        final Function function = new Function(FUNC_GETADDRESSVALUES,
+                Arrays.<Type>asList(),
+                Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<Address>>() {
+                }));
+        return new RemoteFunctionCall<List>(function,
+                new Callable<List>() {
+                    @Override
+                    @SuppressWarnings("unchecked")
+                    public List call() throws Exception {
+                        List<Type> result = (List<Type>) executeCallSingleValueReturn(function, List.class);
+                        return convertToNative(result);
+                    }
+                });
+    }
+
+    public RemoteFunctionCall<BigInteger> getParty1Votes() {
+        final Function function = new Function(FUNC_GETPARTY1VOTES,
+                Arrays.<Type>asList(),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {
+                }));
+        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
+    }
+
+    public RemoteFunctionCall<BigInteger> getParty2Votes() {
+        final Function function = new Function(FUNC_GETPARTY2VOTES,
+                Arrays.<Type>asList(),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {
+                }));
+        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
+    }
+
+    public RemoteFunctionCall<BigInteger> getParty3Votes() {
+        final Function function = new Function(FUNC_GETPARTY3VOTES,
+                Arrays.<Type>asList(),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {
+                }));
+        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
+    }
+
+    public RemoteFunctionCall<Boolean> hasAlreadyVoted() {
+        final Function function = new Function(FUNC_HASALREADYVOTED,
+                Arrays.<Type>asList(),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {
+                }));
+        return executeRemoteCallSingleValueReturn(function, Boolean.class);
     }
 }
 

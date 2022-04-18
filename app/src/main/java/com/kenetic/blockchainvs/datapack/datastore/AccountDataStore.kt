@@ -107,7 +107,7 @@ class AccountDataStore(context: Context) {
         }
     }
 
-    suspend fun logOut(context: Context){
+    suspend fun logOut(context: Context) {
         context.datastore.edit { it[userLoggedInKey] = false }
     }
 

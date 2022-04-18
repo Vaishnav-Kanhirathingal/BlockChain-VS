@@ -30,14 +30,14 @@ interface VoteNetworkingApiService {
     // TODO: replace link segments
     //-------------------------------------------------------------------------------------------otp
     @GET("phone=1234567890")
-    suspend fun getPhoneOtp(phoneNumber:String): String
+    suspend fun getPhoneOtp(phoneNumber: String): String
 
     @GET("email=sample.email@gmail.com")
-    suspend fun getEmailOtp(email:String): String
+    suspend fun getEmailOtp(email: String): String
 
     //----------------------------------------------------------------------------------user-details
     @GET("phone-number")
-    suspend fun sendAndVerifyUserDetails(UserDetailsInJsonFormat:String): String
+    suspend fun sendAndVerifyUserDetails(UserDetailsInJsonFormat: String): String
 
     //------------------------------------------------------------------------------------------vote
     @GET("phone-number")

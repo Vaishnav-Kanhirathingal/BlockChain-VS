@@ -26,11 +26,6 @@ class ExampleInstrumentedAlternateTransactionHandler {
     private val transactionInterval: Long = 45000
 
     //-------------------------------------------------------------------------------sign-up-details
-    private val accountOnePrivateKey =
-        "66c53799ee0c63f2564305e738ea7479d7aee84aed3aac4c01e54a7acbcc4d92"
-    private val accountTwoPrivateKey =
-        "6653ef960205a8584f91526da6dbeafb9b1b3e1813811c7783e34ef979e85fef"
-
     private lateinit var accountPrivateKey: String
     private lateinit var fullName: String
     private lateinit var password: String
@@ -39,30 +34,39 @@ class ExampleInstrumentedAlternateTransactionHandler {
     private lateinit var adharId: String
     private lateinit var voterId: String
 
-    private fun useAccountOne() {
-        accountPrivateKey = accountOnePrivateKey
-        fullName = "Vaishnav Prashant Kanhirathingal"
-        password = "0000000001"
-        phoneNumber = "+12 1111111111"
-        emailAccount = "vaishnav.kanhira@gmail.com"
-        adharId = "123456123456"
-        voterId = "voter11111"
-    }
-
-    private fun useAccountTwo() {
-        accountPrivateKey = accountTwoPrivateKey
-        fullName = "Adil Jalaluddin Khan"
-        password = "0000000002"
-        phoneNumber = "+12 2222222222"
-        emailAccount = "adil.khan@gmail.com"
-        adharId = "654321654321"
-        voterId = "voter22222"
+    private val acc = 1
+    private fun initializeAccount() {
+        when (acc) {
+            1 -> {
+                accountPrivateKey =
+                    "66c53799ee0c63f2564305e738ea7479d7aee84aed3aac4c01e54a7acbcc4d92"
+                fullName = "Vaishnav Prashant Kanhirathingal"
+                password = "0000000001"
+                phoneNumber = "+12 1111111111"
+                emailAccount = "vaishnav.kanhira@gmail.com"
+                adharId = "123456123456"
+                voterId = "voter11111"
+            }
+            2 -> {
+                accountPrivateKey =
+                    "6653ef960205a8584f91526da6dbeafb9b1b3e1813811c7783e34ef979e85fef"
+                fullName = "Adil Jalaluddin Khan"
+                password = "0000000002"
+                phoneNumber = "+12 2222222222"
+                emailAccount = "adil.khan@gmail.com"
+                adharId = "654321654321"
+                voterId = "voter22222"
+            }
+            else -> {
+                throw Exception("account $acc is not present.")
+            }
+        }
     }
 
     @Test
     fun signUp() {
         //----------------------------------------------------------------------------choose-account
-        useAccountOne()
+        initializeAccount()
         Thread.sleep(explanationInterval)
         //-----------------------------------------------------------------------from-sign-in-prompt
         onView(withId(R.id.account_settings)).perform(click())
@@ -134,7 +138,7 @@ class ExampleInstrumentedAlternateTransactionHandler {
 
     @Test
     fun signInAndInteractWithContract() {
-        useAccountOne()
+        initializeAccount()
         Thread.sleep(waitInterval)
         //-----------------------------------------------------------------------------------sign-in
         onView(withId(R.id.account_settings)).perform(click())

@@ -46,7 +46,7 @@
         android:id="@+id/aboutFragment"
         android:name="com.kenetic.blockchainvs.ui.AboutFragment"
         android:label="fragment_about"
-        tools:layout="@layout/fragment_about" >
+        tools:layout="@layout/fragment_about">
         <action
             android:id="@+id/action_aboutFragment_to_mainScreenFragment"
             app:destination="@id/mainScreenFragment"

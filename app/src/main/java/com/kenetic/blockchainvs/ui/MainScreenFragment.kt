@@ -11,7 +11,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
@@ -74,7 +73,7 @@ class MainScreenFragment : Fragment() {
         viewModel.getAllById().asLiveData().observe(viewLifecycleOwner) {
             Log.d(TAG, "all ids = $it")
             transactionAdapter.submitList(it)
-            binding.includedSubLayout.emptyListLabel.visibility = if(it.isEmpty()) {
+            binding.includedSubLayout.emptyListLabel.visibility = if (it.isEmpty()) {
                 View.VISIBLE
             } else {
                 View.GONE
