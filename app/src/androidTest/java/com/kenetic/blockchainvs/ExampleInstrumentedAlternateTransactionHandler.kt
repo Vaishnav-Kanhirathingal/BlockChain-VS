@@ -153,11 +153,6 @@ class ExampleInstrumentedAlternateTransactionHandler {
         onView(withId(R.id.contract_interface)).perform(click())
 
         //----------------------------------------------------------------------------------contract
-
-        onView(withId(R.id.party_two_radio_button)).perform(scrollTo(), click())
-        onView(withId(R.id.caste_vote_button)).perform(scrollTo(), click())
-        Thread.sleep(transactionInterval)
-
         onView(withId(R.id.get_registered_voters_button)).perform(scrollTo(), click())
         Thread.sleep(waitInterval)
 
@@ -167,10 +162,14 @@ class ExampleInstrumentedAlternateTransactionHandler {
         onView(withId(R.id.get_votes_button)).perform(scrollTo(), click())
         Thread.sleep(waitInterval)
 
-        onView(withId(R.id.add_to_voters_list_button)).perform(scrollTo(), click())
-        Thread.sleep(transactionInterval)
-
         onView(withId(R.id.get_balance_button)).perform(scrollTo(), click())
         Thread.sleep(waitInterval)
+
+        onView(withId(R.id.party_two_radio_button)).perform(scrollTo(), click())
+        onView(withId(R.id.caste_vote_button)).perform(scrollTo(), click())
+        Thread.sleep(transactionInterval)
+
+        onView(withId(R.id.add_to_voters_list_button)).perform(scrollTo(), click())
+        Thread.sleep(transactionInterval)
     }
 }

@@ -99,7 +99,7 @@ class ContractScreenFragment : Fragment() {
                         CoroutineScope(Dispatchers.Main).launch {
                             viewModel.transactionCost.value =
                                 viewModel.gasUsedIs + transactionReceipt!!.gasUsed
-                            transactionPrompt(transactionReceipt)
+                            transactionReceiptPrompt(transactionReceipt)
                         }
                     }
                 }
@@ -123,7 +123,7 @@ class ContractScreenFragment : Fragment() {
                         CoroutineScope(Dispatchers.Main).launch {
                             viewModel.addMeToVotersList.value =
                                 viewModel.gasUsedIs + transactionReceipt!!.gasUsed.toString()
-                            transactionPrompt(transactionReceipt)
+                            transactionReceiptPrompt(transactionReceipt)
                         }
                     }
                 }
@@ -186,14 +186,19 @@ class ContractScreenFragment : Fragment() {
         }
     }
 
-    private fun transactionPrompt(transactionReceipt: TransactionReceipt) {
+    private fun transactionReceiptPrompt(transactionReceipt: TransactionReceipt) {
         transactionReceipt.effectiveGasPrice = "${voteContractDelegate.gweiPrice} Gwei"
         val dialogBox = Dialog(requireContext())
         val promptBinding = PromptTransactionReceiptBinding.inflate(layoutInflater)
         promptBinding.apply {
             transactionHashTextView.text = transactionReceipt.transactionHash
             transactionIndexTextView.text = transactionReceipt.transactionIndex.toString()
-            isStatusOKTextView.text = transactionReceipt.isStatusOK.toString()
+            isStatusOKTextView.text =
+                if (transactionReceipt.isStatusOK) {
+                    "Successful"
+                } else {
+                    "Unsuccessful"
+                }
             revertReasonTextView.text = transactionReceipt.revertReason
             blockNumberTextView.text = transactionReceipt.blockNumber.toString()
             fromTextView.text = transactionReceipt.from

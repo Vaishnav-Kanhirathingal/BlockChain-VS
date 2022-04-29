@@ -89,11 +89,14 @@ class TransactionAdapter(
                             currentTransactionData.transactionSuccessful = status
                             viewModel.updateTransaction(currentTransactionData)
                         } catch (e: Exception) {
-                            Toast.makeText(
-                                context,
-                                "Error Has Occurred:-\n${e.message}",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            e.printStackTrace()
+//                            Toast.makeText(
+//                                context,
+//                                "Error Has Occurred:-\n${e.message}",
+//                                Toast.LENGTH_SHORT
+//                            ).show()
+                            gasFeeTextView.text = "Error Getting Fee"
+                            transactionStatusTextView.text = "Error Getting Status"
                         }
                     }
                 } else {

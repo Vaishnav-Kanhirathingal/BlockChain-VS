@@ -36,11 +36,16 @@ class VoteContractDelegate(private val viewModel: MainViewModel) {
     private val web3j: Web3j = Web3j.build(HttpService(ROPSTEN_INFURA_URL))
 
     //--------------------------------------------------------------------------------gas-controller
-    val gweiPrice = 200
+    val gweiPrice = 60
     private val gasPrice: BigInteger =
         Convert.toWei(gweiPrice.toString(), Convert.Unit.GWEI).toBigInteger()
-    private val gasLimit = BigInteger.valueOf(40000)
+    private val gasLimit = BigInteger.valueOf(120000)
     private val gasProvider: ContractGasProvider = StaticGasProvider(gasPrice, gasLimit)
+
+    private val maxPriorityFeePerGas =
+        Convert.toWei("4", Convert.Unit.GWEI).toBigInteger()
+    private val maxFeePerGas =
+        Convert.toWei("100", Convert.Unit.GWEI).toBigInteger()
 
     //-------------------------------------------------------------------------------testing-setters
     private val originalContract = ContractAutoGenOriginal.load(
@@ -61,26 +66,14 @@ class VoteContractDelegate(private val viewModel: MainViewModel) {
 
     fun registerVote(party: PartyEnum): TransactionReceipt? {
         return try {
-            val nonce = web3j
-                .ethGetTransactionCount(credentials.address, DefaultBlockParameterName.LATEST)
-                .send()
-                .transactionCount
-            Log.d(TAG, "nonce for transaction nonce = $nonce")
-            val rawTransaction = RawTransaction.createTransaction(
-                ChainIdLong.ROPSTEN,
-                nonce,
-                gasLimit,
-                TESTING_CONTRACT_ADDRESS,
-                BigInteger.ZERO,
+            val rawTransaction = getRawTransaction(
                 AlternateTransactionHandler().registerVoteEncoded(
                     when (party) {
                         PartyEnum.ONE -> 1
                         PartyEnum.TWO -> 2
                         PartyEnum.THREE -> 3
                     }
-                ),
-                gasPrice,
-                gasPrice
+                )
             )
 
             val transactionHash = getTransactionHash(rawTransaction)
@@ -102,20 +95,8 @@ class VoteContractDelegate(private val viewModel: MainViewModel) {
 
     fun addMeToVotedList(): TransactionReceipt? {
         return try {
-            val nonce = web3j
-                .ethGetTransactionCount(credentials.address, DefaultBlockParameterName.LATEST)
-                .send()
-                .transactionCount
-            Log.d(TAG, "nonce for transaction nonce = $nonce")
-            val rawTransaction = RawTransaction.createTransaction(
-                ChainIdLong.ROPSTEN,
-                nonce,
-                gasLimit,
-                TESTING_CONTRACT_ADDRESS,
-                BigInteger.ZERO,
-                AlternateTransactionHandler().addMeToVotedListEncoded(),
-                gasPrice,
-                gasPrice
+            val rawTransaction = getRawTransaction(
+                AlternateTransactionHandler().addMeToVotedListEncoded()
             )
 
             val transactionHash = getTransactionHash(rawTransaction)
@@ -135,12 +116,32 @@ class VoteContractDelegate(private val viewModel: MainViewModel) {
         }
     }
 
+    private fun getRawTransaction(data: String): RawTransaction {
+        val nonce = web3j
+            .ethGetTransactionCount(credentials.address, DefaultBlockParameterName.LATEST)
+            .send()
+            .transactionCount
+        Log.d(TAG, "nonce for transaction nonce = $nonce")
+        return RawTransaction.createTransaction(
+            ChainIdLong.ROPSTEN,
+            nonce,
+            gasLimit,
+            TESTING_CONTRACT_ADDRESS,
+            BigInteger.ZERO,
+            data,
+            maxPriorityFeePerGas,
+            maxFeePerGas
+        )
+    }
+
     private fun generateReceipt(txHash: String): TransactionReceipt {
         do {
             Thread.sleep(5000)
             Log.d(TAG, "trying to get transaction receipt")
         } while (!web3j.ethGetTransactionReceipt(txHash).send().transactionReceipt.isPresent)
-        return web3j.ethGetTransactionReceipt(txHash).send().transactionReceipt.get()
+        val receipt = web3j.ethGetTransactionReceipt(txHash).send().transactionReceipt.get()
+        Log.d(TAG, "receipt = ${receipt.toString()}")
+        return receipt
     }
 
     private fun getTransactionHash(rawTransaction: RawTransaction): String {

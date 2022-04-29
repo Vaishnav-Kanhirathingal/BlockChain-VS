@@ -305,6 +305,12 @@ class MainScreenFragment : Fragment() {
                             dialogBox.dismiss()
                         }
                     }
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "Password Or User Name Might Be Incorrect",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
             //---------------------------------------------------------------------------fingerprint

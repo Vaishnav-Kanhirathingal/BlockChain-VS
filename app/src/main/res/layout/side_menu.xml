@@ -32,6 +32,7 @@
             android:id="@+id/user_full_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textAlignment="center"
             android:textSize="@dimen/medium_text"
             tools:text="FirstName MiddleName LastName" />
 
@@ -51,6 +52,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textAlignment="viewEnd"
                 android:textSize="@dimen/small_text"
                 tools:text="UserEmail@EMailClient.com" />
         </LinearLayout>
@@ -71,6 +73,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textAlignment="viewEnd"
                 android:textSize="@dimen/small_text"
                 tools:text="+12 1234567890" />
         </LinearLayout>
@@ -91,6 +94,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textAlignment="viewEnd"
                 android:textSize="@dimen/small_text"
                 tools:text="1234 1234 1234 1234" />
         </LinearLayout>
@@ -111,6 +115,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textAlignment="viewEnd"
                 android:textSize="@dimen/small_text"
                 tools:text="A234 1B34 12C4 123D" />
         </LinearLayout>
@@ -131,6 +136,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textAlignment="viewEnd"
                 android:textSize="@dimen/small_text"
                 tools:text="A234 1B34 12C4 123D" />
         </LinearLayout>
