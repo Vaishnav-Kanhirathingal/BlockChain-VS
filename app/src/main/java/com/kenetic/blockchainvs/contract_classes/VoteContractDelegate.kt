@@ -18,15 +18,14 @@ import org.web3j.tx.gas.ContractGasProvider
 import org.web3j.tx.gas.StaticGasProvider
 import org.web3j.utils.Convert
 import org.web3j.utils.Numeric
-import java.math.BigDecimal
 import java.math.BigInteger
 
 private const val TAG = "VoteContractDelegate"
 
 class VoteContractDelegate(private val viewModel: MainViewModel) {
     //------------------------------------------------------------------------------project-elements
-    private val ORIGINAL_CONTRACT_ADDRESS = "0x83890163793aEE9e4c088d1475954e4f6eA342Cd"
-    private val TESTING_CONTRACT_ADDRESS = "0x84D46ba7aAac6221DF9038d3Ccf41F1cd46001aF"
+    private val ORIGINAL_CONTRACT_ADDRESS = "0xeaef36118C136cE9a19f3Ad99Cb8a9E3Ba634f63"
+    private val TESTING_CONTRACT_ADDRESS = "0xFe21E30B76dB57ec7329eA6d0594b258034356A8"
 
     //-----------------------------------------------------------------------------------credentials
     private val USER_PRIVATE_KEY: String = viewModel.accountPrivateKey
@@ -36,16 +35,13 @@ class VoteContractDelegate(private val viewModel: MainViewModel) {
     private val web3j: Web3j = Web3j.build(HttpService(ROPSTEN_INFURA_URL))
 
     //--------------------------------------------------------------------------------gas-controller
-    val gweiPrice = 60
-    private val gasPrice: BigInteger =
-        Convert.toWei(gweiPrice.toString(), Convert.Unit.GWEI).toBigInteger()
+    val gweiPrice = "60"
+    private val gasPrice: BigInteger = Convert.toWei(gweiPrice, Convert.Unit.GWEI).toBigInteger()
     private val gasLimit = BigInteger.valueOf(120000)
-    private val gasProvider: ContractGasProvider = StaticGasProvider(gasPrice, gasLimit)
+    private val maxPriorityFeePerGas = Convert.toWei("4", Convert.Unit.GWEI).toBigInteger()
+    private val maxFeePerGas = Convert.toWei("100", Convert.Unit.GWEI).toBigInteger()
 
-    private val maxPriorityFeePerGas =
-        Convert.toWei("4", Convert.Unit.GWEI).toBigInteger()
-    private val maxFeePerGas =
-        Convert.toWei("100", Convert.Unit.GWEI).toBigInteger()
+    private val gasProvider: ContractGasProvider = StaticGasProvider(gasPrice, gasLimit)
 
     //-------------------------------------------------------------------------------testing-setters
     private val originalContract = ContractAutoGenOriginal.load(
@@ -169,8 +165,13 @@ class VoteContractDelegate(private val viewModel: MainViewModel) {
 
     fun getVoterAddresses(): String {
         return try {
-            val x = contract.addressValues.send().toString()
-            "voters:-\n$x"
+            val addressArray = contract.addressValues.send().toList()
+            var addressString = ""
+            for (i in addressArray) {
+                addressString += "- ${i.toString()}\n"
+            }
+            Log.d(TAG, "address string = $addressString")
+            addressString.dropLast(1)
         } catch (e: Exception) {
             e.printStackTrace()
             "Error - ${e.message}"
@@ -179,21 +180,26 @@ class VoteContractDelegate(private val viewModel: MainViewModel) {
 
     fun getHasAlreadyVoted(): String {
         return try {
-            contract.hasAlreadyVoted().send().toString()
+            if (contract.hasAlreadyVoted().send()) {
+                "You Have Already Voted"
+            } else {
+                "Your Vote Has Not Been Registered Yet"
+            }
         } catch (e: Exception) {
             "Error has occurred while making calls :-\n${e.message}"
         }
     }
 
-    fun getBalance(): BigDecimal {
+    fun getBalance(): String {
         return try {
             Convert.fromWei(
                 web3j.ethGetBalance(credentials.address, DefaultBlockParameterName.LATEST)
                     .send().balance.toString(),
                 Convert.Unit.ETHER
-            )
+            ).toString() + "ETH"
         } catch (e: Exception) {
-            BigDecimal(0)
+            e.printStackTrace()
+            e.message.toString()
         }
     }
 }

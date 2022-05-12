@@ -181,4 +181,3 @@ public class ContractAutoGenOriginal extends Contract {
         return executeRemoteCallSingleValueReturn(function, Boolean.class);
     }
 }
-

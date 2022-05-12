@@ -179,7 +179,7 @@ class ContractScreenFragment : Fragment() {
                 CoroutineScope(Dispatchers.IO).launch {
                     val balanceReceived = voteContractDelegate.getBalance()
                     CoroutineScope(Dispatchers.Main).launch {
-                        viewModel.balance.value = "$balanceReceived ETH"
+                        viewModel.balance.value = balanceReceived
                     }
                 }
             }
