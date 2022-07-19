@@ -47,7 +47,7 @@ here, you can find the options for the account settings such as `Log In`, `Log O
 
 ### The Contract Interface -
 
-This page requires you to be signed in. Sign-in in can be done using either the regisered email and password, or your fingerprint of enabled. Once signed in, you can Access the entire solidity contract which has already been set up in the ropsten test network. Transactions that require a fee will ask for fingerprint verification.
+This page requires you to be signed in. Sign-in in can be done using either the regisered email and password, or your fingerprint of enabled. Once signed in, you can Access the entire solidity contract which has already been set up in the ropsten test network. Transactions that require a fee will ask for fingerprint verification. The `Add Me To Voter's List` is a test option only. Performing that action would independently change your account's status to that of one that has performed votiing.
 
 ![Screenshot_20220719_192524_com kenetic blockchainvs](https://user-images.githubusercontent.com/94210466/179812778-1f60bd7b-a40f-47de-a448-ac4a3a84657f.jpg)
 
