@@ -133,7 +133,7 @@ class ExampleInstrumentedAlternateTransactionHandler {
         Thread.sleep(explanationInterval)
         //----------------------------------------------------------------------------------register
         onView(withId(R.id.register_login)).perform(scrollTo(), click())
-        Thread.sleep(waitInterval)
+        Thread.sleep(transactionInterval)
     }
 
     @Test
