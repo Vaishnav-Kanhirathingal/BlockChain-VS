@@ -2,76 +2,76 @@
 
 ## About -
 
-This app is a block-chain based voting system app which uses the ethereum's ropsten testnet to perform transactions.
+> This app is a block-chain based voting system app which uses the ethereum's ropsten testnet to perform transactions.
 
 AS OF 13-04-22, THIS PROJECT IS FUNCTIONAL.
 
-## FILES USED FOR CONTRACT INTERACTION ARE -
+## Files used for contract interaction are -
 
-### app/src/main/java/com/kenetic/blockchainvs/contract_classes/VoteContractDelegate.kt
+### This file is responsible for all the main transactions -
 
-This file is responsible for all the main transactions
+    app/src/main/java/com/kenetic/blockchainvs/contract_classes/VoteContractDelegate.kt
 
-### app/src/main/java/com/kenetic/blockchainvs/contract_classes/contract_auto_generate/ContractAutoGenTesting.java
+### This contract accepts multiple votes. (auto-generated) -
 
-THIS CONTRACT ACCEPTS MULTIPLE VOTES. (AUTO-GENERATED)
+    app/src/main/java/com/kenetic/blockchainvs/contract_classes/contract_auto_generate/ContractAutoGenTesting.java
 
-### app/src/main/java/com/kenetic/blockchainvs/contract_classes/contract_auto_generate/ContractAutoGenOriginal.java
+### This contract does not accept multiple votes. (auto-generated) -
 
-THIS CONTRACT DOES NOT ACCEPT MULTIPLE VOTES. (AUTO-GENERATED)
+    app/src/main/java/com/kenetic/blockchainvs/contract_classes/contract_auto_generate/ContractAutoGenOriginal.java
 
-### app/src/main/java/com/kenetic/blockchainvs/contract_classes/AlternateTransactionHandler.java
+### This file contains the function encoders for state changing functions. These were generated to counter faulty web3j functions which were unable to perform state changing transactions on the Test-Net servers -
 
-THIS FILE CONTAINS THE FUNCTION ENCODERS FOR STATE CHANGING FUNCTIONS. THESE WERE GENERATED TO COUNTER FAULTY WEB3J FUNCTIONS WHICH WERE UNABLE TO PERFORM STATE CHANGING TRANSACTIONS ON THE TESTNET SERVERS.
+    app/src/main/java/com/kenetic/blockchainvs/contract_classes/AlternateTransactionHandler.java
 
-### app/src/androidTest/java/com/kenetic/blockchainvs/ExampleInstrumentedAlternateTransactionHandler.kt
+### This file is a test class which automates the signup process -
 
-THIS FILE IS A TEST CLASS WHICH AUTOMATES THE SIGNUP PROCESS.
+    app/src/androidTest/java/com/kenetic/blockchainvs/ExampleInstrumentedAlternateTransactionHandler.kt
 
 ## Contract code -
 
-The link to the repository with the contract and the generated wrappers are [here](https://github.com/Vaishnav-Kanhirathingal/Solidity-Voting-System-Contract)
+> The link to the repository with the contract and the generated wrappers are [here](https://github.com/Vaishnav-Kanhirathingal/Solidity-Voting-System-Contract)
 
 ## Sample screen shots / Guide -
 
 ### Sign up screen -
 
-Here, the user can sign up using their email and phone number. This page is for demo purpose only, programatically it doesn't create an account remotely yet. However, it does store the details locally.
+> Here, the user can sign up using their email and phone number. This page is for demo purpose only, programatically it doesn't create an account remotely yet. However, it does store the details locally.
 
 <img src="https://user-images.githubusercontent.com/94210466/179814908-4d390c72-78ce-4da6-a1b5-2e1c6fdf8306.jpg" width="324" />
 
 ### Login Screen -
 
-this is the login screen, use the regustered email and password to login to the account. The sign Up process is discussed later on.Login can also be done using fingerprint if the option is enabled.
+> this is the login screen, use the regustered email and password to login to the account. The sign Up process is discussed later on.Login can also be done using fingerprint if the option is enabled.
 
 <img src="https://user-images.githubusercontent.com/94210466/179783970-134c3b4d-8ccf-4024-9cd3-1c4395858c67.jpg" width="324" /> <img src="https://user-images.githubusercontent.com/94210466/179815859-152e6e57-0180-4b7b-8a6c-708462ec038d.jpg" width="324" />
 
 ### The main screen's side menu -
 
-here, you can find the options for the account settings such as `Log In`, `Log Out`, `Sign Up`, `Remove Account`, `Switch Account`. Below this you will find the `Contract Interface`. This will be discussed later on.
+> here, you can find the options for the account settings such as `Log In`, `Log Out`, `Sign Up`, `Remove Account`, `Switch Account`. Below this you will find the `Contract Interface`. This will be discussed later on.
 
 <img src="https://user-images.githubusercontent.com/94210466/179815128-f3d0414f-23b4-4495-b4af-47a2d085ff62.jpg" width="324" />
 
 ### The Contract Interface -
 
-This page requires you to be signed in. Sign-in in can be done using either the regisered email and password, or your fingerprint of enabled. Once signed in, you can Access the entire solidity contract which has already been set up in the ropsten test network. Transactions that require a fee will ask for fingerprint verification. The `Add Me To Voter's List` is a test option only. Performing that action would independently change your account's status to that of one that has performed votiing.
+> This page requires you to be signed in. Sign-in in can be done using either the regisered email and password, or your fingerprint of enabled. Once signed in, you can Access the entire solidity contract which has already been set up in the ropsten test network. Transactions that require a fee will ask for fingerprint verification. The `Add Me To Voter's List` is a test option only. Performing that action would independently change your account's status to that of one that has performed votiing.
 
 <img src="https://user-images.githubusercontent.com/94210466/179812778-1f60bd7b-a40f-47de-a448-ac4a3a84657f.jpg" width="324" />
 
 ### Transaction Receipt -
 
-performing a transaction also requires a fingerprint. Once that is done, the user can thenwait for the transaction to be performed. Once that is done, a receipt is genarated.
+> performing a transaction also requires a fingerprint. Once that is done, the user can thenwait for the transaction to be performed. Once that is done, a receipt is genarated.
 
 <img src="https://user-images.githubusercontent.com/94210466/179816369-9223d97e-8e82-40d1-bbb8-9d45f3ae874f.jpg" width="324" />
 
 ### Receipt database -
 
-Once the receipt is generated it is stored into the app's database. It can then be viewed from the app's mainscreen whenever required.
+> Once the receipt is generated it is stored into the app's database. It can then be viewed from the app's mainscreen whenever required.
 
 <img src="https://user-images.githubusercontent.com/94210466/179816881-c85bb53f-8f05-4b62-8ed2-0ae67e524f1f.jpg" width="324" />
 
 ### Ropsten results -
 
-This is the transaction receipt generated by the etherscan website after the transaction is complete.
+> This is the transaction receipt generated by the etherscan website after the transaction is complete.
 
 <img src="https://user-images.githubusercontent.com/94210466/179817000-ead86f31-6da4-40a5-851b-4ee170752917.jpg" width="324" />
