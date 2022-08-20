@@ -2,6 +2,8 @@
 
 ## About -
 
+![app-icon](https://github.com/Vaishnav-Kanhirathingal/BlockChain-VS/blob/main/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png)
+
 > This app is a block-chain based voting system app which uses the ethereum's ropsten testnet to perform transactions.
 
 AS OF 13-04-22, THIS PROJECT IS FUNCTIONAL.
